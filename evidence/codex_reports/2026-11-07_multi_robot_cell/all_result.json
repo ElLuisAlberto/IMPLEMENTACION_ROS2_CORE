@@ -1,0 +1,9 @@
+{
+  "robot": "all",
+  "domain": 88,
+  "runtime": "/tmp/thesis_validate_np0fo2fd",
+  "checks": [
+    "all robot states fresh; all supervisors ALLOW"
+  ],
+  "pass": false
+}

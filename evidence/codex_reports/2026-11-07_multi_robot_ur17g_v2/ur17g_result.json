@@ -1,0 +1,13 @@
+{
+  "robot": "ur17g",
+  "domain": 88,
+  "runtime": "/tmp/thesis_validate_w364glre",
+  "checks": [
+    "all robot states fresh; all supervisors ALLOW",
+    "ur17g: controllers active; 6 joints; FK/TF error=0.000000m",
+    "ur17g: supervised +0.02rad and return reached <0.008rad error",
+    "ur17g: obstacle overlap rejected with STOP",
+    "ur17g: stale obstacle rejected and recovery observed"
+  ],
+  "pass": true
+}

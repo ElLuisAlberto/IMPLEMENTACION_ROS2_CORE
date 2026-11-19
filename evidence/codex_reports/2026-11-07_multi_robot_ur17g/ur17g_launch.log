@@ -1,0 +1,188 @@
+[INFO] [launch]: All log files can be found below /tmp/thesis_validate_eoeyft2e/ros_logs/2026-11-07-06-14-08-651936-miNave-55528
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [ign-1]: process started with pid [55530]
+[INFO] [parameter_bridge-2]: process started with pid [55532]
+[INFO] [robot_state_publisher-3]: process started with pid [55534]
+[INFO] [create-4]: process started with pid [55536]
+[INFO] [profile_supervisor-5]: process started with pid [55538]
+[robot_state_publisher-3] [INFO] [1794003248.961953484] [ur17g.robot_state_publisher]: got segment ur17g_base
+[robot_state_publisher-3] [INFO] [1794003248.962011822] [ur17g.robot_state_publisher]: got segment ur17g_base_link
+[robot_state_publisher-3] [INFO] [1794003248.962017068] [ur17g.robot_state_publisher]: got segment ur17g_base_link_inertia
+[robot_state_publisher-3] [INFO] [1794003248.962020645] [ur17g.robot_state_publisher]: got segment ur17g_flange
+[robot_state_publisher-3] [INFO] [1794003248.962023964] [ur17g.robot_state_publisher]: got segment ur17g_forearm_link
+[robot_state_publisher-3] [INFO] [1794003248.962027092] [ur17g.robot_state_publisher]: got segment ur17g_ft_frame
+[robot_state_publisher-3] [INFO] [1794003248.962030245] [ur17g.robot_state_publisher]: got segment ur17g_shoulder_link
+[robot_state_publisher-3] [INFO] [1794003248.962033540] [ur17g.robot_state_publisher]: got segment ur17g_smart_panel
+[robot_state_publisher-3] [INFO] [1794003248.962036558] [ur17g.robot_state_publisher]: got segment ur17g_tool0
+[robot_state_publisher-3] [INFO] [1794003248.962039642] [ur17g.robot_state_publisher]: got segment ur17g_upper_arm_link
+[robot_state_publisher-3] [INFO] [1794003248.962042925] [ur17g.robot_state_publisher]: got segment ur17g_wrist_1_link
+[robot_state_publisher-3] [INFO] [1794003248.962045928] [ur17g.robot_state_publisher]: got segment ur17g_wrist_2_link
+[robot_state_publisher-3] [INFO] [1794003248.962048969] [ur17g.robot_state_publisher]: got segment ur17g_wrist_3_link
+[robot_state_publisher-3] [INFO] [1794003248.962051909] [ur17g.robot_state_publisher]: got segment world
+[parameter_bridge-2] [INFO] [1794003248.986594702] [cell_clock]: Creating GZ->ROS Bridge: [/clock (ignition.msgs.Clock) -> /clock (rosgraph_msgs/msg/Clock)] (Lazy 0)
+[create-4] [INFO] [1794003249.298512359] [spawn_ur17g]: Requested creation of entity.
+[create-4] [INFO] [1794003249.298601381] [spawn_ur17g]: OK creation of entity.
+[INFO] [create-4]: process has finished cleanly [pid 55536]
+[INFO] [spawner-6]: process started with pid [55610]
+[spawner-6] [INFO] [1794003249.584543248] [ur17g.spawner_joint_state_broadcaster]: waiting for service /ur17g/controller_manager/list_controllers to become available...
+[ign-1] [INFO] [1794003251.127168663] [GazeboSimROS2ControlPlugin]: robot_param_node is robot_state_publisher
+[ign-1] [INFO] [1794003251.127191541] [GazeboSimROS2ControlPlugin]: robot_param_node is robot_description
+[ign-1] [INFO] [1794003251.489253752] [ur17g.gz_ros2_control]: connected to service!! /ur17g/robot_state_publisher asking for robot_description
+[ign-1] [INFO] [1794003251.489529582] [ur17g.gz_ros2_control]: Received URDF from param server
+[ign-1] [INFO] [1794003251.489993495] [ur17g.gz_ros2_control]: [gz_ros2_control] Fixed joint ['ur17g_world_mount'] (Entity='34') is skipped.
+[ign-1] [INFO] [1794003251.492033681] [ur17g.gz_ros2_control]: The position_proportional_gain has been set to: 0.1
+[ign-1] [INFO] [1794003251.492064189] [ur17g.gz_ros2_control]: Loading joint: ur17g_shoulder_pan_joint
+[ign-1] [INFO] [1794003251.492071039] [ur17g.gz_ros2_control]: 	State:
+[ign-1] [INFO] [1794003251.492075667] [ur17g.gz_ros2_control]: 		 position
+[ign-1] [INFO] [1794003251.492080756] [ur17g.gz_ros2_control]: 			 found initial value: 0.000000
+[ign-1] [INFO] [1794003251.492087783] [ur17g.gz_ros2_control]: 		 velocity
+[ign-1] [INFO] [1794003251.492093485] [ur17g.gz_ros2_control]: 	Command:
+[ign-1] [INFO] [1794003251.492099073] [ur17g.gz_ros2_control]: 		 position
+[ign-1] [INFO] [1794003251.492112848] [ur17g.gz_ros2_control]: Loading joint: ur17g_shoulder_lift_joint
+[ign-1] [INFO] [1794003251.492117966] [ur17g.gz_ros2_control]: 	State:
+[ign-1] [INFO] [1794003251.492121357] [ur17g.gz_ros2_control]: 		 position
+[ign-1] [INFO] [1794003251.492125095] [ur17g.gz_ros2_control]: 			 found initial value: -1.570000
+[ign-1] [INFO] [1794003251.492129081] [ur17g.gz_ros2_control]: 		 velocity
+[ign-1] [INFO] [1794003251.492132402] [ur17g.gz_ros2_control]: 	Command:
+[ign-1] [INFO] [1794003251.492135734] [ur17g.gz_ros2_control]: 		 position
+[ign-1] [INFO] [1794003251.492141824] [ur17g.gz_ros2_control]: Loading joint: ur17g_elbow_joint
+[ign-1] [INFO] [1794003251.492145699] [ur17g.gz_ros2_control]: 	State:
+[ign-1] [INFO] [1794003251.492151004] [ur17g.gz_ros2_control]: 		 position
+[ign-1] [INFO] [1794003251.492155698] [ur17g.gz_ros2_control]: 			 found initial value: 0.000000
+[ign-1] [INFO] [1794003251.492161829] [ur17g.gz_ros2_control]: 		 velocity
+[ign-1] [INFO] [1794003251.492166992] [ur17g.gz_ros2_control]: 	Command:
+[ign-1] [INFO] [1794003251.492172328] [ur17g.gz_ros2_control]: 		 position
+[ign-1] [INFO] [1794003251.492181599] [ur17g.gz_ros2_control]: Loading joint: ur17g_wrist_1_joint
+[ign-1] [INFO] [1794003251.492186471] [ur17g.gz_ros2_control]: 	State:
+[ign-1] [INFO] [1794003251.492189845] [ur17g.gz_ros2_control]: 		 position
+[ign-1] [INFO] [1794003251.492193393] [ur17g.gz_ros2_control]: 			 found initial value: -1.570000
+[ign-1] [INFO] [1794003251.492197603] [ur17g.gz_ros2_control]: 		 velocity
+[ign-1] [INFO] [1794003251.492200877] [ur17g.gz_ros2_control]: 	Command:
+[ign-1] [INFO] [1794003251.492205385] [ur17g.gz_ros2_control]: 		 position
+[ign-1] [INFO] [1794003251.492212318] [ur17g.gz_ros2_control]: Loading joint: ur17g_wrist_2_joint
+[ign-1] [INFO] [1794003251.492216502] [ur17g.gz_ros2_control]: 	State:
+[ign-1] [INFO] [1794003251.492219831] [ur17g.gz_ros2_control]: 		 position
+[ign-1] [INFO] [1794003251.492226172] [ur17g.gz_ros2_control]: 			 found initial value: 0.000000
+[ign-1] [INFO] [1794003251.492229972] [ur17g.gz_ros2_control]: 		 velocity
+[ign-1] [INFO] [1794003251.492233339] [ur17g.gz_ros2_control]: 	Command:
+[ign-1] [INFO] [1794003251.492236592] [ur17g.gz_ros2_control]: 		 position
+[ign-1] [INFO] [1794003251.492242736] [ur17g.gz_ros2_control]: Loading joint: ur17g_wrist_3_joint
+[ign-1] [INFO] [1794003251.492246678] [ur17g.gz_ros2_control]: 	State:
+[ign-1] [INFO] [1794003251.492251523] [ur17g.gz_ros2_control]: 		 position
+[ign-1] [INFO] [1794003251.492257100] [ur17g.gz_ros2_control]: 			 found initial value: 0.000000
+[ign-1] [INFO] [1794003251.492263198] [ur17g.gz_ros2_control]: 		 velocity
+[ign-1] [INFO] [1794003251.492268589] [ur17g.gz_ros2_control]: 	Command:
+[ign-1] [INFO] [1794003251.492272202] [ur17g.gz_ros2_control]: 		 position
+[ign-1] [INFO] [1794003251.492314001] [resource_manager]: Initialize hardware 'ur17g_system' 
+[ign-1] [INFO] [1794003251.492348546] [resource_manager]: Successful initialization of hardware 'ur17g_system'
+[ign-1] [INFO] [1794003251.492370844] [resource_manager]: 'configure' hardware 'ur17g_system' 
+[ign-1] [INFO] [1794003251.492373586] [ur17g.gz_ros2_control]: System Successfully configured!
+[ign-1] [INFO] [1794003251.492381690] [resource_manager]: Successful 'configure' of hardware 'ur17g_system'
+[ign-1] [INFO] [1794003251.492388078] [resource_manager]: 'activate' hardware 'ur17g_system' 
+[ign-1] [INFO] [1794003251.492394756] [resource_manager]: Successful 'activate' of hardware 'ur17g_system'
+[ign-1] [INFO] [1794003251.492421069] [ur17g.gz_ros2_control]: Loading controller_manager
+[ign-1] [WARN] [1794003251.512335914] [ur17g.gz_ros2_control]:  Desired controller update period (0.01 s) is slower than the gazebo simulation period (0.002 s).
+[ign-1] [INFO] [1794003251.589163794] [ur17g.controller_manager]: Loading controller 'joint_state_broadcaster'
+[spawner-6] [INFO] [1794003251.598947212] [ur17g.spawner_joint_state_broadcaster]: [94mLoaded [1mjoint_state_broadcaster[0m
+[ign-1] [INFO] [1794003251.599419521] [ur17g.controller_manager]: Configuring controller 'joint_state_broadcaster'
+[ign-1] [INFO] [1794003251.599498835] [ur17g.joint_state_broadcaster]: 'joints' or 'interfaces' parameter is empty. All available state interfaces will be published
+[spawner-6] [INFO] [1794003251.628866309] [ur17g.spawner_joint_state_broadcaster]: [92mConfigured and activated [1mjoint_state_broadcaster[0m
+[WARNING] [launch]: user interrupted with ctrl-c (SIGINT)
+[INFO] [spawner-6]: sending signal 'SIGINT' to process[spawner-6]
+[ERROR] [spawner-6]: process has died [pid 55610, exit code -2, cmd '/opt/ros/humble/lib/controller_manager/spawner joint_state_broadcaster -c /ur17g/controller_manager --controller-manager-timeout 120 --ros-args -r __ns:=/ur17g'].
+[INFO] [profile_supervisor-5]: sending signal 'SIGINT' to process[profile_supervisor-5]
+[INFO] [robot_state_publisher-3]: sending signal 'SIGINT' to process[robot_state_publisher-3]
+[INFO] [parameter_bridge-2]: sending signal 'SIGINT' to process[parameter_bridge-2]
+[INFO] [ign-1]: sending signal 'SIGINT' to process[ign-1]
+[robot_state_publisher-3] [INFO] [1794003251.713057191] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[ERROR] [robot_state_publisher-3]: process has died [pid 55534, exit code -2, cmd '/opt/ros/humble/lib/robot_state_publisher/robot_state_publisher --ros-args -r __node:=robot_state_publisher -r __ns:=/ur17g --params-file /tmp/launch_params_kb_lshqn'].
+[parameter_bridge-2] [INFO] [1794003251.713062750] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[ign-1] [INFO] [1794003251.713139782] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[ign-1] [INFO] [1794003251.713208572] [ur17g.controller_manager]: Shutdown request received....
+[ign-1] [INFO] [1794003251.713243026] [ur17g.controller_manager]: Shutting down all controllers in the controller manager.
+[ign-1] [INFO] [1794003251.713259249] [ur17g.controller_manager]: Deactivating controller 'joint_state_broadcaster'
+[ign-1] [INFO] [1794003251.713291163] [ur17g.controller_manager]: Shutting down controller 'joint_state_broadcaster'
+[ign-1] [INFO] [1794003251.713336599] [resource_manager]: 'deactivate' hardware 'ur17g_system' 
+[ign-1] [INFO] [1794003251.713351121] [resource_manager]: Successful 'deactivate' of hardware 'ur17g_system'
+[ign-1] [INFO] [1794003251.713356580] [resource_manager]: 'shutdown' hardware 'ur17g_system' 
+[ign-1] [INFO] [1794003251.713359985] [resource_manager]: Successful 'shutdown' of hardware 'ur17g_system'
+[ign-1] [INFO] [1794003251.713363261] [ur17g.controller_manager]: Shutting down the controller manager.
+[profile_supervisor-5] Traceback (most recent call last):
+[profile_supervisor-5]   File "/home/luis/Escritorio/TESIS_JACO2/IMPLEMENTACION_ROS2_CORE/build/thesis_multi_robot/thesis_multi_robot/supervisor.py", line 410, in main
+[profile_supervisor-5]     rclpy.spin(node)
+[profile_supervisor-5]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/__init__.py", line 229, in spin
+[parameter_bridge-2] [INFO] [1794003251.718501133] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[ign-1] [INFO] [1794003251.719174945] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[profile_supervisor-5]     executor.spin_once()
+[profile_supervisor-5]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/executors.py", line 812, in spin_once
+[profile_supervisor-5]     self._spin_once_impl(timeout_sec)
+[profile_supervisor-5]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/executors.py", line 801, in _spin_once_impl
+[profile_supervisor-5]     handler, entity, node = self.wait_for_ready_callbacks(timeout_sec=timeout_sec)
+[profile_supervisor-5]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/executors.py", line 784, in wait_for_ready_callbacks
+[profile_supervisor-5]     return next(self._cb_iter)
+[profile_supervisor-5]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/executors.py", line 681, in _wait_for_ready_callbacks
+[profile_supervisor-5]     wait_set.wait(timeout_nsec)
+[profile_supervisor-5] KeyboardInterrupt
+[profile_supervisor-5] 
+[profile_supervisor-5] During handling of the above exception, another exception occurred:
+[profile_supervisor-5] 
+[profile_supervisor-5] Traceback (most recent call last):
+[profile_supervisor-5]   File "/home/luis/Escritorio/TESIS_JACO2/IMPLEMENTACION_ROS2_CORE/install/thesis_multi_robot/lib/thesis_multi_robot/profile_supervisor", line 33, in <module>
+[profile_supervisor-5]     sys.exit(load_entry_point('thesis-multi-robot', 'console_scripts', 'profile_supervisor')())
+[profile_supervisor-5]   File "/home/luis/Escritorio/TESIS_JACO2/IMPLEMENTACION_ROS2_CORE/build/thesis_multi_robot/thesis_multi_robot/supervisor.py", line 414, in main
+[profile_supervisor-5]     rclpy.shutdown()
+[profile_supervisor-5]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/__init__.py", line 130, in shutdown
+[profile_supervisor-5]     _shutdown(context=context)
+[profile_supervisor-5]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/utilities.py", line 58, in shutdown
+[profile_supervisor-5]     return context.shutdown()
+[profile_supervisor-5]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/context.py", line 102, in shutdown
+[profile_supervisor-5]     self.__context.shutdown()
+[profile_supervisor-5] rclpy._rclpy_pybind11.RCLError: failed to shutdown: rcl_shutdown already called on the given context, at ./src/rcl/init.c:241
+[profile_supervisor-5] Error in sys.excepthook:
+[profile_supervisor-5] Traceback (most recent call last):
+[profile_supervisor-5]   File "/usr/lib/python3/dist-packages/apport_python_hook.py", line 72, in apport_excepthook
+[profile_supervisor-5]     from apport.fileutils import likely_packaged, get_recent_crashes
+[profile_supervisor-5]   File "/usr/lib/python3/dist-packages/apport/__init__.py", line 5, in <module>
+[profile_supervisor-5]     from apport.report import Report
+[profile_supervisor-5]   File "/usr/lib/python3/dist-packages/apport/report.py", line 15, in <module>
+[profile_supervisor-5]     import xml.dom, xml.dom.minidom
+[profile_supervisor-5]   File "<frozen importlib._bootstrap>", line 1027, in _find_and_load
+[profile_supervisor-5]   File "<frozen importlib._bootstrap>", line 1006, in _find_and_load_unlocked
+[profile_supervisor-5]   File "<frozen importlib._bootstrap>", line 674, in _load_unlocked
+[profile_supervisor-5]   File "<frozen importlib._bootstrap>", line 577, in module_from_spec
+[profile_supervisor-5]   File "<frozen importlib._bootstrap>", line 496, in _init_module_attrs
+[profile_supervisor-5] KeyboardInterrupt
+[profile_supervisor-5] 
+[profile_supervisor-5] Original exception was:
+[profile_supervisor-5] Traceback (most recent call last):
+[profile_supervisor-5]   File "/home/luis/Escritorio/TESIS_JACO2/IMPLEMENTACION_ROS2_CORE/build/thesis_multi_robot/thesis_multi_robot/supervisor.py", line 410, in main
+[profile_supervisor-5]     rclpy.spin(node)
+[profile_supervisor-5]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/__init__.py", line 229, in spin
+[profile_supervisor-5]     executor.spin_once()
+[profile_supervisor-5]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/executors.py", line 812, in spin_once
+[profile_supervisor-5]     self._spin_once_impl(timeout_sec)
+[profile_supervisor-5]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/executors.py", line 801, in _spin_once_impl
+[profile_supervisor-5]     handler, entity, node = self.wait_for_ready_callbacks(timeout_sec=timeout_sec)
+[profile_supervisor-5]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/executors.py", line 784, in wait_for_ready_callbacks
+[profile_supervisor-5]     return next(self._cb_iter)
+[profile_supervisor-5]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/executors.py", line 681, in _wait_for_ready_callbacks
+[profile_supervisor-5]     wait_set.wait(timeout_nsec)
+[profile_supervisor-5] KeyboardInterrupt
+[profile_supervisor-5] 
+[profile_supervisor-5] During handling of the above exception, another exception occurred:
+[profile_supervisor-5] 
+[profile_supervisor-5] Traceback (most recent call last):
+[profile_supervisor-5]   File "/home/luis/Escritorio/TESIS_JACO2/IMPLEMENTACION_ROS2_CORE/install/thesis_multi_robot/lib/thesis_multi_robot/profile_supervisor", line 33, in <module>
+[profile_supervisor-5]     sys.exit(load_entry_point('thesis-multi-robot', 'console_scripts', 'profile_supervisor')())
+[profile_supervisor-5]   File "/home/luis/Escritorio/TESIS_JACO2/IMPLEMENTACION_ROS2_CORE/build/thesis_multi_robot/thesis_multi_robot/supervisor.py", line 414, in main
+[profile_supervisor-5]     rclpy.shutdown()
+[profile_supervisor-5]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/__init__.py", line 130, in shutdown
+[profile_supervisor-5]     _shutdown(context=context)
+[profile_supervisor-5]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/utilities.py", line 58, in shutdown
+[profile_supervisor-5]     return context.shutdown()
+[profile_supervisor-5]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/context.py", line 102, in shutdown
+[profile_supervisor-5]     self.__context.shutdown()
+[profile_supervisor-5] rclpy._rclpy_pybind11.RCLError: failed to shutdown: rcl_shutdown already called on the given context, at ./src/rcl/init.c:241
+[INFO] [parameter_bridge-2]: process has finished cleanly [pid 55532]
+[INFO] [ign-1]: process has finished cleanly [pid 55530]
+[ERROR] [profile_supervisor-5]: process has died [pid 55538, exit code 1, cmd '/home/luis/Escritorio/TESIS_JACO2/IMPLEMENTACION_ROS2_CORE/install/thesis_multi_robot/lib/thesis_multi_robot/profile_supervisor --ros-args -r __node:=profile_supervisor -r __ns:=/ur17g --params-file /tmp/launch_params_wg8u2xez'].

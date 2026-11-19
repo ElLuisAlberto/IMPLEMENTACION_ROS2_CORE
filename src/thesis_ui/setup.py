@@ -28,6 +28,7 @@ setup(
     entry_points={
         'console_scripts': [
             'joint_gui = thesis_ui.joint_control_gui:main',
+            'multiarm_gui = thesis_ui.multiarm_dashboard:main',
         ],
     },
 )

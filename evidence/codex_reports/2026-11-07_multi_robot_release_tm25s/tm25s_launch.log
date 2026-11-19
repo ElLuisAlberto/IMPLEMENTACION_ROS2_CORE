@@ -1,0 +1,134 @@
+[INFO] [launch]: All log files can be found below /tmp/thesis_validate_oavakull/ros_logs/2026-11-07-06-34-44-525169-miNave-65989
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [ign-1]: process started with pid [65991]
+[INFO] [parameter_bridge-2]: process started with pid [65993]
+[INFO] [robot_state_publisher-3]: process started with pid [65995]
+[INFO] [create-4]: process started with pid [65997]
+[INFO] [profile_supervisor-5]: process started with pid [65999]
+[robot_state_publisher-3] [INFO] [1794004484.774879719] [tm25s.robot_state_publisher]: got segment tm25s_base
+[robot_state_publisher-3] [INFO] [1794004484.775001310] [tm25s.robot_state_publisher]: got segment tm25s_flange
+[robot_state_publisher-3] [INFO] [1794004484.775007919] [tm25s.robot_state_publisher]: got segment tm25s_link_0
+[robot_state_publisher-3] [INFO] [1794004484.775011392] [tm25s.robot_state_publisher]: got segment tm25s_link_1
+[robot_state_publisher-3] [INFO] [1794004484.775014492] [tm25s.robot_state_publisher]: got segment tm25s_link_2
+[robot_state_publisher-3] [INFO] [1794004484.775017452] [tm25s.robot_state_publisher]: got segment tm25s_link_3
+[robot_state_publisher-3] [INFO] [1794004484.775020473] [tm25s.robot_state_publisher]: got segment tm25s_link_4
+[robot_state_publisher-3] [INFO] [1794004484.775023448] [tm25s.robot_state_publisher]: got segment tm25s_link_5
+[robot_state_publisher-3] [INFO] [1794004484.775026418] [tm25s.robot_state_publisher]: got segment tm25s_link_6
+[robot_state_publisher-3] [INFO] [1794004484.775029524] [tm25s.robot_state_publisher]: got segment world
+[parameter_bridge-2] [INFO] [1794004484.813975173] [cell_clock]: Creating GZ->ROS Bridge: [/clock (ignition.msgs.Clock) -> /clock (rosgraph_msgs/msg/Clock)] (Lazy 0)
+[create-4] [INFO] [1794004485.109424044] [spawn_tm25s]: Requested creation of entity.
+[create-4] [INFO] [1794004485.109721581] [spawn_tm25s]: OK creation of entity.
+[INFO] [create-4]: process has finished cleanly [pid 65997]
+[INFO] [spawner-6]: process started with pid [66070]
+[spawner-6] [INFO] [1794004485.403271472] [tm25s.spawner_joint_state_broadcaster]: waiting for service /tm25s/controller_manager/list_controllers to become available...
+[ign-1] [INFO] [1794004486.933410497] [GazeboSimROS2ControlPlugin]: robot_param_node is robot_state_publisher
+[ign-1] [INFO] [1794004486.933435637] [GazeboSimROS2ControlPlugin]: robot_param_node is robot_description
+[ign-1] [INFO] [1794004487.283952426] [tm25s.gz_ros2_control]: connected to service!! /tm25s/robot_state_publisher asking for robot_description
+[ign-1] [INFO] [1794004487.284214804] [tm25s.gz_ros2_control]: Received URDF from param server
+[ign-1] [INFO] [1794004487.284670024] [tm25s.gz_ros2_control]: [gz_ros2_control] Fixed joint ['tm25s_world_mount'] (Entity='32') is skipped.
+[ign-1] [INFO] [1794004487.286687976] [tm25s.gz_ros2_control]: The position_proportional_gain has been set to: 0.1
+[ign-1] [INFO] [1794004487.286714805] [tm25s.gz_ros2_control]: Loading joint: tm25s_joint_1
+[ign-1] [INFO] [1794004487.286721398] [tm25s.gz_ros2_control]: 	State:
+[ign-1] [INFO] [1794004487.286726380] [tm25s.gz_ros2_control]: 		 position
+[ign-1] [INFO] [1794004487.286731168] [tm25s.gz_ros2_control]: 			 found initial value: 0.000000
+[ign-1] [INFO] [1794004487.286736041] [tm25s.gz_ros2_control]: 		 velocity
+[ign-1] [INFO] [1794004487.286741406] [tm25s.gz_ros2_control]: 	Command:
+[ign-1] [INFO] [1794004487.286746484] [tm25s.gz_ros2_control]: 		 position
+[ign-1] [INFO] [1794004487.286758678] [tm25s.gz_ros2_control]: Loading joint: tm25s_joint_2
+[ign-1] [INFO] [1794004487.286765055] [tm25s.gz_ros2_control]: 	State:
+[ign-1] [INFO] [1794004487.286768596] [tm25s.gz_ros2_control]: 		 position
+[ign-1] [INFO] [1794004487.286771921] [tm25s.gz_ros2_control]: 			 found initial value: 0.000000
+[ign-1] [INFO] [1794004487.286775746] [tm25s.gz_ros2_control]: 		 velocity
+[ign-1] [INFO] [1794004487.286778984] [tm25s.gz_ros2_control]: 	Command:
+[ign-1] [INFO] [1794004487.286782030] [tm25s.gz_ros2_control]: 		 position
+[ign-1] [INFO] [1794004487.286788467] [tm25s.gz_ros2_control]: Loading joint: tm25s_joint_3
+[ign-1] [INFO] [1794004487.286792141] [tm25s.gz_ros2_control]: 	State:
+[ign-1] [INFO] [1794004487.286795286] [tm25s.gz_ros2_control]: 		 position
+[ign-1] [INFO] [1794004487.286798342] [tm25s.gz_ros2_control]: 			 found initial value: 0.000000
+[ign-1] [INFO] [1794004487.286801928] [tm25s.gz_ros2_control]: 		 velocity
+[ign-1] [INFO] [1794004487.286805040] [tm25s.gz_ros2_control]: 	Command:
+[ign-1] [INFO] [1794004487.286808045] [tm25s.gz_ros2_control]: 		 position
+[ign-1] [INFO] [1794004487.286813978] [tm25s.gz_ros2_control]: Loading joint: tm25s_joint_4
+[ign-1] [INFO] [1794004487.286817643] [tm25s.gz_ros2_control]: 	State:
+[ign-1] [INFO] [1794004487.286820766] [tm25s.gz_ros2_control]: 		 position
+[ign-1] [INFO] [1794004487.286823729] [tm25s.gz_ros2_control]: 			 found initial value: 0.000000
+[ign-1] [INFO] [1794004487.286827261] [tm25s.gz_ros2_control]: 		 velocity
+[ign-1] [INFO] [1794004487.286830369] [tm25s.gz_ros2_control]: 	Command:
+[ign-1] [INFO] [1794004487.286833429] [tm25s.gz_ros2_control]: 		 position
+[ign-1] [INFO] [1794004487.286840254] [tm25s.gz_ros2_control]: Loading joint: tm25s_joint_5
+[ign-1] [INFO] [1794004487.286844266] [tm25s.gz_ros2_control]: 	State:
+[ign-1] [INFO] [1794004487.286847563] [tm25s.gz_ros2_control]: 		 position
+[ign-1] [INFO] [1794004487.286851642] [tm25s.gz_ros2_control]: 			 found initial value: 0.000000
+[ign-1] [INFO] [1794004487.286855457] [tm25s.gz_ros2_control]: 		 velocity
+[ign-1] [INFO] [1794004487.286858621] [tm25s.gz_ros2_control]: 	Command:
+[ign-1] [INFO] [1794004487.286861794] [tm25s.gz_ros2_control]: 		 position
+[ign-1] [INFO] [1794004487.286868324] [tm25s.gz_ros2_control]: Loading joint: tm25s_joint_6
+[ign-1] [INFO] [1794004487.286872392] [tm25s.gz_ros2_control]: 	State:
+[ign-1] [INFO] [1794004487.286875658] [tm25s.gz_ros2_control]: 		 position
+[ign-1] [INFO] [1794004487.286878593] [tm25s.gz_ros2_control]: 			 found initial value: 0.000000
+[ign-1] [INFO] [1794004487.286882189] [tm25s.gz_ros2_control]: 		 velocity
+[ign-1] [INFO] [1794004487.286885275] [tm25s.gz_ros2_control]: 	Command:
+[ign-1] [INFO] [1794004487.286888279] [tm25s.gz_ros2_control]: 		 position
+[ign-1] [INFO] [1794004487.286924034] [resource_manager]: Initialize hardware 'tm25s_system' 
+[ign-1] [INFO] [1794004487.286957545] [resource_manager]: Successful initialization of hardware 'tm25s_system'
+[ign-1] [INFO] [1794004487.286977956] [resource_manager]: 'configure' hardware 'tm25s_system' 
+[ign-1] [INFO] [1794004487.286980292] [tm25s.gz_ros2_control]: System Successfully configured!
+[ign-1] [INFO] [1794004487.286986765] [resource_manager]: Successful 'configure' of hardware 'tm25s_system'
+[ign-1] [INFO] [1794004487.286990936] [resource_manager]: 'activate' hardware 'tm25s_system' 
+[ign-1] [INFO] [1794004487.286995387] [resource_manager]: Successful 'activate' of hardware 'tm25s_system'
+[ign-1] [INFO] [1794004487.287015509] [tm25s.gz_ros2_control]: Loading controller_manager
+[ign-1] [WARN] [1794004487.329671972] [tm25s.gz_ros2_control]:  Desired controller update period (0.01 s) is slower than the gazebo simulation period (0.002 s).
+[ign-1] [INFO] [1794004487.407764494] [tm25s.controller_manager]: Loading controller 'joint_state_broadcaster'
+[spawner-6] [INFO] [1794004487.416497410] [tm25s.spawner_joint_state_broadcaster]: [94mLoaded [1mjoint_state_broadcaster[0m
+[ign-1] [INFO] [1794004487.417008774] [tm25s.controller_manager]: Configuring controller 'joint_state_broadcaster'
+[ign-1] [INFO] [1794004487.417085088] [tm25s.joint_state_broadcaster]: 'joints' or 'interfaces' parameter is empty. All available state interfaces will be published
+[spawner-6] [INFO] [1794004487.446369548] [tm25s.spawner_joint_state_broadcaster]: [92mConfigured and activated [1mjoint_state_broadcaster[0m
+[INFO] [spawner-6]: process has finished cleanly [pid 66070]
+[INFO] [spawner-7]: process started with pid [66128]
+[spawner-7] [INFO] [1794004487.753283504] [tm25s.spawner_arm_controller]: [96mSetting controller param "params_file" to "['/tmp/thesis_validate_oavakull/tm25s_controllers.yaml']" for [1marm_controller[0m
+[ign-1] [INFO] [1794004487.755800880] [tm25s.controller_manager]: Loading controller 'arm_controller'
+[ign-1] [WARN] [1794004487.762424451] [tm25s.arm_controller]: [Deprecated]: "allow_nonzero_velocity_at_trajectory_end" is set to true. The default behavior will change to false.
+[spawner-7] [INFO] [1794004487.766359652] [tm25s.spawner_arm_controller]: [94mLoaded [1marm_controller[0m
+[ign-1] [INFO] [1794004487.766933709] [tm25s.controller_manager]: Configuring controller 'arm_controller'
+[ign-1] [INFO] [1794004487.767043957] [tm25s.arm_controller]: No specific joint names are used for command interfaces. Using 'joints' parameter.
+[ign-1] [INFO] [1794004487.767057449] [tm25s.arm_controller]: Command interfaces are [position] and state interfaces are [position velocity].
+[ign-1] [INFO] [1794004487.767073337] [tm25s.arm_controller]: Using 'splines' interpolation method.
+[ign-1] [INFO] [1794004487.767638121] [tm25s.arm_controller]: Controller state will be published at 50.00 Hz.
+[ign-1] [INFO] [1794004487.768651909] [tm25s.arm_controller]: Action status changes will be monitored at 20.00 Hz.
+[spawner-7] [INFO] [1794004487.796589699] [tm25s.spawner_arm_controller]: [92mConfigured and activated [1marm_controller[0m
+[ign-1] [INFO] [1794004487.814242560] [tm25s.arm_controller]: Received new action goal
+[ign-1] [INFO] [1794004487.814297535] [tm25s.arm_controller]: Accepted new action goal
+[INFO] [spawner-7]: process has finished cleanly [pid 66128]
+[ign-1] [INFO] [1794004489.315851815] [tm25s.arm_controller]: Goal reached, success!
+[ign-1] [INFO] [1794004490.826144285] [tm25s.arm_controller]: Received new action goal
+[ign-1] [INFO] [1794004490.826191015] [tm25s.arm_controller]: Accepted new action goal
+[ign-1] [INFO] [1794004492.335891279] [tm25s.arm_controller]: Goal reached, success!
+[ign-1] [INFO] [1794004493.845733364] [tm25s.arm_controller]: Received new action goal
+[ign-1] [INFO] [1794004493.845792044] [tm25s.arm_controller]: Accepted new action goal
+[ign-1] [INFO] [1794004494.234470682] [tm25s.arm_controller]: Got request to cancel goal
+[ign-1] [INFO] [1794004494.234505838] [tm25s.arm_controller]: Canceling active action goal because cancel callback received.
+[ign-1] [INFO] [1794004496.745672185] [tm25s.arm_controller]: Received new action goal
+[ign-1] [INFO] [1794004496.745705612] [tm25s.arm_controller]: Accepted new action goal
+[WARNING] [launch]: user interrupted with ctrl-c (SIGINT)
+[INFO] [profile_supervisor-5]: sending signal 'SIGINT' to process[profile_supervisor-5]
+[INFO] [robot_state_publisher-3]: sending signal 'SIGINT' to process[robot_state_publisher-3]
+[INFO] [parameter_bridge-2]: sending signal 'SIGINT' to process[parameter_bridge-2]
+[INFO] [ign-1]: sending signal 'SIGINT' to process[ign-1]
+[robot_state_publisher-3] [INFO] [1794004496.893436518] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[parameter_bridge-2] [INFO] [1794004496.893913533] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[ign-1] [INFO] [1794004496.894491963] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[ign-1] [INFO] [1794004496.894548193] [tm25s.controller_manager]: Shutdown request received....
+[ign-1] [INFO] [1794004496.894580036] [tm25s.controller_manager]: Shutting down all controllers in the controller manager.
+[ign-1] [INFO] [1794004496.894595856] [tm25s.controller_manager]: Deactivating controller 'joint_state_broadcaster'
+[ign-1] [INFO] [1794004496.894620659] [tm25s.controller_manager]: Shutting down controller 'joint_state_broadcaster'
+[ign-1] [INFO] [1794004496.894641132] [tm25s.controller_manager]: Deactivating controller 'arm_controller'
+[ign-1] [INFO] [1794004496.894670259] [tm25s.controller_manager]: Shutting down controller 'arm_controller'
+[ign-1] [INFO] [1794004496.894697362] [resource_manager]: 'deactivate' hardware 'tm25s_system' 
+[ign-1] [INFO] [1794004496.894715910] [resource_manager]: Successful 'deactivate' of hardware 'tm25s_system'
+[ign-1] [INFO] [1794004496.894720099] [resource_manager]: 'shutdown' hardware 'tm25s_system' 
+[ign-1] [INFO] [1794004496.894725007] [resource_manager]: Successful 'shutdown' of hardware 'tm25s_system'
+[ign-1] [INFO] [1794004496.894727681] [tm25s.controller_manager]: Shutting down the controller manager.
+[INFO] [robot_state_publisher-3]: process has finished cleanly [pid 65995]
+[INFO] [parameter_bridge-2]: process has finished cleanly [pid 65993]
+[INFO] [ign-1]: process has finished cleanly [pid 65991]
+[INFO] [profile_supervisor-5]: process has finished cleanly [pid 65999]

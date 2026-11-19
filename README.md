@@ -39,6 +39,64 @@ La evidencia técnica está organizada en
 [`docs/codex_reports/`](docs/codex_reports/) y
 [`evidence/codex_reports/`](evidence/codex_reports/).
 
+La ampliación experimental en simulación con **UR17g-1300 y P3020**
+junto al JACO2 está documentada en
+[`src/thesis_multi_robot/README.md`](src/thesis_multi_robot/README.md).
+Usa perfiles URDF y namespaces propios en Gazebo Fortress. Además de la célula
+nominal, existe una ruta individual de paridad que reutiliza literalmente la
+GUI histórica, el supervisor preventivo y la proyección futura de RViz para
+UR17g y P3020. El perfil `jaco2` del mismo comando deriva al launch
+histórico intacto para no cambiar su comportamiento ni su geometría.
+
+### Misma interfaz histórica para los tres brazos simulados
+
+Preparar cada terminal desde la raíz real de este repositorio:
+
+```bash
+cd /home/luis/Escritorio/TESIS_JACO2/IMPLEMENTACION_ROS2_CORE
+source /opt/ros/humble/setup.bash
+source install/setup.bash
+export ROS_DOMAIN_ID=88
+export IGN_PARTITION=thesis_historical_robot
+```
+
+Ejecutar **solo una** de estas órdenes por vez:
+
+```bash
+ros2 launch thesis_multi_robot historical_robot.launch.py robot:=jaco2
+ros2 launch thesis_multi_robot historical_robot.launch.py robot:=ur17g
+ros2 launch thesis_multi_robot historical_robot.launch.py robot:=p3020
+```
+
+Cada orden abre Gazebo, la misma GUI de `thesis_ui` y RViz. Para una prueba
+automatizada sin ventanas se pueden añadir
+`headless:=true start_gui:=false start_rviz:=false`. P3020 conserva los mismos
+controles, pero sus cinco ejes solo garantizan IK de posición; una orientación
+explícita no alcanzable se rechaza de forma segura.
+
+### Mesa y esfera de la estación
+
+Los cuatro lanzamientos individuales (`robot:=jaco2`, `ur17g`, `p3020` y
+`cs625`) usan un tablero horizontal de 1.20 × 0.80 × 0.04 m, con superficie
+a 0.75 m. La esfera de Gazebo tiene 0.12 m de radio y centro en
+`world` (0.60, 0, 1.27) m: quedan 40 cm libres. RViz muestra el tablero en
+el display de obstáculos. En los perfiles con incertidumbre, el marcador
+esférico incluye también el margen de la medición.
+
+La supervisión contrasta las cápsulas con la esfera y el tablero en cada
+postura muestreada. El tablero incluye sus cantos y cara inferior. Las patas
+y los soportes son geometría de Gazebo. La célula conjunta tiene una mesa por
+base y una esfera compartida en coordenadas de mundo. Los soportes de montaje
+de la célula separan las envolventes conservadoras del hombro y el tablero.
+
+Para representar la misma estación **virtual** en el JACO2 físico en modo
+observación, usar `virtual_workstation:=true` en
+`jaco_physical_system.launch.py`. En ese marco la base está a z=0:
+el tablero termina en z=0 y la esfera tiene centro en z=0.52 m.
+El preset selecciona la esfera FIXED. Para usar una fuente externa se puede
+indicar `use_demo_obstacle:=false`. Los escenarios PARK, BLOCK_START e
+INSERT_STOP conservan sus poses calibradas cuando se seleccionan explícitamente.
+
 ## Arquitectura
 
 ```text
@@ -60,6 +118,24 @@ Gazebo o Jaco2 físico
 La GUI no se comunica directamente con el hardware. En simulación publica al
 adaptador de simulación; en hardware la única ruta de salida pasa por
 `jaco_hardware_adapter` y la API Kinova.
+
+El monitor de proximidad clasifica la separación actual como `ALLOW`,
+`WARNING` o `STOP`; no existe una banda fija de 15 cm que ordene reducir la
+velocidad. La escala JOG `REDUCTION` se decide por separado, evaluando el
+horizonte predictivo y reduciendo solo si invade la reserva protectora.
+Durante JOG, RViz diferencia el horizonte aprobado del volumen nominal que
+activó una reducción: este último se muestra en naranja, expandido por el
+umbral predictivo publicado por el supervisor. La etiqueta incluye el estado,
+la escala, la separación nominal mínima y el umbral de esa misma decisión,
+correlacionados por `command_id`; si no coinciden los datos recientes, el
+volumen nominal de reducción no se dibuja. El horizonte azul se toma de
+`/thesis/supervised_jog_command` (referencia aprobada de horizonte completo),
+no de `/thesis/applied_jog_command`, que es el paso corto que el adaptador
+envía al controlador.
+
+En RViz, la cota naranja muestra continuamente la distancia actual mínima
+entre las cápsulas del robot y la mesa. Las líneas auxiliares desplazan la
+cota fuera de la silueta del brazo.
 
 ## Código principal
 

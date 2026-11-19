@@ -19,10 +19,13 @@ from thesis_core.jaco_kinematics import (
     translation,
 )
 from thesis_core.joint_model import (
+    CONTINUOUS_JOINTS,
     JOINT_NAMES,
+    JOINT_POSITION_LIMITS,
     JOINT_VELOCITY_LIMITS,
     shortest_joint_delta,
 )
+from thesis_core.robot_profile import load_robot_profile
 from thesis_core.ros_runtime import spin_node
 from thesis_interfaces.msg import (
     CartesianCommand,
@@ -31,12 +34,19 @@ from thesis_interfaces.msg import (
 )
 import tf2_ros
 
+from thesis_simulation.profile_cartesian import (
+    CartesianProfileModel,
+    position_only_is_permitted,
+)
+
 
 class CartesianCommandAdapter(Node):
     """Provide a simulation-only Cartesian front end to the joint pipeline."""
 
     def __init__(self):
         super().__init__('cartesian_command_adapter')
+        self.declare_parameter('manifest_path', '')
+        self.declare_parameter('robot_name', 'jaco2')
         self.declare_parameter('maximum_state_age_sec', 0.50)
         self.declare_parameter('maximum_position_step_m', 0.10)
         self.declare_parameter(
@@ -73,6 +83,21 @@ class CartesianCommandAdapter(Node):
         ):
             raise ValueError('Cartesian adapter parameters must be positive')
 
+        manifest_path = str(self.get_parameter('manifest_path').value)
+        robot_name = str(self.get_parameter('robot_name').value)
+        self.robot_profile = load_robot_profile(
+            manifest_path or None, robot_name
+        )
+        self.joint_names = self.robot_profile.joint_names
+        self.position_limits = self.robot_profile.joint_position_limits
+        self.velocity_limits = self.robot_profile.joint_velocity_limits
+        self.continuous_joints = self.robot_profile.continuous_joints
+        self.world_frame = self.robot_profile.world_frame
+        self.tip_link = self.robot_profile.tip_link
+        self.cartesian_model = CartesianProfileModel(
+            self.robot_profile, legacy_jaco2=not manifest_path
+        )
+
         self.positions = {}
         self.state_received_at = None
         self.tf_buffer = tf2_ros.Buffer()
@@ -105,9 +130,9 @@ class CartesianCommandAdapter(Node):
         positions = {
             name: float(value)
             for name, value in zip(message.name, message.position)
-            if name in JOINT_NAMES and math.isfinite(value)
+            if name in self.joint_names and math.isfinite(value)
         }
-        if all(name in positions for name in JOINT_NAMES):
+        if all(name in positions for name in self.joint_names):
             self.positions = positions
             self.state_received_at = time.monotonic()
 
@@ -137,12 +162,12 @@ class CartesianCommandAdapter(Node):
         age = time.monotonic() - self.state_received_at
         if age > self.maximum_state_age_sec:
             return None
-        return tuple(self.positions[name] for name in JOINT_NAMES)
+        return tuple(self.positions[name] for name in self.joint_names)
 
     def current_world_transform(self):
         """Read the same Gazebo TF reference used by the GUI."""
         message = self.tf_buffer.lookup_transform(
-            'world', 'j2n6s300_end_effector', Time()
+            self.world_frame, self.tip_link, Time()
         )
         transform = message.transform
         return transform_from_translation_quaternion(
@@ -160,14 +185,16 @@ class CartesianCommandAdapter(Node):
         )
 
     def receive_command(self, message):
+        world_frame = getattr(self, 'world_frame', 'world')
         if not message.command_id:
             self.reject(message, 'INVALID_CARTESIAN_COMMAND', 'ID vacío.')
             return
-        if message.frame_id != 'world':
+        if message.frame_id != world_frame:
             self.reject(
                 message,
                 'INVALID_CARTESIAN_FRAME',
-                'El comando cartesiano debe usar frame_id=world.',
+                'El comando cartesiano debe usar '
+                f'frame_id={world_frame}.',
             )
             return
         duration = self.duration_seconds(message)
@@ -202,7 +229,12 @@ class CartesianCommandAdapter(Node):
                 'No existe un estado articular completo y reciente.',
             )
             return
-        current_model_transform = end_effector_transform(current)
+        cartesian_model = getattr(self, 'cartesian_model', None)
+        current_model_transform = (
+            end_effector_transform(current)
+            if cartesian_model is None
+            else cartesian_model.forward(current)
+        )
         target_world_transform = transform_matrix(
             target_pose[:3], target_pose[3:]
         )
@@ -212,7 +244,8 @@ class CartesianCommandAdapter(Node):
             self.reject(
                 message,
                 'CARTESIAN_TF_UNAVAILABLE',
-                'No se pudo leer world -> j2n6s300_end_effector: '
+                f'No se pudo leer {world_frame} -> '
+                f'{getattr(self, "tip_link", "j2n6s300_end_effector")}: '
                 f'{exception}',
             )
             return
@@ -249,12 +282,23 @@ class CartesianCommandAdapter(Node):
                 target_world_transform,
                 current_model_transform,
             )
-            result = solve_inverse_kinematics_transform(
-                current,
-                model_target_transform,
-                position_tolerance_m=self.position_tolerance_m,
-                orientation_tolerance_rad=self.orientation_tolerance_rad,
-            )
+            if cartesian_model is None:
+                result = solve_inverse_kinematics_transform(
+                    current,
+                    model_target_transform,
+                    position_tolerance_m=self.position_tolerance_m,
+                    orientation_tolerance_rad=self.orientation_tolerance_rad,
+                )
+            else:
+                result = cartesian_model.inverse(
+                    current,
+                    model_target_transform,
+                    self.position_tolerance_m,
+                    self.orientation_tolerance_rad,
+                    position_only=position_only_is_permitted(
+                        self.robot_profile, orientation_step
+                    ),
+                )
         except ValueError as exception:
             self.reject(
                 message,
@@ -273,11 +317,27 @@ class CartesianCommandAdapter(Node):
             )
             return
 
+        joint_names = getattr(self, 'joint_names', JOINT_NAMES)
+        position_limits = getattr(
+            self, 'position_limits', JOINT_POSITION_LIMITS
+        )
+        velocity_limits = getattr(
+            self, 'velocity_limits', JOINT_VELOCITY_LIMITS
+        )
+        continuous_joints = getattr(
+            self, 'continuous_joints', CONTINUOUS_JOINTS
+        )
         minimum_duration = max(
-            abs(shortest_joint_delta(name, target, start))
-            / JOINT_VELOCITY_LIMITS[name]
+            abs(shortest_joint_delta(
+                name,
+                target,
+                start,
+                position_limits=position_limits,
+                continuous_joints=continuous_joints,
+            ))
+            / velocity_limits[name]
             for name, start, target in zip(
-                JOINT_NAMES, current, result.positions
+                joint_names, current, result.positions
             )
         )
         if duration + 1.0e-9 < minimum_duration:
@@ -292,7 +352,7 @@ class CartesianCommandAdapter(Node):
         output = JointCommand()
         output.stamp = message.stamp
         output.command_id = message.command_id
-        output.joint_names = list(JOINT_NAMES)
+        output.joint_names = list(joint_names)
         output.positions = list(result.positions)
         output.duration = message.duration
         self.command_publisher.publish(output)

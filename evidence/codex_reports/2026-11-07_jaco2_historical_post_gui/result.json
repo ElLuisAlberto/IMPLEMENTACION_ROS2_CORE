@@ -1,0 +1,11 @@
+{
+  "pass": true,
+  "simulation_only": true,
+  "hardware_commands_sent": false,
+  "ros_domain_id": 99,
+  "ign_partition": "thesis_jaco2_historical_post_gui",
+  "system_readiness": "READY",
+  "proximity_state": "ALLOW",
+  "minimum_clearance_m": 1.2023092666687711,
+  "residual_processes": false
+}

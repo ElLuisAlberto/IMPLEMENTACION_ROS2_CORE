@@ -7,6 +7,7 @@ import rclpy
 from control_msgs.action import FollowJointTrajectory
 from control_msgs.msg import JointTrajectoryControllerState
 from rclpy.action import ActionClient
+from rclpy.clock import Clock, ClockType
 from rclpy.node import Node
 from rclpy.qos import HistoryPolicy, QoSProfile, ReliabilityPolicy
 from rclpy.time import Time
@@ -15,6 +16,7 @@ from thesis_interfaces.msg import (
     ExecutionControl,
     ExecutionTrajectory,
     JointCommand,
+    MultiArmSafetyStatus,
     PipelineTiming,
 )
 from trajectory_msgs.msg import JointTrajectory, JointTrajectoryPoint
@@ -24,14 +26,64 @@ from thesis_core.joint_model import (
     normalize_target,
     saturate_target_by_velocity,
 )
+from thesis_core.robot_profile import load_robot_profile
 from thesis_core.ros_runtime import spin_node
 from thesis_simulation.control_arbitration import (
     effective_speed_scale,
     is_more_restrictive,
 )
+from thesis_simulation.global_safety_gate import (
+    GateDecision,
+    GlobalSafetyEvidence,
+    GlobalSafetyGate,
+)
 from thesis_simulation.jog_reference import advance_jog_reference
 MIN_REPLAN_DURATION_SEC = 0.15
 MAX_REPLAN_DURATION_SEC = 30.0
+
+
+def global_safety_evidence_from_message(message):
+    """Build the immutable watchdog evidence from a ROS-like status."""
+    return GlobalSafetyEvidence(
+        session_id=message.session_id,
+        sequence=message.decision_sequence,
+        state=message.state,
+        valid=message.valid,
+        stamp_sec=(
+            float(message.stamp.sec)
+            + float(message.stamp.nanosec) * 1.0e-9
+        ),
+        ttl_sec=(
+            float(message.valid_for.sec)
+            + float(message.valid_for.nanosec) * 1.0e-9
+        ),
+    )
+
+
+def global_gate_decision(required, gate, now_sec, monotonic_now_sec):
+    """Preserve legacy mode, otherwise require current global evidence."""
+    if not bool(required):
+        return GateDecision(True, 'GLOBAL_SAFETY_NOT_REQUIRED')
+    if not isinstance(gate, GlobalSafetyGate):
+        return GateDecision(False, 'GLOBAL_SAFETY_WATCHDOG_MISSING')
+    return gate.decide(now_sec, monotonic_now_sec)
+
+
+def profile_motion_contract(profile):
+    """Return the validated joint-space fields used by the adapter."""
+    names = tuple(profile.joint_names)
+    positions = dict(profile.joint_position_limits)
+    velocities = dict(profile.joint_velocity_limits)
+    continuous = frozenset(profile.continuous_joints)
+    if (
+        not names
+        or len(set(names)) != len(names)
+        or set(positions) != set(names)
+        or set(velocities) != set(names)
+        or not continuous.issubset(names)
+    ):
+        raise ValueError('invalid robot profile joint contract')
+    return names, positions, velocities, continuous
 
 
 class SimulationCommandAdapter(Node):
@@ -40,10 +92,47 @@ class SimulationCommandAdapter(Node):
     def __init__(self):
         super().__init__('simulation_command_adapter')
 
+        self.declare_parameter('manifest_path', '')
+        self.declare_parameter('robot_name', 'jaco2')
         self.declare_parameter('simulation_output_enabled', False)
         self.declare_parameter(
             'action_name',
-            '/arm_controller/follow_joint_trajectory',
+            '',
+        )
+        self.declare_parameter('joint_names', list(JOINT_NAMES))
+        self.declare_parameter(
+            'execution_trajectory_topic', '/thesis/execution_trajectory'
+        )
+        self.declare_parameter('joint_states_topic', '/joint_states')
+        self.declare_parameter(
+            'controller_state_topic', '/arm_controller/controller_state'
+        )
+        self.declare_parameter(
+            'supervised_command_topic', '/thesis/supervised_command'
+        )
+        self.declare_parameter(
+            'execution_control_topic', '/thesis/execution_control'
+        )
+        self.declare_parameter(
+            'jog_output_topic', '/arm_controller/joint_trajectory'
+        )
+        self.declare_parameter(
+            'pipeline_timing_topic', '/thesis/pipeline_timing'
+        )
+        self.declare_parameter(
+            'supervised_jog_command_topic',
+            '/thesis/supervised_jog_command',
+        )
+        self.declare_parameter('applied_jog_command_topic', '/thesis/applied_jog_command')
+        self.declare_parameter('global_safety_required', False)
+        self.declare_parameter(
+            'global_safety_topic', '/thesis/multiarm_safety_status'
+        )
+        self.declare_parameter(
+            'global_safety_session_id', 'hybrid-three-sim'
+        )
+        self.declare_parameter(
+            'global_safety_max_receive_age_sec', 0.20
         )
         self.declare_parameter('max_state_age_sec', 0.5)
         self.declare_parameter('control_replan_cooldown_sec', 0.75)
@@ -56,7 +145,32 @@ class SimulationCommandAdapter(Node):
         )
         self.declare_parameter('jog_stop_duration_sec', 0.02)
 
-        action_name = self.get_parameter('action_name').value
+        manifest_path = str(self.get_parameter('manifest_path').value)
+        robot_name = str(self.get_parameter('robot_name').value)
+        self.robot_profile = load_robot_profile(
+            manifest_path or None, robot_name
+        )
+        (
+            self.joint_names,
+            self.position_limits,
+            self.velocity_limits,
+            self.continuous_joints,
+        ) = profile_motion_contract(self.robot_profile)
+        configured_names = tuple(self.get_parameter('joint_names').value)
+        if configured_names != JOINT_NAMES:
+            if (len(configured_names) != len(self.joint_names)
+                    or len(set(configured_names)) != len(configured_names)
+                    or any(not isinstance(n, str) or not n.strip()
+                           for n in configured_names)):
+                raise ValueError('joint_names must match the profile joint count')
+            mapping = dict(zip(self.joint_names, configured_names))
+            self.position_limits = {mapping[k]: v for k, v in self.position_limits.items()}
+            self.velocity_limits = {mapping[k]: v for k, v in self.velocity_limits.items()}
+            self.continuous_joints = frozenset(mapping[k] for k in self.continuous_joints)
+            self.joint_names = configured_names
+        action_name = str(self.get_parameter('action_name').value)
+        if not action_name:
+            action_name = self.robot_profile.controller_action
         self.action_client = ActionClient(
             self,
             FollowJointTrajectory,
@@ -65,30 +179,30 @@ class SimulationCommandAdapter(Node):
 
         self.execution_publisher = self.create_publisher(
             ExecutionTrajectory,
-            '/thesis/execution_trajectory',
+            self.get_parameter('execution_trajectory_topic').value,
             10,
         )
         self.state_subscription = self.create_subscription(
             JointState,
-            '/joint_states',
+            self.get_parameter('joint_states_topic').value,
             self.state_callback,
             10,
         )
         self.controller_state_subscription = self.create_subscription(
             JointTrajectoryControllerState,
-            '/arm_controller/controller_state',
+            self.get_parameter('controller_state_topic').value,
             self.controller_state_callback,
             20,
         )
         self.command_subscription = self.create_subscription(
             JointCommand,
-            '/thesis/supervised_command',
+            self.get_parameter('supervised_command_topic').value,
             self.command_callback,
             10,
         )
         self.control_subscription = self.create_subscription(
             ExecutionControl,
-            '/thesis/execution_control',
+            self.get_parameter('execution_control_topic').value,
             self.control_callback,
             10,
         )
@@ -99,11 +213,18 @@ class SimulationCommandAdapter(Node):
         )
         self.jog_publisher = self.create_publisher(
             JointTrajectory,
-            '/arm_controller/joint_trajectory',
+            self.get_parameter('jog_output_topic').value,
             jog_qos,
         )
+        self.applied_jog_publisher = self.create_publisher(
+            JointCommand, self.get_parameter('applied_jog_command_topic').value,
+            QoSProfile(history=HistoryPolicy.KEEP_LAST, depth=1,
+                       reliability=ReliabilityPolicy.RELIABLE),
+        )
         self.timing_publisher = self.create_publisher(
-            PipelineTiming, '/thesis/pipeline_timing', 100
+            PipelineTiming,
+            self.get_parameter('pipeline_timing_topic').value,
+            100,
         )
         self.timing_sequence = 0
         jog_command_qos = QoSProfile(
@@ -113,10 +234,35 @@ class SimulationCommandAdapter(Node):
         )
         self.jog_subscription = self.create_subscription(
             JointCommand,
-            '/thesis/supervised_jog_command',
+            self.get_parameter('supervised_jog_command_topic').value,
             self.jog_command_callback,
             jog_command_qos,
         )
+
+        self.global_safety_required = bool(
+            self.get_parameter('global_safety_required').value
+        )
+        self.global_safety_gate = None
+        self.global_safety_subscription = None
+        if self.global_safety_required:
+            self.global_safety_gate = GlobalSafetyGate(
+                str(
+                    self.get_parameter(
+                        'global_safety_session_id'
+                    ).value
+                ),
+                float(
+                    self.get_parameter(
+                        'global_safety_max_receive_age_sec'
+                    ).value
+                ),
+            )
+            self.global_safety_subscription = self.create_subscription(
+                MultiArmSafetyStatus,
+                str(self.get_parameter('global_safety_topic').value),
+                self.global_safety_callback,
+                10,
+            )
 
         maximum_jog_age = float(
             self.get_parameter('max_jog_message_age_sec').value
@@ -155,6 +301,7 @@ class SimulationCommandAdapter(Node):
         self.jog_watchdog = self.create_timer(
             0.05,
             self.jog_watchdog_callback,
+            clock=Clock(clock_type=ClockType.STEADY_TIME),
         )
 
         output_enabled = bool(
@@ -190,27 +337,73 @@ class SimulationCommandAdapter(Node):
         event.detail = str(detail)
         self.timing_publisher.publish(event)
 
+    def global_safety_decision(self):
+        """Return current admission state using ROS TTL and monotonic age."""
+        return global_gate_decision(
+            self.global_safety_required,
+            self.global_safety_gate,
+            self.get_clock().now().nanoseconds * 1.0e-9,
+            time.monotonic(),
+        )
+
+    def global_safety_callback(self, message):
+        """Observe coordinator status directly, independently of relay health."""
+        try:
+            evidence = global_safety_evidence_from_message(message)
+            self.global_safety_gate.observe(evidence, time.monotonic())
+        except (AttributeError, TypeError, ValueError) as exception:
+            self.global_safety_gate.reject('GLOBAL_STATUS_MESSAGE_INVALID')
+            self.get_logger().warning(
+                f'Invalid direct global safety status: {exception}'
+            )
+        decision = self.global_safety_decision()
+        if not decision.allowed:
+            self.request_global_stop(decision.reason_code)
+
+    def request_global_stop(self, reason_code):
+        """Cancel or hold active output when the direct watchdog closes."""
+        command_id = None
+        if self.goal_active and self.active_metadata is not None:
+            command_id = self.active_metadata['command_id']
+        elif self.jog_active:
+            command_id = self.last_jog_command_id
+        if command_id is None:
+            return
+        control = ExecutionControl()
+        control.stamp = self.get_clock().now().to_msg()
+        control.command_id = str(command_id)
+        control.state = 'STOP'
+        control.speed_scale = 0.0
+        control.reason_code = str(reason_code)
+        control.reason = (
+            'Direct global-safety watchdog stopped simulation output: '
+            f'{reason_code}'
+        )
+        self.control_callback(control)
+
     def state_callback(self, msg):
         positions = {}
         for name, position in zip(msg.name, msg.position):
-            if name in JOINT_NAMES and math.isfinite(position):
+            if name in self.joint_names and math.isfinite(position):
                 positions[name] = float(position)
 
-        if all(name in positions for name in JOINT_NAMES):
+        if all(name in positions for name in self.joint_names):
             self.current_positions = positions
             self.last_state_monotonic = time.monotonic()
 
     def controller_state_callback(self, msg):
         """Store the controller's current desired position as JOG anchor."""
-        if tuple(msg.joint_names) != JOINT_NAMES:
+        if tuple(msg.joint_names) != self.joint_names:
             return
         positions = tuple(float(value) for value in msg.desired.positions)
         if (
-            len(positions) != len(JOINT_NAMES)
+            len(positions) != len(self.joint_names)
             or not all(math.isfinite(value) for value in positions)
         ):
             return
-        self.controller_reference_positions = dict(zip(JOINT_NAMES, positions))
+        self.controller_reference_positions = dict(
+            zip(self.joint_names, positions)
+        )
         self.last_controller_reference_monotonic = time.monotonic()
 
     def controller_reference_state(self):
@@ -229,12 +422,12 @@ class SimulationCommandAdapter(Node):
             return None
         if not all(
             name in self.controller_reference_positions
-            for name in JOINT_NAMES
+            for name in self.joint_names
         ):
             return None
         return tuple(
             self.controller_reference_positions[name]
-            for name in JOINT_NAMES
+            for name in self.joint_names
         )
 
     def duration_seconds(self, msg):
@@ -248,7 +441,9 @@ class SimulationCommandAdapter(Node):
         if time.monotonic() - self.last_state_monotonic > max_age:
             return None
 
-        return tuple(self.current_positions[name] for name in JOINT_NAMES)
+        return tuple(
+            self.current_positions[name] for name in self.joint_names
+        )
 
     def publish_status(
         self,
@@ -268,7 +463,7 @@ class SimulationCommandAdapter(Node):
         msg.detail = detail
         if start_time is not None:
             msg.start_time = start_time
-        msg.joint_names = list(JOINT_NAMES)
+        msg.joint_names = list(self.joint_names)
         msg.start_positions = list(start_positions)
         msg.target_positions = list(target_positions)
         msg.duration_sec = float(duration)
@@ -298,7 +493,7 @@ class SimulationCommandAdapter(Node):
 
     def build_goal(self, start, target, duration):
         goal = FollowJointTrajectory.Goal()
-        goal.trajectory.joint_names = list(JOINT_NAMES)
+        goal.trajectory.joint_names = list(self.joint_names)
 
         initial_point = JointTrajectoryPoint()
         initial_point.positions = list(start)
@@ -314,7 +509,7 @@ class SimulationCommandAdapter(Node):
     def publish_jog_target(self, target, velocities, duration):
         """Publish one short rolling position-and-slope JOG reference."""
         trajectory = JointTrajectory()
-        trajectory.joint_names = list(JOINT_NAMES)
+        trajectory.joint_names = list(self.joint_names)
         point = JointTrajectoryPoint()
         point.positions = list(target)
         point.velocities = list(velocities)
@@ -322,12 +517,33 @@ class SimulationCommandAdapter(Node):
         trajectory.points = [point]
         self.jog_publisher.publish(trajectory)
 
+    def publish_applied_jog(self, command_id, target, duration):
+        """Report the exact reference published, not an execution guarantee."""
+        message = JointCommand()
+        message.stamp = self.get_clock().now().to_msg()
+        message.command_id = command_id or 'jog-hold'
+        message.joint_names = list(self.joint_names)
+        message.positions = list(target)
+        seconds = int(duration)
+        nanoseconds = int(round((duration - seconds) * 1_000_000_000))
+        if nanoseconds >= 1_000_000_000:
+            seconds += 1
+            nanoseconds -= 1_000_000_000
+        message.duration.sec = seconds
+        message.duration.nanosec = nanoseconds
+        self.applied_jog_publisher.publish(message)
+
     def jog_command_callback(self, msg):
         """Convert a safe one-second jog horizon into a short control step."""
         self.publish_timing(
             msg.command_id, msg.stamp, 'ADAPTER_RECEIVE'
         )
         if not bool(self.get_parameter('simulation_output_enabled').value):
+            return
+        global_decision = self.global_safety_decision()
+        if not global_decision.allowed:
+            if self.jog_active:
+                self.request_global_stop(global_decision.reason_code)
             return
         if self.goal_active:
             return
@@ -344,7 +560,7 @@ class SimulationCommandAdapter(Node):
                     f'comando JOG obsoleto ({source_age:.3f} s)'
                 )
             return
-        if tuple(msg.joint_names) != JOINT_NAMES:
+        if tuple(msg.joint_names) != self.joint_names:
             return
 
         horizon = self.duration_seconds(msg)
@@ -370,6 +586,10 @@ class SimulationCommandAdapter(Node):
                 current,
                 msg.positions,
                 horizon,
+                joint_names=self.joint_names,
+                position_limits=self.position_limits,
+                velocity_limits=self.velocity_limits,
+                continuous_joints=self.continuous_joints,
             )
         except ValueError as exc:
             self.get_logger().warning(
@@ -412,6 +632,7 @@ class SimulationCommandAdapter(Node):
             control_velocity,
             control_period,
         )
+        self.publish_applied_jog(msg.command_id, control_target, control_period)
         self.publish_timing(
             msg.command_id, msg.stamp, 'CONTROLLER_PUBLISH'
         )
@@ -425,6 +646,9 @@ class SimulationCommandAdapter(Node):
 
     def jog_watchdog_callback(self):
         """Hold the measured pose if the continuous command stream stops."""
+        global_decision = self.global_safety_decision()
+        if not global_decision.allowed:
+            self.request_global_stop(global_decision.reason_code)
         if (
             not self.jog_active
             or self.last_jog_receive_monotonic is None
@@ -458,9 +682,10 @@ class SimulationCommandAdapter(Node):
                 return
             self.publish_jog_target(
                 current,
-                (0.0,) * len(JOINT_NAMES),
+                (0.0,) * len(self.joint_names),
                 duration,
             )
+            self.publish_applied_jog(self.last_jog_command_id, current, duration)
             hold_publish_monotonic = time.monotonic()
             hold_age_sec = max(
                 0.0,
@@ -497,9 +722,10 @@ class SimulationCommandAdapter(Node):
                 return
             self.publish_jog_target(
                 current,
-                (0.0,) * len(JOINT_NAMES),
+                (0.0,) * len(self.joint_names),
                 duration,
             )
+            self.publish_applied_jog(self.last_jog_command_id, current, duration)
         self.jog_hold_sent = True
         self.jog_active = False
         self.jog_reference_target = None
@@ -595,6 +821,16 @@ class SimulationCommandAdapter(Node):
             )
             return
 
+        global_decision = self.global_safety_decision()
+        if not global_decision.allowed:
+            self.reject(
+                msg,
+                'REJECTED',
+                'autorización global multi-brazo no disponible: '
+                f'{global_decision.reason_code}',
+            )
+            return
+
         if self.jog_active:
             self.reject(
                 msg,
@@ -611,7 +847,7 @@ class SimulationCommandAdapter(Node):
             )
             return
 
-        if list(msg.joint_names) != list(JOINT_NAMES):
+        if list(msg.joint_names) != list(self.joint_names):
             self.reject(
                 msg,
                 'REJECTED',
@@ -641,6 +877,10 @@ class SimulationCommandAdapter(Node):
                 start,
                 msg.positions,
                 duration,
+                joint_names=self.joint_names,
+                position_limits=self.position_limits,
+                velocity_limits=self.velocity_limits,
+                continuous_joints=self.continuous_joints,
             )
         except ValueError as exc:
             self.reject(msg, 'REJECTED', str(exc))
@@ -947,7 +1187,12 @@ class SimulationCommandAdapter(Node):
         )
         duration = min(duration, MAX_REPLAN_DURATION_SEC)
         try:
-            target = normalize_target(current, metadata['origin_target'])
+            target = normalize_target(
+                current, metadata['origin_target'],
+                joint_names=self.joint_names,
+                position_limits=self.position_limits,
+                continuous_joints=self.continuous_joints,
+            )
         except ValueError as exc:
             self.publish_status(
                 metadata['command_id'],

@@ -125,6 +125,20 @@ def test_binary_search_returns_largest_safe_scale():
     assert result.clearance >= 0.02
 
 
+@pytest.mark.parametrize(('limit', 'feasible'), [
+    (0.0562, True), (0.05, True), (0.0499, False),
+])
+def test_minimum_speed_between_last_bisection_samples(limit, feasible):
+    result = maximum_safe_scale(
+        lambda scale: limit - scale, protective_margin=0.0,
+        minimum_scale=0.05, iterations=6,
+    )
+    assert result.feasible is feasible
+    if feasible:
+        assert result.scale == 0.05
+        assert result.clearance == limit - result.scale
+
+
 def test_binary_search_detects_no_safe_scale():
     result = maximum_safe_scale(
         lambda scale: 0.01 - scale,

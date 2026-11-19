@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<!--
+  Faithful visual CAD export in the saved Inventor pose.
+  This model intentionally has one fixed link.  It does NOT claim validated
+  opening/closing kinematics.  Mesh coordinates are millimetres, converted
+  here to metres by mesh_scale=0.001.
+-->
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="gripper_instrumentado">
+  <xacro:arg name="mesh_scale" default="0.001"/>
+  <xacro:property name="mesh_scale" value="$(arg mesh_scale)"/>
+  <xacro:property name="mesh_uri" value="package://gripper_instrumentado_description/models/gripper_instrumentado/meshes/gripper_complete.stl"/>
+
+  <link name="gripper_base">
+    <!-- Aggregate CAD values only. The model is visual/static; do not use this
+         inertia for a dynamic Gazebo model until materials and body grouping
+         have been validated. -->
+    <inertial>
+      <origin xyz="-0.010155988 0.000289119 0.007553288" rpy="0 0 0"/>
+      <mass value="0.167021876"/>
+      <inertia ixx="0.000125076281" ixy="-0.000003399789" ixz="0.000000350575"
+               iyy="0.000220432356" iyz="0.000023732197" izz="0.000286119524"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="${mesh_uri}" scale="${mesh_scale} ${mesh_scale} ${mesh_scale}"/>
+      </geometry>
+      <material name="cad_default">
+        <color rgba="0.70 0.70 0.70 1.0"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="${mesh_uri}" scale="${mesh_scale} ${mesh_scale} ${mesh_scale}"/>
+      </geometry>
+    </collision>
+  </link>
+</robot>

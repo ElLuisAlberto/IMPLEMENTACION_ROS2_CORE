@@ -9,7 +9,7 @@ from unittest.mock import patch
 os.environ.setdefault('QT_QPA_PLATFORM', 'offscreen')
 from builtin_interfaces.msg import Time as TimeMessage  # noqa: E402
 from geometry_msgs.msg import TwistStamped  # noqa: E402
-from PyQt5.QtWidgets import QApplication  # noqa: E402
+from PyQt5.QtWidgets import QApplication, QLabel  # noqa: E402
 from thesis_interfaces.msg import (  # noqa: E402
     CartesianCommand,
     CartesianTrajectoryCommand,
@@ -48,8 +48,16 @@ class FakeNode:
     execution_callback = JointGuiNode.execution_callback
     execution_is_active = JointGuiNode.execution_is_active
 
-    def __init__(self):
-        self.current_positions = dict(zip(JOINT_NAMES, [0, 3.14, 3.14, 0, 0, 0]))
+    def __init__(self, robot_profile=None):
+        if robot_profile is None:
+            joint_names = JOINT_NAMES
+            positions = [0, 3.14, 3.14, 0, 0, 0]
+        else:
+            self.robot_profile = robot_profile
+            joint_names = tuple(robot_profile.joint_names)
+            positions = tuple(robot_profile.initial_positions)
+        self.joint_names = tuple(joint_names)
+        self.current_positions = dict(zip(joint_names, positions))
         self.current_velocities = {}
         self.last_command_id = 'gui_test'
         self.last_allowed_id = None
@@ -100,6 +108,36 @@ class FakeNode:
                 to_msg=lambda: TimeMessage(sec=1, nanosec=123456),
             )
         )
+
+
+def profile_fixture(profile_id, joint_count, world_frame='world'):
+    joint_names = tuple(
+        f'{profile_id}_joint_{index}'
+        for index in range(1, joint_count + 1)
+    )
+    return SimpleNamespace(
+        name=profile_id,
+        display_name=profile_id.upper(),
+        profile_id=profile_id,
+        joint_names=joint_names,
+        joint_labels=tuple(
+            f'Eje {index} / {name}'
+            for index, name in enumerate(joint_names, start=1)
+        ),
+        joint_position_limits={
+            name: (-float(index), float(index + 1))
+            for index, name in enumerate(joint_names, start=1)
+        },
+        joint_velocity_limits={
+            name: math.radians(10.0 + index)
+            for index, name in enumerate(joint_names, start=1)
+        },
+        continuous_joints=frozenset((joint_names[0],)),
+        initial_positions=tuple(0.0 for _ in joint_names),
+        world_frame=world_frame,
+        base_link=f'{profile_id}_base',
+        tip_link=f'{profile_id}_tool',
+    )
 
 
 def execution(command_id='gui_test', status='ACCEPTED'):
@@ -192,9 +230,13 @@ class GuiStateTests(unittest.TestCase):
 
         self.window.wheel_intentions[0].add(time.monotonic(), 1.0)
         self.window.begin_deliberate_jog_input()
+        command_id = self.window.jog_command_id
+        self.window.wheel_intentions[0].add(time.monotonic(), 1.0)
+        self.window.begin_deliberate_jog_input()
+        self.assertEqual(self.window.jog_command_id, command_id)
         self.window.publish_jog_intent()
         message = self.node.jog_intent_publisher.messages[-1]
-        self.assertTrue(message.command_id.startswith('jog-'))
+        self.assertEqual(message.command_id, command_id)
         self.assertNotEqual(
             message.positions[0], self.node.current_positions[JOINT_NAMES[0]]
         )
@@ -307,17 +349,31 @@ class GuiStateTests(unittest.TestCase):
             self.window.cartesian_trajectory_send_button.isEnabled()
         )
 
-    def test_manual_control_is_split_into_joint_and_cartesian_tabs(self):
-        self.assertIsNotNone(self.window.manual_control_tabs)
-        self.assertEqual(self.window.manual_control_tabs.count(), 2)
-        self.assertEqual(self.window.manual_control_tabs.tabText(0), 'Joints')
-        self.assertIn(
-            'X/Y/Z', self.window.manual_control_tabs.tabText(1)
+    def test_manual_control_exposes_joint_and_cartesian_panels(self):
+        self.assertIsNone(self.window.manual_control_tabs)
+        self.assertEqual(
+            self.window.manual_joint_panel.title(),
+            'Manual articular · Joints',
         )
+        self.assertEqual(
+            self.window.manual_cartesian_panel.title(),
+            'Manual cartesiano · XYZ + orientación',
+        )
+        self.assertEqual(self.window.manual_subviews.count(), 3)
+        self.assertIs(self.window.manual_subviews.widget(1), self.window.manual_joint_panel)
+        self.assertIs(self.window.manual_subviews.widget(2), self.window.manual_cartesian_panel)
+        self.assertEqual(len(self.window.jog_sliders), 6)
         self.assertEqual(len(self.window.cartesian_jog_sliders), 6)
         self.assertEqual(len(self.window.cartesian_jog_speed_inputs), 6)
 
-    def test_hardware_mode_exposes_cartesian_tab_but_requires_arm_epoch(self):
+        self.window.jog_mode_button.setChecked(True)
+        self.assertTrue(self.window.jog_mode_button.isChecked())
+        self.assertFalse(self.window.cartesian_jog_mode_button.isChecked())
+        self.window.cartesian_jog_mode_button.setChecked(True)
+        self.assertFalse(self.window.jog_mode_button.isChecked())
+        self.assertTrue(self.window.cartesian_jog_mode_button.isChecked())
+
+    def test_hardware_mode_exposes_cartesian_panel_but_requires_arm_epoch(self):
         node = FakeNode()
         node.operation_mode = 'hardware'
         window = JointControlWindow(node)
@@ -327,7 +383,8 @@ class GuiStateTests(unittest.TestCase):
         ):
             timer.stop()
         try:
-            self.assertEqual(window.manual_control_tabs.count(), 2)
+            self.assertIsNotNone(window.manual_joint_panel)
+            self.assertIsNotNone(window.manual_cartesian_panel)
             with patch('thesis_ui.joint_control_gui.QMessageBox.warning'):
                 window.cartesian_jog_mode_button.setChecked(True)
             self.assertFalse(window.cartesian_jog_mode_button.isChecked())
@@ -525,6 +582,109 @@ class GuiStateTests(unittest.TestCase):
         self.assertIn('JACO2 USB conectado', self.window.connection_indicators)
 
 
+class ProfileDrivenGuiTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.app = QApplication.instance() or QApplication([])
+
+    @staticmethod
+    def stop_timers(window):
+        for timer in (
+            window.ros_timer,
+            window.ui_timer,
+            window.preview_timer,
+            window.jog_timer,
+        ):
+            timer.stop()
+
+    def test_five_axis_profile_builds_five_rows_with_profile_limits(self):
+        profile = profile_fixture('p3020', 5, 'p3020_world')
+        node = FakeNode(profile)
+        window = JointControlWindow(node, robot_profile=profile)
+        self.stop_timers(window)
+        try:
+            window.refresh_ui()
+            self.assertEqual(window.joint_names, profile.joint_names)
+            self.assertEqual(len(window.target_inputs), 5)
+            self.assertEqual(len(window.jog_speed_inputs), 5)
+            self.assertEqual(window.velocity_table.rowCount(), 5)
+            self.assertIn('P3020', window.windowTitle())
+            self.assertIn(
+                '5 ejes', window.findChild(QLabel, 'safetyBanner').text()
+            )
+            labels = {label.text() for label in window.findChildren(QLabel)}
+            self.assertTrue(set(profile.joint_labels).issubset(labels))
+            for index, target_input in enumerate(window.target_inputs):
+                lower, upper = profile.joint_position_limits[
+                    profile.joint_names[index]
+                ]
+                self.assertAlmostEqual(
+                    target_input.minimum(), math.degrees(lower), places=2
+                )
+                self.assertAlmostEqual(
+                    target_input.maximum(), math.degrees(upper), places=2
+                )
+                expected_speed = math.degrees(
+                    profile.joint_velocity_limits[profile.joint_names[index]]
+                )
+                self.assertAlmostEqual(
+                    window.jog_speed_inputs[index].maximum(),
+                    expected_speed,
+                    places=1,
+                )
+        finally:
+            window.deleteLater()
+
+    def test_six_axis_profile_uses_profile_frame_for_cartesian_messages(self):
+        profile = profile_fixture('ur17g', 6, 'ur17g_world')
+        node = FakeNode(profile)
+        window = JointControlWindow(node, robot_profile=profile)
+        self.stop_timers(window)
+        try:
+            self.assertEqual(len(window.target_inputs), 6)
+            node.publish_cartesian_candidate((0.0,) * 6, 1.0)
+            node.publish_cartesian_jog((0.0,) * 3, (0.0,) * 3)
+            node.publish_cartesian_trajectory(
+                'RELATIVE', (0.0,) * 6, 0.04, math.radians(10.0)
+            )
+            self.assertEqual(
+                node.cartesian_candidate_publisher.messages[-1].frame_id,
+                profile.world_frame,
+            )
+            self.assertEqual(
+                node.cartesian_jog_publisher.messages[-1].header.frame_id,
+                profile.world_frame,
+            )
+            self.assertEqual(
+                node.cartesian_trajectory_publisher.messages[-1].frame_id,
+                profile.world_frame,
+            )
+        finally:
+            window.deleteLater()
+
+    def test_non_jaco2_hardware_profile_fails_closed(self):
+        profile = profile_fixture('ur17g', 6)
+        node = FakeNode(profile)
+        node.operation_mode = 'hardware'
+        with self.assertRaisesRegex(ValueError, 'only for the JACO2'):
+            JointControlWindow(node, robot_profile=profile)
+
+    def test_default_profile_uses_cartesian_ready_jaco2_pose(self):
+        node = FakeNode()
+        window = JointControlWindow(node)
+        self.stop_timers(window)
+        try:
+            self.assertEqual(window.joint_names, JOINT_NAMES)
+            self.assertEqual(len(window.target_inputs), 6)
+            self.assertEqual(
+                tuple(item.value() for item in window.target_inputs),
+                (-45.0, 160.0, 200.0, 0.0, 15.0, 0.0),
+            )
+            self.assertIn('JACO2', window.windowTitle())
+        finally:
+            window.deleteLater()
+
+
 class CartesianAdapterCallbackTests(unittest.TestCase):
 
     @staticmethod
@@ -718,13 +878,16 @@ class CartesianAdapterCallbackTests(unittest.TestCase):
         self.assertEqual(tuple(output.messages[-1].positions), current)
 
         node.current_world_transform = self._identity
+        node.last_warning_at = None
         with patch.object(
                 cartesian_jog_adapter, 'solve_inverse_kinematics_transform',
                 return_value=SimpleNamespace(success=False, positions=current,
                                              position_error_m=1.0,
-                                             orientation_error_rad=1.0)):
+                                             orientation_error_rad=1.0,
+                                             detail='singular configuration')):
             CartesianJogAdapter.receive_twist(node, message)
         self.assertEqual(tuple(output.messages[-1].positions), current)
+        self.assertIn('singular configuration', warnings[-1])
 
         count = len(output.messages)
         message.header.frame_id = 'map'

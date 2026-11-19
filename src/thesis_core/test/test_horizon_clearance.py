@@ -3,7 +3,10 @@
 import pytest
 
 from thesis_core.clearance_geometry import minimum_configuration_clearance
-from thesis_core.horizon_clearance import evaluate_capsule_horizon
+from thesis_core.horizon_clearance import (
+    evaluate_capsule_horizon,
+    evaluate_joint_horizon,
+)
 
 
 NAMES = tuple(f'segment_{index}' for index in range(6))
@@ -109,3 +112,30 @@ def test_fast_horizon_matches_canonical_geometry_for_every_sample():
     assert result.minimum.closest_robot_point == pytest.approx(
         expected.closest_robot_point, abs=1.0e-12
     )
+
+
+def test_joint_horizon_accepts_profile_geometry():
+    def capsule_function(configuration):
+        return (
+            ((0.0, 0.0, 0.0), (configuration[0], 0.0, 0.0)),
+            (
+                (configuration[0], 0.0, 0.0),
+                (configuration[1], 0.0, 0.0),
+            ),
+        )
+
+    result = evaluate_joint_horizon(
+        ((0.0,) * 5, (0.2, 0.4, 0.0, 0.0, 0.0)),
+        (0.0, 1.0),
+        (1.0, 0.0, 0.0),
+        (0.0, 0.0, 0.0),
+        0.05,
+        capsule_radii=(0.10, 0.05),
+        segment_names=('base', 'arm'),
+        capsule_function=capsule_function,
+        joint_count=5,
+    )
+
+    assert result.sample_count == 2
+    assert result.evaluated_combinations == 4
+    assert result.minimum.segment_name in {'base', 'arm'}

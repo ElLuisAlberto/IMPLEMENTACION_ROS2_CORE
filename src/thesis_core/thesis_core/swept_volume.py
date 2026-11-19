@@ -1,16 +1,26 @@
-"""Deterministic construction of inflated JACO2 swept capsules."""
+"""
+Deterministically construct inflated swept capsules.
+
+The legacy JACO2 kinematics remain the default model.  Callers may provide a
+different joint count, capsule radii and segment function without changing the
+sampling or visualization contract.
+"""
 
 from __future__ import annotations
 
 import math
 from dataclasses import dataclass
-from typing import Sequence, Tuple, cast
+from typing import Callable, Sequence, Tuple, cast
 
 from thesis_core.jaco_kinematics import CAPSULE_RADII, capsule_segments
 
 
 Point3 = Tuple[float, float, float]
-JointConfiguration = Tuple[float, float, float, float, float, float]
+JointConfiguration = Tuple[float, ...]
+CapsuleSegment = Tuple[Sequence[float], Sequence[float]]
+CapsuleSegments = Callable[
+    [Sequence[float]], Sequence[CapsuleSegment]
+]
 
 
 @dataclass(frozen=True)
@@ -44,9 +54,13 @@ def _finite_point(values: Sequence[float], name: str) -> Point3:
     return cast(Point3, result)
 
 
-def _configuration(values: Sequence[float]) -> JointConfiguration:
-    if len(values) != 6:
-        raise ValueError('each configuration must contain six joints')
+def _configuration(
+    values: Sequence[float], expected_count: int,
+) -> JointConfiguration:
+    if len(values) != expected_count:
+        raise ValueError(
+            'all configurations must use the model joint count'
+        )
     result = tuple(float(value) for value in values)
     if not all(math.isfinite(value) for value in result):
         raise ValueError('configuration contains a non-finite value')
@@ -79,8 +93,18 @@ def build_swept_volume(
     configurations: Sequence[Sequence[float]],
     margin: float,
     maximum_spacing: float,
+    capsule_radii: Sequence[float] = CAPSULE_RADII,
+    segment_function: CapsuleSegments = capsule_segments,
+    joint_count: int | None = None,
 ) -> SweptVolume:
-    """Return the union samples of six inflated capsules over time."""
+    """
+    Return the union samples of inflated model capsules over time.
+
+    ``capsule_radii`` and ``segment_function`` define the collision model.
+    Their defaults reproduce the historical six-axis JACO2 result exactly.
+    ``joint_count`` is inferred from the first configuration unless supplied,
+    which allows five- and seven-axis profiles while rejecting mixed vectors.
+    """
     if not configurations:
         raise ValueError('at least one configuration is required')
     inflated_margin = float(margin)
@@ -90,10 +114,28 @@ def build_swept_volume(
     if not math.isfinite(spacing) or spacing <= 0.0:
         raise ValueError('maximum_spacing must be positive and finite')
 
+    radii = tuple(float(radius) for radius in capsule_radii)
+    if (
+        not radii
+        or not all(math.isfinite(radius) and radius >= 0.0
+                   for radius in radii)
+    ):
+        raise ValueError(
+            'capsule_radii must contain finite non-negative values'
+        )
+    model_joint_count = (
+        len(configurations[0]) if joint_count is None else int(joint_count)
+    )
+    if model_joint_count <= 0:
+        raise ValueError('joint_count must be greater than zero')
+    if not callable(segment_function):
+        raise TypeError('segment_function must be callable')
+
     temporal_samples = []
     for configuration in configurations:
-        segments = capsule_segments(_configuration(configuration))
-        if len(segments) != len(CAPSULE_RADII):
+        positions = _configuration(configuration, model_joint_count)
+        segments = tuple(segment_function(positions))
+        if len(segments) != len(radii):
             raise ValueError('kinematics and capsule radii size mismatch')
         axes = tuple(
             CapsuleAxis(
@@ -102,14 +144,14 @@ def build_swept_volume(
                 radius=float(radius) + inflated_margin,
                 points=sample_capsule_axis(start, end, spacing),
             )
-            for (start, end), radius in zip(segments, CAPSULE_RADII)
+            for (start, end), radius in zip(segments, radii)
         )
         temporal_samples.append(axes)
 
     samples = tuple(temporal_samples)
     predicted_points = []
     endpoint_traces = []
-    for segment_index in range(len(CAPSULE_RADII)):
+    for segment_index in range(len(radii)):
         unique = {}
         trace = []
         for sample in samples:

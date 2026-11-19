@@ -1,0 +1,143 @@
+<sdf version="1.8">
+  <world name="jaco_world">
+    <physics name="1ms" type="ignored">
+      <max_step_size>0.001</max_step_size>
+      <real_time_factor>1.0</real_time_factor>
+    </physics>
+    <gravity>0 0 -9.81</gravity>
+    <plugin filename="libignition-gazebo-physics-system.so" name="ignition::gazebo::systems::Physics">
+    </plugin>
+    <plugin filename="libignition-gazebo-user-commands-system.so" name="ignition::gazebo::systems::UserCommands">
+    </plugin>
+    <plugin filename="libignition-gazebo-scene-broadcaster-system.so" name="ignition::gazebo::systems::SceneBroadcaster">
+    </plugin>
+    <light type="directional" name="sun">
+      <pose>0 0 10 0 0 0</pose>
+      <cast_shadows>true</cast_shadows>
+      <diffuse>0.8 0.8 0.8 1</diffuse>
+      <specular>0.2 0.2 0.2 1</specular>
+      <direction>-0.5 0.1 -0.9</direction>
+    </light>
+    <model name="jaco_work_table">
+      <static>true</static>
+      <link name="table_link">
+        <collision name="tabletop_collision">
+          <pose>0 0 0.73 0 0 0</pose>
+          <geometry>
+            <box>
+              <size>1.60 1.00 0.04</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="tabletop_visual">
+          <pose>0 0 0.73 0 0 0</pose>
+          <geometry>
+            <box>
+              <size>1.60 1.00 0.04</size>
+            </box>
+          </geometry>
+          <material>
+            <diffuse>0.34 0.20 0.10 1</diffuse>
+          </material>
+        </visual>
+        <visual name="leg_1_visual">
+          <pose>-0.72 -0.42 0.355 0 0 0</pose>
+          <geometry>
+            <box>
+              <size>0.06 0.06 0.71</size>
+            </box>
+          </geometry>
+          <material>
+            <diffuse>0.47 0.34 0.22 1</diffuse>
+          </material>
+        </visual>
+        <collision name="leg_1_collision">
+          <pose>-0.72 -0.42 0.355 0 0 0</pose>
+          <geometry>
+            <box>
+              <size>0.06 0.06 0.71</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="leg_2_visual">
+          <pose>-0.72 0.42 0.355 0 0 0</pose>
+          <geometry>
+            <box>
+              <size>0.06 0.06 0.71</size>
+            </box>
+          </geometry>
+          <material>
+            <diffuse>0.47 0.34 0.22 1</diffuse>
+          </material>
+        </visual>
+        <collision name="leg_2_collision">
+          <pose>-0.72 0.42 0.355 0 0 0</pose>
+          <geometry>
+            <box>
+              <size>0.06 0.06 0.71</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="leg_3_visual">
+          <pose>0.72 -0.42 0.355 0 0 0</pose>
+          <geometry>
+            <box>
+              <size>0.06 0.06 0.71</size>
+            </box>
+          </geometry>
+          <material>
+            <diffuse>0.47 0.34 0.22 1</diffuse>
+          </material>
+        </visual>
+        <collision name="leg_3_collision">
+          <pose>0.72 -0.42 0.355 0 0 0</pose>
+          <geometry>
+            <box>
+              <size>0.06 0.06 0.71</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="leg_4_visual">
+          <pose>0.72 0.42 0.355 0 0 0</pose>
+          <geometry>
+            <box>
+              <size>0.06 0.06 0.71</size>
+            </box>
+          </geometry>
+          <material>
+            <diffuse>0.47 0.34 0.22 1</diffuse>
+          </material>
+        </visual>
+        <collision name="leg_4_collision">
+          <pose>0.72 0.42 0.355 0 0 0</pose>
+          <geometry>
+            <box>
+              <size>0.06 0.06 0.71</size>
+            </box>
+          </geometry>
+        </collision>
+      </link>
+    </model>
+    <model name="ground_plane">
+      <static>true</static>
+      <link name="ground_link">
+        <collision name="ground_collision">
+          <geometry>
+            <plane>
+              <normal>0 0 1</normal>
+              <size>10 10</size>
+            </plane>
+          </geometry>
+        </collision>
+        <visual name="ground_visual">
+          <geometry>
+            <plane>
+              <normal>0 0 1</normal>
+              <size>10 10</size>
+            </plane>
+          </geometry>
+        </visual>
+      </link>
+    </model>
+  </world>
+</sdf>

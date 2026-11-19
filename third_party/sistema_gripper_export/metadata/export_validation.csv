@@ -1,0 +1,6 @@
+artifact,status,detail
+sistema_gripper_instrumentado.step,pass,Exported directly from the system Inventor assembly
+sistema_gripper_instrumentado.stl,pass,Exported directly from the system Inventor assembly with ExportUnits=5 mm and Resolution=4 high
+sistema_gripper_instrumentado.glb,pass,Exported directly from the system Inventor assembly using Autodesk glTF exporter
+ros2_package,pass,Contains CMake package URDF/Xacro Gazebo model world and launch files
+simulation_runtime,not_run,ROS 2 and Gazebo Sim are not installed in the CAD workstation

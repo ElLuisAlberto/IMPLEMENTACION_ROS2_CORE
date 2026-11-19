@@ -4,11 +4,12 @@ import os
 
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument
+from launch.actions import DeclareLaunchArgument, OpaqueFunction
 from launch.conditions import IfCondition
 from launch.substitutions import (
     Command,
     EnvironmentVariable,
+    PythonExpression,
     LaunchConfiguration,
 )
 from launch_ros.actions import Node
@@ -71,7 +72,61 @@ def generate_launch_description():
         )
     }
 
+    virtual_table = LaunchConfiguration('virtual_workstation')
+    def preset(virtual, normal):
+        return PythonExpression([repr(virtual), " if '", virtual_table,
+                                 "'.lower() == 'true' else ", repr(normal)])
+
+    table_parameters = {
+        'table_enabled': ParameterValue(virtual_table, value_type=bool),
+        # Physical world is at the arm base, i.e. at the virtual tabletop.
+        'table_center': [0.0, 0.0, -0.02],
+    }
+    def demo_source(context):
+        radius_override = {}
+        if (virtual_table.perform(context) == 'true' and
+                LaunchConfiguration('demo_obstacle_scenario').perform(context).upper() == 'FIXED'):
+            radius_override['radius'] = 0.12
+        return [Node(
+            package='thesis_core',
+            executable='obstacle_demo_source',
+            name='obstacle_demo_source',
+            output='screen',
+            condition=IfCondition(use_demo_obstacle),
+            parameters=[
+                obstacle_scenario_config,
+                radius_override,
+                {
+                    'use_sim_time': False,
+                    'topic': obstacle_input_topic,
+                    'scenario': LaunchConfiguration(
+                        'demo_obstacle_scenario'
+                    ),
+                    'insert_stop_active': ParameterValue(
+                        LaunchConfiguration('demo_insert_stop_active'),
+                        value_type=bool,
+                    ),
+                    # Retained for FIXED compatibility with older launches.
+                    'x': ParameterValue(
+                        LaunchConfiguration('demo_obstacle_x'),
+                        value_type=float,
+                    ),
+                    'y': ParameterValue(
+                        LaunchConfiguration('demo_obstacle_y'),
+                        value_type=float,
+                    ),
+                    'z': ParameterValue(
+                        LaunchConfiguration('demo_obstacle_z'),
+                        value_type=float,
+                    ),
+                },
+            ],
+        )]
+
     declarations = [
+        DeclareLaunchArgument('virtual_workstation', default_value='false',
+                              choices=('true', 'false'),
+                              description='Use the base-relative virtual table and demo sphere.'),
         DeclareLaunchArgument(
             'mock_hardware',
             default_value='false',
@@ -111,7 +166,7 @@ def generate_launch_description():
         ),
         DeclareLaunchArgument(
             'use_demo_obstacle',
-            default_value='false',
+            default_value=preset('true', 'false'),
             description=(
                 'Publish a synthetic obstacle. Use only for offline/bench '
                 'tests.'
@@ -119,7 +174,7 @@ def generate_launch_description():
         ),
         DeclareLaunchArgument(
             'demo_obstacle_x',
-            default_value='2.0',
+            default_value=preset('0.60', '2.0'),
             description='Synthetic test obstacle X coordinate in metres.',
         ),
         DeclareLaunchArgument(
@@ -129,12 +184,12 @@ def generate_launch_description():
         ),
         DeclareLaunchArgument(
             'demo_obstacle_z',
-            default_value='0.65',
+            default_value=preset('0.52', '0.65'),
             description='Synthetic test obstacle Z coordinate in metres.',
         ),
         DeclareLaunchArgument(
             'demo_obstacle_scenario',
-            default_value='PARK',
+            default_value=preset('FIXED', 'PARK'),
             description='FIXED, PARK, BLOCK_START or INSERT_STOP.',
         ),
         DeclareLaunchArgument(
@@ -252,40 +307,7 @@ def generate_launch_description():
                 'max_age_sec': 0.5,
             }],
         ),
-        Node(
-            package='thesis_core',
-            executable='obstacle_demo_source',
-            name='obstacle_demo_source',
-            output='screen',
-            condition=IfCondition(use_demo_obstacle),
-            parameters=[
-                obstacle_scenario_config,
-                {
-                    'use_sim_time': False,
-                    'topic': obstacle_input_topic,
-                    'scenario': LaunchConfiguration(
-                        'demo_obstacle_scenario'
-                    ),
-                    'insert_stop_active': ParameterValue(
-                        LaunchConfiguration('demo_insert_stop_active'),
-                        value_type=bool,
-                    ),
-                    # Retained for FIXED compatibility with older launches.
-                    'x': ParameterValue(
-                        LaunchConfiguration('demo_obstacle_x'),
-                        value_type=float,
-                    ),
-                    'y': ParameterValue(
-                        LaunchConfiguration('demo_obstacle_y'),
-                        value_type=float,
-                    ),
-                    'z': ParameterValue(
-                        LaunchConfiguration('demo_obstacle_z'),
-                        value_type=float,
-                    ),
-                },
-            ],
-        ),
+        OpaqueFunction(function=demo_source),
         Node(
             package='thesis_core',
             executable='proximity_monitor',
@@ -293,6 +315,7 @@ def generate_launch_description():
             output='screen',
             parameters=[
                 capsule_config,
+                table_parameters,
                 {
                     'use_sim_time': False,
                     'obstacle_source_mode': 'topic',
@@ -306,7 +329,7 @@ def generate_launch_description():
             executable='safety_supervisor',
             name='safety_supervisor_node',
             output='screen',
-            parameters=[{
+            parameters=[table_parameters, {
                 'use_sim_time': False,
                 'require_proximity_status': True,
                 'runtime_recovery_required_samples': 5,

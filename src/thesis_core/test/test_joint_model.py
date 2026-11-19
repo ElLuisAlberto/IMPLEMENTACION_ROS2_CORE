@@ -110,3 +110,25 @@ def test_operational_limits_are_exactly_18_and_24_degrees_per_second():
         math.degrees(JOINT_VELOCITY_LIMITS[name]) for name in JOINT_NAMES
     ]
     assert actual == pytest.approx(expected)
+
+
+def test_velocity_saturation_accepts_five_axis_profile():
+    names = tuple(f'axis_{index}' for index in range(5))
+    limits = {name: (-1.0, 1.0) for name in names}
+    velocities = {name: 0.25 for name in names}
+
+    result = saturate_target_by_velocity(
+        (0.0,) * 5,
+        (0.5, -0.5, 0.1, 0.0, 0.0),
+        1.0,
+        joint_names=names,
+        position_limits=limits,
+        velocity_limits=velocities,
+        continuous_joints=(),
+    )
+
+    assert result.positions == pytest.approx(
+        (0.25, -0.25, 0.1, 0.0, 0.0)
+    )
+    assert result.limiting_joint == names[0]
+    assert result.was_limited

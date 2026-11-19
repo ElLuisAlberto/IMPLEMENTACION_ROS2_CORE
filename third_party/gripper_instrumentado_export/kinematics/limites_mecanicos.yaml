@@ -1,0 +1,44 @@
+schema_version: 1
+status: upstream_reference_pending_local_validation
+source:
+  project: PincOpen
+  repository: https://github.com/pollen-robotics/PincOpen
+  file: flash_and_tests/flash_test.ipynb
+  upstream_commit: 1b5a3dc83cb4eae042d535bda3765b9e12a9b8a7
+
+servo:
+  model: Feetech STS3215
+  id_upstream: 6
+  baudrate_upstream: 1000000
+  coordinate_convention: upstream_pypot_degrees
+  hard_limit_min_deg_upstream: -147.0
+  hard_limit_max_deg_upstream: 0.0
+  nominal_open_deg_upstream: -140.0
+  nominal_closed_deg_upstream: 0.0
+  local_encoder_offset_deg: TBD_CALIBRATE
+  locally_validated: false
+
+gripper:
+  minimum_opening_m: TBD_MEASURE
+  maximum_opening_m: TBD_MEASURE
+  tcp_at_open_xyz_m: [TBD_MEASURE, TBD_MEASURE, TBD_MEASURE]
+  tcp_at_closed_xyz_m: [TBD_MEASURE, TBD_MEASURE, TBD_MEASURE]
+  collision_free_servo_min_deg: TBD_VALIDATE
+  collision_free_servo_max_deg: TBD_VALIDATE
+  safety_margin_deg: TBD_DEFINE
+
+warnings:
+  - Los limites upstream no sustituyen una prueba de interferencia del ensamble local.
+  - La relacion entre angulo del servo y apertura no debe suponerse lineal.
+  - Los parametros de proteccion de par del notebook upstream presentan comentarios inconsistentes con el codigo y deben validarse por separado.
+
+local_cad_audit:
+  source_assembly: GRIPPER_ADAPTATIVO_INSTRUMENTADO.iam
+  pose_exported: current_saved_cad_pose
+  source_constraints:
+    up_to_date: 142
+    driver_lost: 7
+  local_motion_sampling: blocked_pending_constraint_repair
+  note: >-
+    Los limites upstream se conservan solo como referencia historica. No deben
+    usarse en URDF, ros2_control ni Gazebo hasta una validacion local.

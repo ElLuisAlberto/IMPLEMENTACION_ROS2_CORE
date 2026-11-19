@@ -1,0 +1,135 @@
+[INFO] [launch]: All log files can be found below /tmp/thesis_gui_validate_de7666ys/ros_logs/2026-11-07-15-08-54-584384-miNave-125339
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [ign-1]: process started with pid [125340]
+[INFO] [parameter_bridge-2]: process started with pid [125342]
+[INFO] [robot_state_publisher-3]: process started with pid [125344]
+[INFO] [profile_supervisor-4]: process started with pid [125346]
+[INFO] [demo_obstacle-5]: process started with pid [125348]
+[INFO] [create-6]: process started with pid [125350]
+[robot_state_publisher-3] [INFO] [1794035334.879445627] [ur17g.robot_state_publisher]: got segment ur17g_base
+[robot_state_publisher-3] [INFO] [1794035334.879524717] [ur17g.robot_state_publisher]: got segment ur17g_base_link
+[robot_state_publisher-3] [INFO] [1794035334.879531747] [ur17g.robot_state_publisher]: got segment ur17g_base_link_inertia
+[robot_state_publisher-3] [INFO] [1794035334.879536683] [ur17g.robot_state_publisher]: got segment ur17g_flange
+[robot_state_publisher-3] [INFO] [1794035334.879541186] [ur17g.robot_state_publisher]: got segment ur17g_forearm_link
+[robot_state_publisher-3] [INFO] [1794035334.879545448] [ur17g.robot_state_publisher]: got segment ur17g_ft_frame
+[robot_state_publisher-3] [INFO] [1794035334.879549723] [ur17g.robot_state_publisher]: got segment ur17g_shoulder_link
+[robot_state_publisher-3] [INFO] [1794035334.879554145] [ur17g.robot_state_publisher]: got segment ur17g_smart_panel
+[robot_state_publisher-3] [INFO] [1794035334.879558551] [ur17g.robot_state_publisher]: got segment ur17g_tool0
+[robot_state_publisher-3] [INFO] [1794035334.879562874] [ur17g.robot_state_publisher]: got segment ur17g_upper_arm_link
+[robot_state_publisher-3] [INFO] [1794035334.879567392] [ur17g.robot_state_publisher]: got segment ur17g_wrist_1_link
+[robot_state_publisher-3] [INFO] [1794035334.879571642] [ur17g.robot_state_publisher]: got segment ur17g_wrist_2_link
+[robot_state_publisher-3] [INFO] [1794035334.879575805] [ur17g.robot_state_publisher]: got segment ur17g_wrist_3_link
+[robot_state_publisher-3] [INFO] [1794035334.879579921] [ur17g.robot_state_publisher]: got segment world
+[parameter_bridge-2] [INFO] [1794035334.910145600] [cell_clock]: Creating GZ->ROS Bridge: [/clock (ignition.msgs.Clock) -> /clock (rosgraph_msgs/msg/Clock)] (Lazy 0)
+[create-6] [INFO] [1794035335.235918183] [spawn_ur17g]: Requested creation of entity.
+[create-6] [INFO] [1794035335.236026927] [spawn_ur17g]: OK creation of entity.
+[INFO] [create-6]: process has finished cleanly [pid 125350]
+[INFO] [spawner-7]: process started with pid [125434]
+[spawner-7] [INFO] [1794035335.511584420] [ur17g.spawner_joint_state_broadcaster]: waiting for service /ur17g/controller_manager/list_controllers to become available...
+[ign-1] [INFO] [1794035337.041034926] [GazeboSimROS2ControlPlugin]: robot_param_node is robot_state_publisher
+[ign-1] [INFO] [1794035337.041058857] [GazeboSimROS2ControlPlugin]: robot_param_node is robot_description
+[ign-1] [INFO] [1794035337.397559624] [ur17g.gz_ros2_control]: connected to service!! /ur17g/robot_state_publisher asking for robot_description
+[ign-1] [INFO] [1794035337.397929910] [ur17g.gz_ros2_control]: Received URDF from param server
+[ign-1] [INFO] [1794035337.398419353] [ur17g.gz_ros2_control]: [gz_ros2_control] Fixed joint ['ur17g_world_mount'] (Entity='34') is skipped.
+[ign-1] [INFO] [1794035337.400717992] [ur17g.gz_ros2_control]: The position_proportional_gain has been set to: 0.1
+[ign-1] [INFO] [1794035337.400758225] [ur17g.gz_ros2_control]: Loading joint: ur17g_shoulder_pan_joint
+[ign-1] [INFO] [1794035337.400767612] [ur17g.gz_ros2_control]: 	State:
+[ign-1] [INFO] [1794035337.400774423] [ur17g.gz_ros2_control]: 		 position
+[ign-1] [INFO] [1794035337.400782409] [ur17g.gz_ros2_control]: 			 found initial value: 0.000000
+[ign-1] [INFO] [1794035337.400790509] [ur17g.gz_ros2_control]: 		 velocity
+[ign-1] [INFO] [1794035337.400796843] [ur17g.gz_ros2_control]: 	Command:
+[ign-1] [INFO] [1794035337.400802570] [ur17g.gz_ros2_control]: 		 position
+[ign-1] [INFO] [1794035337.400813286] [ur17g.gz_ros2_control]: Loading joint: ur17g_shoulder_lift_joint
+[ign-1] [INFO] [1794035337.400817720] [ur17g.gz_ros2_control]: 	State:
+[ign-1] [INFO] [1794035337.400821101] [ur17g.gz_ros2_control]: 		 position
+[ign-1] [INFO] [1794035337.400824972] [ur17g.gz_ros2_control]: 			 found initial value: -1.570000
+[ign-1] [INFO] [1794035337.400828993] [ur17g.gz_ros2_control]: 		 velocity
+[ign-1] [INFO] [1794035337.400832352] [ur17g.gz_ros2_control]: 	Command:
+[ign-1] [INFO] [1794035337.400835532] [ur17g.gz_ros2_control]: 		 position
+[ign-1] [INFO] [1794035337.400841964] [ur17g.gz_ros2_control]: Loading joint: ur17g_elbow_joint
+[ign-1] [INFO] [1794035337.400845917] [ur17g.gz_ros2_control]: 	State:
+[ign-1] [INFO] [1794035337.400849180] [ur17g.gz_ros2_control]: 		 position
+[ign-1] [INFO] [1794035337.400852492] [ur17g.gz_ros2_control]: 			 found initial value: 0.000000
+[ign-1] [INFO] [1794035337.400856292] [ur17g.gz_ros2_control]: 		 velocity
+[ign-1] [INFO] [1794035337.400859511] [ur17g.gz_ros2_control]: 	Command:
+[ign-1] [INFO] [1794035337.400862678] [ur17g.gz_ros2_control]: 		 position
+[ign-1] [INFO] [1794035337.400868909] [ur17g.gz_ros2_control]: Loading joint: ur17g_wrist_1_joint
+[ign-1] [INFO] [1794035337.400872659] [ur17g.gz_ros2_control]: 	State:
+[ign-1] [INFO] [1794035337.400875937] [ur17g.gz_ros2_control]: 		 position
+[ign-1] [INFO] [1794035337.400879120] [ur17g.gz_ros2_control]: 			 found initial value: -1.570000
+[ign-1] [INFO] [1794035337.400882874] [ur17g.gz_ros2_control]: 		 velocity
+[ign-1] [INFO] [1794035337.400886083] [ur17g.gz_ros2_control]: 	Command:
+[ign-1] [INFO] [1794035337.400889252] [ur17g.gz_ros2_control]: 		 position
+[ign-1] [INFO] [1794035337.400896367] [ur17g.gz_ros2_control]: Loading joint: ur17g_wrist_2_joint
+[ign-1] [INFO] [1794035337.400902312] [ur17g.gz_ros2_control]: 	State:
+[ign-1] [INFO] [1794035337.400907959] [ur17g.gz_ros2_control]: 		 position
+[ign-1] [INFO] [1794035337.400911973] [ur17g.gz_ros2_control]: 			 found initial value: 0.000000
+[ign-1] [INFO] [1794035337.400916610] [ur17g.gz_ros2_control]: 		 velocity
+[ign-1] [INFO] [1794035337.400920096] [ur17g.gz_ros2_control]: 	Command:
+[ign-1] [INFO] [1794035337.400923627] [ur17g.gz_ros2_control]: 		 position
+[ign-1] [INFO] [1794035337.400931691] [ur17g.gz_ros2_control]: Loading joint: ur17g_wrist_3_joint
+[ign-1] [INFO] [1794035337.400937054] [ur17g.gz_ros2_control]: 	State:
+[ign-1] [INFO] [1794035337.400940617] [ur17g.gz_ros2_control]: 		 position
+[ign-1] [INFO] [1794035337.400943637] [ur17g.gz_ros2_control]: 			 found initial value: 0.000000
+[ign-1] [INFO] [1794035337.400947651] [ur17g.gz_ros2_control]: 		 velocity
+[ign-1] [INFO] [1794035337.400950955] [ur17g.gz_ros2_control]: 	Command:
+[ign-1] [INFO] [1794035337.400954192] [ur17g.gz_ros2_control]: 		 position
+[ign-1] [INFO] [1794035337.400994718] [resource_manager]: Initialize hardware 'ur17g_system' 
+[ign-1] [INFO] [1794035337.401030797] [resource_manager]: Successful initialization of hardware 'ur17g_system'
+[ign-1] [INFO] [1794035337.401057303] [resource_manager]: 'configure' hardware 'ur17g_system' 
+[ign-1] [INFO] [1794035337.401059971] [ur17g.gz_ros2_control]: System Successfully configured!
+[ign-1] [INFO] [1794035337.401066256] [resource_manager]: Successful 'configure' of hardware 'ur17g_system'
+[ign-1] [INFO] [1794035337.401071043] [resource_manager]: 'activate' hardware 'ur17g_system' 
+[ign-1] [INFO] [1794035337.401075552] [resource_manager]: Successful 'activate' of hardware 'ur17g_system'
+[ign-1] [INFO] [1794035337.401096181] [ur17g.gz_ros2_control]: Loading controller_manager
+[ign-1] [WARN] [1794035337.421831067] [ur17g.gz_ros2_control]:  Desired controller update period (0.01 s) is slower than the gazebo simulation period (0.002 s).
+[ign-1] [INFO] [1794035337.515805862] [ur17g.controller_manager]: Loading controller 'joint_state_broadcaster'
+[spawner-7] [INFO] [1794035337.528616904] [ur17g.spawner_joint_state_broadcaster]: [94mLoaded [1mjoint_state_broadcaster[0m
+[ign-1] [INFO] [1794035337.529238481] [ur17g.controller_manager]: Configuring controller 'joint_state_broadcaster'
+[ign-1] [INFO] [1794035337.529336736] [ur17g.joint_state_broadcaster]: 'joints' or 'interfaces' parameter is empty. All available state interfaces will be published
+[spawner-7] [INFO] [1794035337.558662813] [ur17g.spawner_joint_state_broadcaster]: [92mConfigured and activated [1mjoint_state_broadcaster[0m
+[INFO] [spawner-7]: process has finished cleanly [pid 125434]
+[INFO] [spawner-8]: process started with pid [125494]
+[spawner-8] [INFO] [1794035337.862128853] [ur17g.spawner_arm_controller]: [96mSetting controller param "params_file" to "['/tmp/thesis_gui_validate_de7666ys/ur17g_controllers.yaml']" for [1marm_controller[0m
+[ign-1] [INFO] [1794035337.864398933] [ur17g.controller_manager]: Loading controller 'arm_controller'
+[ign-1] [WARN] [1794035337.871044636] [ur17g.arm_controller]: [Deprecated]: "allow_nonzero_velocity_at_trajectory_end" is set to true. The default behavior will change to false.
+[spawner-8] [INFO] [1794035337.878848366] [ur17g.spawner_arm_controller]: [94mLoaded [1marm_controller[0m
+[ign-1] [INFO] [1794035337.879560567] [ur17g.controller_manager]: Configuring controller 'arm_controller'
+[ign-1] [INFO] [1794035337.879690582] [ur17g.arm_controller]: No specific joint names are used for command interfaces. Using 'joints' parameter.
+[ign-1] [INFO] [1794035337.879707846] [ur17g.arm_controller]: Command interfaces are [position] and state interfaces are [position velocity].
+[ign-1] [INFO] [1794035337.879724051] [ur17g.arm_controller]: Using 'splines' interpolation method.
+[ign-1] [INFO] [1794035337.880292389] [ur17g.arm_controller]: Controller state will be published at 50.00 Hz.
+[ign-1] [INFO] [1794035337.881444638] [ur17g.arm_controller]: Action status changes will be monitored at 20.00 Hz.
+[spawner-8] [INFO] [1794035337.908513250] [ur17g.spawner_arm_controller]: [92mConfigured and activated [1marm_controller[0m
+[INFO] [spawner-8]: process has finished cleanly [pid 125494]
+[ign-1] [INFO] [1794035343.636943550] [ur17g.arm_controller]: Received new action goal
+[ign-1] [INFO] [1794035343.637011463] [ur17g.arm_controller]: Accepted new action goal
+[ign-1] [INFO] [1794035345.640126375] [ur17g.arm_controller]: Goal reached, success!
+[ign-1] [INFO] [1794035348.199757660] [ur17g.arm_controller]: Received new action goal
+[ign-1] [INFO] [1794035348.199794257] [ur17g.arm_controller]: Accepted new action goal
+[ign-1] [INFO] [1794035350.200066324] [ur17g.arm_controller]: Goal reached, success!
+[WARNING] [launch]: user interrupted with ctrl-c (SIGINT)
+[INFO] [demo_obstacle-5]: sending signal 'SIGINT' to process[demo_obstacle-5]
+[INFO] [profile_supervisor-4]: sending signal 'SIGINT' to process[profile_supervisor-4]
+[INFO] [robot_state_publisher-3]: sending signal 'SIGINT' to process[robot_state_publisher-3]
+[INFO] [parameter_bridge-2]: sending signal 'SIGINT' to process[parameter_bridge-2]
+[INFO] [ign-1]: sending signal 'SIGINT' to process[ign-1]
+[robot_state_publisher-3] [INFO] [1794035365.763860938] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[parameter_bridge-2] [INFO] [1794035365.764501933] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[ign-1] [INFO] [1794035365.765202420] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[ign-1] [INFO] [1794035365.765254503] [ur17g.controller_manager]: Shutdown request received....
+[ign-1] [INFO] [1794035365.765289276] [ur17g.controller_manager]: Shutting down all controllers in the controller manager.
+[ign-1] [INFO] [1794035365.765304149] [ur17g.controller_manager]: Deactivating controller 'joint_state_broadcaster'
+[ign-1] [INFO] [1794035365.765330897] [ur17g.controller_manager]: Shutting down controller 'joint_state_broadcaster'
+[ign-1] [INFO] [1794035365.765361700] [ur17g.controller_manager]: Deactivating controller 'arm_controller'
+[ign-1] [INFO] [1794035365.765391053] [ur17g.controller_manager]: Shutting down controller 'arm_controller'
+[ign-1] [INFO] [1794035365.765412467] [resource_manager]: 'deactivate' hardware 'ur17g_system' 
+[ign-1] [INFO] [1794035365.765425714] [resource_manager]: Successful 'deactivate' of hardware 'ur17g_system'
+[ign-1] [INFO] [1794035365.765429453] [resource_manager]: 'shutdown' hardware 'ur17g_system' 
+[ign-1] [INFO] [1794035365.765435216] [resource_manager]: Successful 'shutdown' of hardware 'ur17g_system'
+[ign-1] [INFO] [1794035365.765440547] [ur17g.controller_manager]: Shutting down the controller manager.
+[INFO] [parameter_bridge-2]: process has finished cleanly [pid 125342]
+[INFO] [robot_state_publisher-3]: process has finished cleanly [pid 125344]
+[INFO] [demo_obstacle-5]: process has finished cleanly [pid 125348]
+[INFO] [ign-1]: process has finished cleanly [pid 125340]
+[INFO] [profile_supervisor-4]: process has finished cleanly [pid 125346]

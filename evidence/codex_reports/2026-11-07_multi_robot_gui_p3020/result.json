@@ -1,0 +1,30 @@
+{
+  "domain": 98,
+  "robot": "p3020",
+  "runtime": "/tmp/thesis_gui_validate_8a1qqqfv",
+  "checks": [
+    "GUI backend discovered 1 fresh profile(s) in ALLOW",
+    "all profile controllers are active",
+    "p3020: GUI candidate routed only to selected profile and returned",
+    "Qt entry point stayed alive offscreen with the runtime manifest"
+  ],
+  "pass": true,
+  "dofs": {
+    "p3020": 5
+  },
+  "node_diagnostics": {
+    "p3020": {
+      "use_sim_time": true,
+      "clock_nanoseconds": 20176000000,
+      "input_counts": {
+        "joint_state": 2015,
+        "proximity": 201,
+        "decision": 4
+      },
+      "input_errors": {
+        "joint_state": "",
+        "proximity": ""
+      }
+    }
+  }
+}

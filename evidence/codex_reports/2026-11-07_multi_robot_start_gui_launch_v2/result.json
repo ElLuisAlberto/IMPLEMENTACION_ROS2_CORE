@@ -1,0 +1,10 @@
+{
+  "pass": true,
+  "robot": "ur17g",
+  "start_gui": true,
+  "qt_platform": "offscreen",
+  "joint_state_broadcaster_active": true,
+  "arm_controller_active": true,
+  "gui_clean_shutdown": true,
+  "residual_processes": false
+}

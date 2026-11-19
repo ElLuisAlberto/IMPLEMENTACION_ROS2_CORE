@@ -1,0 +1,30 @@
+{
+  "domain": 96,
+  "robot": "ur17g",
+  "runtime": "/tmp/thesis_gui_validate_de7666ys",
+  "checks": [
+    "GUI backend discovered 1 fresh profile(s) in ALLOW",
+    "all profile controllers are active",
+    "ur17g: GUI candidate routed only to selected profile and returned",
+    "Qt entry point stayed alive offscreen with the runtime manifest"
+  ],
+  "pass": true,
+  "dofs": {
+    "ur17g": 6
+  },
+  "node_diagnostics": {
+    "ur17g": {
+      "use_sim_time": true,
+      "clock_nanoseconds": 20334000000,
+      "input_counts": {
+        "joint_state": 2020,
+        "proximity": 203,
+        "decision": 4
+      },
+      "input_errors": {
+        "joint_state": "",
+        "proximity": ""
+      }
+    }
+  }
+}

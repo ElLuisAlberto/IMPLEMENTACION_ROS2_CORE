@@ -25,6 +25,7 @@ class SegmentClearance:
     obstacle_center: Point3
     capsule_radius: float
     obstacle_radius: float
+    box_point: Point3 | None = None
 
     def legacy_tuple(
         self,
@@ -119,6 +120,85 @@ def segment_sphere_clearance(
         obstacle_center=center,
         capsule_radius=capsule,
         obstacle_radius=obstacle,
+    )
+
+
+def segment_box_clearance(
+    start: Sequence[float],
+    end: Sequence[float],
+    capsule_radius: float,
+    box_center: Sequence[float],
+    box_size: Sequence[float],
+    segment_name: str = 'segment',
+    segment_index: int = 0,
+    samples: int = 128,
+    sample_index: int = 0,
+    sample_time: float = 0.0,
+) -> SegmentClearance:
+    """Exact capsule-axis distance to a solid box, less capsule radius."""
+    first = finite_point(start, 'segment start')
+    second = finite_point(end, 'segment end')
+    center = finite_point(box_center, 'box center')
+    size = finite_point(box_size, 'box size')
+    capsule = positive_radius(capsule_radius, 'capsule radius')
+    if any(value <= 0.0 for value in size):
+        raise ValueError('box size must be positive')
+    if int(samples) < 2:
+        raise ValueError('samples must be at least two')
+    half = tuple(value / 2.0 for value in size)
+    lower = tuple(center[index] - half[index] for index in range(3))
+    upper = tuple(center[index] + half[index] for index in range(3))
+    axis = tuple(second[index] - first[index] for index in range(3))
+    # Between face crossings the squared distance is a convex quadratic.
+    # Its minimum is either at the stationary point or an interval endpoint.
+    cuts = {0.0, 1.0}
+    for i, delta in enumerate(axis):
+        if delta:
+            for face in (lower[i], upper[i]):
+                t = (face - first[i]) / delta
+                if 0 < t < 1:
+                    cuts.add(t)
+    cuts = sorted(cuts)
+    distance_sq = math.inf
+    for left, right in zip(cuts, cuts[1:]):
+        mid = (left + right) * 0.5
+        slope = curvature = 0.0
+        for i, delta in enumerate(axis):
+            value = first[i] + delta * mid
+            if lower[i] <= value <= upper[i]:
+                continue
+            face = lower[i] if value < lower[i] else upper[i]
+            slope += (first[i] - face) * delta
+            curvature += delta * delta
+        t = max(left, min(right, -slope / curvature)) if curvature else left
+        point = tuple(first[i] + t * axis[i] for i in range(3))
+        squared = sum(max(lower[i]-v, v-upper[i], 0.0)**2
+                      for i, v in enumerate(point))
+        if squared < distance_sq:
+            closest, distance_sq = point, squared
+    clearance = math.sqrt(distance_sq) - capsule
+    surface = [max(lo, min(v, hi)) for v, lo, hi in zip(closest, lower, upper)]
+    # A capsule axis inside the solid has zero distance to the box.
+    # Keep that signed clearance and place its visual witness on a face.
+    if all(lo < v < hi for v, lo, hi in zip(closest, lower, upper)):
+        _, i, face = min((abs(closest[i] - face), i, face)
+                         for i in range(3) for face in (lower[i], upper[i]))
+        surface[i] = face
+    return SegmentClearance(
+        clearance=clearance,
+        segment_name=str(segment_name),
+        segment_index=int(segment_index),
+        sample_index=sample_index,
+        sample_time=sample_time,
+        capsule_start=first,
+        capsule_end=second,
+        closest_robot_point=closest,
+        obstacle_center=center,
+        box_point=tuple(surface),
+        capsule_radius=capsule,
+        # The message schema has a scalar obstacle radius.  Preserve a
+        # conservative bounding radius for consumers that expose it.
+        obstacle_radius=math.sqrt(sum(value * value for value in half)),
     )
 
 

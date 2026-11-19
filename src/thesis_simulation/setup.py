@@ -66,6 +66,12 @@ setup(
             'thesis_simulation.cartesian_trajectory_validator:main',
             'system_readiness = '
             'thesis_simulation.system_readiness_node:main',
+            'geometry_snapshot_source = '
+            'thesis_simulation.geometry_snapshot_source_node:main',
+            'global_safety_gate = '
+            'thesis_simulation.global_safety_gate_node:main',
+            'hybrid_readiness = '
+            'thesis_simulation.hybrid_readiness_node:main',
         ],
     },
 )

@@ -1,0 +1,45 @@
+{
+  "domain": 93,
+  "runtime": "/tmp/thesis_gui_validate_jepd4wux",
+  "checks": [],
+  "pass": false,
+  "error": "TimeoutError: fresh state and ALLOW for every GUI profile",
+  "snapshots": {
+    "jaco2": {
+      "state_fresh": false,
+      "state_age": null,
+      "proximity_state": "STALE",
+      "proximity_fresh": false,
+      "command_status": "IDLE",
+      "decision_state": "IDLE",
+      "decision_reason": "Sin comando activo."
+    },
+    "ur17g": {
+      "state_fresh": false,
+      "state_age": null,
+      "proximity_state": "STALE",
+      "proximity_fresh": false,
+      "command_status": "IDLE",
+      "decision_state": "IDLE",
+      "decision_reason": "Sin comando activo."
+    },
+    "tm25s": {
+      "state_fresh": false,
+      "state_age": null,
+      "proximity_state": "STALE",
+      "proximity_fresh": false,
+      "command_status": "IDLE",
+      "decision_state": "IDLE",
+      "decision_reason": "Sin comando activo."
+    },
+    "p3020": {
+      "state_fresh": false,
+      "state_age": null,
+      "proximity_state": "STALE",
+      "proximity_fresh": false,
+      "command_status": "IDLE",
+      "decision_state": "IDLE",
+      "decision_reason": "Sin comando activo."
+    }
+  }
+}

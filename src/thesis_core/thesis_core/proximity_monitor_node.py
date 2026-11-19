@@ -1,3 +1,4 @@
+from dataclasses import replace
 import math
 import time
 
@@ -15,20 +16,38 @@ from thesis_interfaces.msg import Obstacle
 from thesis_interfaces.msg import ProximityStatus
 from visualization_msgs.msg import Marker, MarkerArray
 
-from thesis_core.clearance_geometry import (
-    minimum_configuration_clearance,
+from thesis_core.clearance_geometry import minimum_configuration_clearance
+from thesis_core.clearance_markers import clearance_markers
+from thesis_core.geometry_profile import (
+    CONFIGURED_STATES,
+    legacy_jaco_geometry_profile,
 )
 from thesis_core.jaco_kinematics import CAPSULE_RADII, SEGMENT_NAMES
+from thesis_core.work_table import configured_table, table_marker
 from thesis_core.obstacle_contract import validate_obstacle
 from thesis_core.ros_runtime import spin_node
 
 
 SAFETY_REFERENCE_FRAME = 'world'
+_LEGACY_PROFILE = legacy_jaco_geometry_profile()
+
+
+def geometry_status_is_valid(message):
+    """
+    Return whether a proximity result carries usable geometry evidence.
+
+    Test doubles created before the geometry contract are treated as legacy
+    evidence. Real ROS messages always expose ``geometry_valid`` and cannot
+    silently bypass the new fail-closed bit.
+    """
+    return bool(getattr(message, 'geometry_valid', True))
 
 
 def create_dedicated_tf_listener(buffer):
     """Keep TF reception concurrent with bounded lookup callbacks."""
     return TransformListener(buffer, None, spin_thread=True)
+
+
 
 
 class ProximityMonitorNode(Node):
@@ -62,9 +81,16 @@ class ProximityMonitorNode(Node):
         self.declare_parameter('obstacle_pose_timeout_sec', 0.5)
         self.declare_parameter('obstacle_max_age_sec', 0.5)
         self.declare_parameter('obstacle_future_tolerance_sec', 0.05)
+        self.table = configured_table(self)
         self.declare_parameter('warning_distance', 0.30)
-        self.declare_parameter('reduction_distance', 0.15)
         self.declare_parameter('stop_distance', 0.05)
+        self.declare_parameter('robot_id', 'arm_01')
+        self.declare_parameter('geometry_profile_id', 'jaco2_legacy')
+        self.declare_parameter('geometry_version', '1.0.0')
+        self.declare_parameter(
+            'geometry_asset_hash', _LEGACY_PROFILE.asset_hash
+        )
+        self.declare_parameter('geometry_state', 'nominal')
 
         self.reference_frame = str(
             self.get_parameter('reference_frame').value
@@ -83,6 +109,7 @@ class ProximityMonitorNode(Node):
             for value in self.get_parameter('segment_radii').value
         ]
         self._validate_configuration()
+        self.geometry_identity = self._geometry_identity_from_parameters()
 
         status_topic = str(self.get_parameter('status_topic').value)
         self.publisher = self.create_publisher(
@@ -241,11 +268,22 @@ class ProximityMonitorNode(Node):
         if not all(math.isfinite(value) for value in (
             center.x, center.y, center.z
         )):
+            self.dynamic_obstacle_center = None
+            self.dynamic_obstacle_stamp = None
+            self.previous_obstacle_center = None
+            self.previous_obstacle_time = None
             return
         now = time.monotonic()
+        source_time = (
+            float(selected.header.stamp.sec)
+            + float(selected.header.stamp.nanosec) * 1.0e-9
+        )
+        # Velocity is in metres per simulation second, not wall second.
+        # Reception age is still tracked independently with a monotonic clock.
+        self.dynamic_obstacle_velocity = (0.0, 0.0, 0.0)
         if self.previous_obstacle_center is not None:
-            elapsed = now - self.previous_obstacle_time
-            if elapsed > 1.0e-3:
+            elapsed = source_time - self.previous_obstacle_time
+            if elapsed > 1.0e-9:
                 self.dynamic_obstacle_velocity = (
                     (center.x - self.previous_obstacle_center.x) / elapsed,
                     (center.y - self.previous_obstacle_center.y) / elapsed,
@@ -254,7 +292,7 @@ class ProximityMonitorNode(Node):
 
         self.dynamic_obstacle_center = center
         self.previous_obstacle_center = center
-        self.previous_obstacle_time = now
+        self.previous_obstacle_time = source_time
         self.last_obstacle_pose_time = now
         self.dynamic_obstacle_stamp = selected.header.stamp
 
@@ -288,14 +326,64 @@ class ProximityMonitorNode(Node):
             raise ValueError('Capsule radii differ from canonical geometry')
 
         warning = float(self.get_parameter('warning_distance').value)
-        reduction = float(
-            self.get_parameter('reduction_distance').value
-        )
         stop = float(self.get_parameter('stop_distance').value)
-        if not 0.0 <= stop < reduction < warning:
+        if not 0.0 <= stop < warning:
             raise ValueError(
-                'Thresholds must satisfy 0 <= stop < reduction < warning'
+                'Thresholds must satisfy 0 <= stop < warning'
             )
+
+    def _geometry_identity_from_parameters(self):
+        """Validate immutable identity attached to every proximity result."""
+        robot_id = str(self.get_parameter('robot_id').value).strip()
+        profile_id = str(
+            self.get_parameter('geometry_profile_id').value
+        ).strip()
+        version = str(self.get_parameter('geometry_version').value).strip()
+        asset_hash = str(
+            self.get_parameter('geometry_asset_hash').value
+        ).strip()
+        state = str(self.get_parameter('geometry_state').value).strip()
+        if not robot_id or not profile_id or not version:
+            raise ValueError(
+                'robot_id, geometry_profile_id and geometry_version '
+                'must be non-empty'
+            )
+        if len(asset_hash) != 64 or any(
+                character not in '0123456789abcdef'
+                for character in asset_hash):
+            raise ValueError('geometry_asset_hash must be a lowercase SHA-256')
+        if state not in CONFIGURED_STATES:
+            raise ValueError(
+                'geometry_state must name a configured conservative envelope'
+            )
+        if (
+            profile_id != _LEGACY_PROFILE.profile_id
+            or version != _LEGACY_PROFILE.geometry_version
+            or asset_hash != _LEGACY_PROFILE.asset_hash
+        ):
+            raise ValueError(
+                'the current capsule monitor supports only the explicit '
+                'jaco2_legacy geometry profile'
+            )
+        return robot_id, profile_id, version, asset_hash, state
+
+    def _attach_geometry_identity(self, message):
+        """Attach the geometry version used for the generated clearance."""
+        identity = getattr(self, 'geometry_identity', (
+            'arm_01',
+            _LEGACY_PROFILE.profile_id,
+            _LEGACY_PROFILE.geometry_version,
+            _LEGACY_PROFILE.asset_hash,
+            'nominal',
+        ))
+        (
+            message.robot_id,
+            message.geometry_profile_id,
+            message.geometry_version,
+            message.geometry_asset_hash,
+            message.geometry_state,
+        ) = identity
+        message.geometry_valid = True
 
     def _frame_point(self, frame_name, source_stamp, timeout):
         """Return a frame origin only at the obstacle acquisition time."""
@@ -320,6 +408,8 @@ class ProximityMonitorNode(Node):
                     self.obstacle_pose_timeout_sec):
                 return None
             obstacle, radius, velocity, source_stamp = self.topic_obstacle
+            if not 0 <= source_stamp.nanosec < 1_000_000_000:
+                return None
             try:
                 validate_obstacle(
                     (obstacle.x, obstacle.y, obstacle.z), velocity,
@@ -334,9 +424,6 @@ class ProximityMonitorNode(Node):
                 return None
             return obstacle, radius, velocity, source_stamp
 
-        x_value = float(self.get_parameter('obstacle_x').value)
-        y_value = float(self.get_parameter('obstacle_y').value)
-        z_value = float(self.get_parameter('obstacle_z').value)
         radius = float(self.get_parameter('obstacle_radius').value)
         if radius <= 0.0:
             raise ValueError('obstacle_radius must be greater than zero')
@@ -347,47 +434,62 @@ class ProximityMonitorNode(Node):
             and time.monotonic() - self.last_obstacle_pose_time
             <= self.obstacle_pose_timeout_sec
         ):
-            return (
-                self.dynamic_obstacle_center,
-                radius,
-                self.dynamic_obstacle_velocity,
-                self.dynamic_obstacle_stamp,
-            )
+            obstacle = self.dynamic_obstacle_center
+            source_stamp = self.dynamic_obstacle_stamp
+            if not 0 <= source_stamp.nanosec < 1_000_000_000:
+                return None
+            try:
+                validate_obstacle(
+                    (obstacle.x, obstacle.y, obstacle.z),
+                    self.dynamic_obstacle_velocity,
+                    radius, 0.0,
+                    float(source_stamp.sec)
+                    + float(source_stamp.nanosec) * 1.0e-9,
+                    self.get_clock().now().nanoseconds / 1.0e9,
+                    self.obstacle_max_age_sec,
+                    self.obstacle_future_tolerance_sec,
+                )
+            except ValueError:
+                return None
+            return obstacle, radius, self.dynamic_obstacle_velocity, source_stamp
 
-        return Point(x=x_value, y=y_value, z=z_value), radius, (
-            0.0,
-            0.0,
-            0.0,
-        ), self.get_clock().now().to_msg()
+        # A configured spawn pose is not evidence that the Gazebo object still
+        # exists there. Never replace a missing source with a freshly dated
+        # fixed sphere: consumers must see an explicit invalid STOP instead.
+        return None
 
     def _publish_tf_stop(
         self, source_stamp, obstacle, obstacle_radius, reason
     ):
-        """Publish a conservative STOP when TF geometry is unavailable."""
+        """Publish a conservative STOP without claiming measured geometry."""
         message = ProximityStatus()
         message.stamp = source_stamp
         message.reference_frame = self.reference_frame
+        ProximityMonitorNode._attach_geometry_identity(self, message)
+        message.geometry_valid = False
         message.state = 'STOP'
         message.minimum_clearance = 0.0
         message.limiting_segment = reason
         message.obstacle_center = obstacle
         message.obstacle_radius = obstacle_radius
         self.publisher.publish(message)
+        if (
+            self.previous_state != 'STOP'
+            or getattr(self, 'previous_invalid_reason', None) != reason
+        ):
+            self.get_logger().warning(f'Proximity STOP: {reason}')
         self.previous_state = 'STOP'
-        self.get_logger().warning(f'Proximity STOP: {reason}')
+        self.previous_invalid_reason = reason
 
     def _state_for_clearance(self, clearance):
         if clearance <= float(self.get_parameter('stop_distance').value):
             return 'STOP'
         if clearance <= float(
-                self.get_parameter('reduction_distance').value):
-            return 'REDUCTION'
-        if clearance <= float(
                 self.get_parameter('warning_distance').value):
             return 'WARNING'
         return 'ALLOW'
 
-    def _publish_obstacle_marker(self, obstacle, radius):
+    def _publish_obstacle_marker(self, obstacle, radius, measurements=(), limiting=None, state=None):
         """Show the current spherical estimate in RViz and let it expire."""
         marker = Marker()
         marker.header.frame_id = self.reference_frame
@@ -409,6 +511,16 @@ class ProximityMonitorNode(Node):
         marker.lifetime = DurationMessage(sec=0, nanosec=300000000)
         array = MarkerArray()
         array.markers.append(marker)
+        if self.table:
+            array.markers.append(table_marker(self.table, marker.header))
+            if self.table.with_legs:
+                for index, (center, size) in enumerate(self.table.leg_boxes(self.table.center), 1):
+                    leg = table_marker(replace(self.table, center=center, size=size), marker.header)
+                    leg.id = index
+                    array.markers.append(leg)
+        for name, hit, color in measurements:
+            array.markers.extend(clearance_markers(
+                marker.header, name, hit, color, state if hit is limiting else None))
         self.obstacle_marker_publisher.publish(array)
 
     def evaluate(self):
@@ -418,7 +530,10 @@ class ProximityMonitorNode(Node):
             return
         obstacle_data = self._obstacle()
         if obstacle_data is None:
-            # Wait for a fresh obstacle estimate before publishing status.
+            self._publish_tf_stop(
+                self.get_clock().now().to_msg(), Point(), 0.0,
+                'OBSTACLE_UNAVAILABLE',
+            )
             return
         (
             obstacle,
@@ -426,8 +541,8 @@ class ProximityMonitorNode(Node):
             obstacle_velocity,
             source_stamp,
         ) = obstacle_data
-        self._publish_obstacle_marker(obstacle, obstacle_radius)
         unavailable = set()
+        tf_errors = []
         segments = []
         tf_deadline = time.monotonic() + self.tf_lookup_timeout_sec
 
@@ -444,8 +559,9 @@ class ProximityMonitorNode(Node):
                     source_stamp,
                     Duration(seconds=max(0.0, tf_deadline - time.monotonic())),
                 )
-            except TransformException:
+            except TransformException as exc:
                 unavailable.update((start_frame, end_frame))
+                tf_errors.append(str(exc))
                 continue
             segments.append((
                 (start.x, start.y, start.z),
@@ -457,6 +573,7 @@ class ProximityMonitorNode(Node):
                 self.get_logger().warning(
                     'Waiting for TF frames: '
                     + ', '.join(sorted(unavailable))
+                    + '; ' + '; '.join(tf_errors)
                 )
             elif self.missing_frames:
                 self.get_logger().info(
@@ -465,6 +582,7 @@ class ProximityMonitorNode(Node):
             self.missing_frames = unavailable
 
         if unavailable or len(segments) != len(self.segment_names):
+            self._publish_obstacle_marker(obstacle, obstacle_radius)
             self._publish_tf_stop(
                 source_stamp, obstacle, obstacle_radius, 'TF_UNAVAILABLE'
             )
@@ -482,7 +600,16 @@ class ProximityMonitorNode(Node):
             self.get_logger().error(f'Invalid proximity geometry: {exc}')
             return
 
+        table = getattr(self, 'table', None)
+        measurements = []
+        if table is not None:
+            sphere = result
+            board = table.closest(segments, self.segment_names, self.radii)
+            result = min((sphere, board), key=lambda hit: hit.clearance)
+            measurements = [('Esfera', sphere, (.98, .80, .22)),
+                            ('Mesa', board, (1., .44, .06))]
         state = self._state_for_clearance(result.clearance)
+        self._publish_obstacle_marker(obstacle, obstacle_radius, measurements, result, state)
         closest = Point(
             x=result.closest_robot_point[0],
             y=result.closest_robot_point[1],
@@ -494,6 +621,7 @@ class ProximityMonitorNode(Node):
         # downstream consumers and must not make delayed geometry look fresh.
         message.stamp = source_stamp
         message.reference_frame = self.reference_frame
+        ProximityMonitorNode._attach_geometry_identity(self, message)
         message.state = state
         message.minimum_clearance = result.clearance
         message.limiting_segment = result.segment_name
@@ -504,6 +632,7 @@ class ProximityMonitorNode(Node):
         message.obstacle_velocity.z = obstacle_velocity[2]
         message.obstacle_radius = obstacle_radius
         self.publisher.publish(message)
+        self.previous_invalid_reason = None
 
         if state != self.previous_state:
             self.get_logger().info(

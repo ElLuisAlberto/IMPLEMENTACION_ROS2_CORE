@@ -1,0 +1,124 @@
+[INFO] [launch]: All log files can be found below /tmp/thesis_validate_7_2xy_i4/ros_logs/2026-11-07-06-22-06-374732-miNave-60336
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [ign-1]: process started with pid [60348]
+[INFO] [parameter_bridge-2]: process started with pid [60350]
+[INFO] [robot_state_publisher-3]: process started with pid [60352]
+[INFO] [create-4]: process started with pid [60354]
+[INFO] [profile_supervisor-5]: process started with pid [60356]
+[robot_state_publisher-3] [INFO] [1794003726.672612802] [p3020.robot_state_publisher]: got segment p3020_base
+[robot_state_publisher-3] [INFO] [1794003726.672676322] [p3020.robot_state_publisher]: got segment p3020_base_link
+[robot_state_publisher-3] [INFO] [1794003726.672682487] [p3020.robot_state_publisher]: got segment p3020_link_1
+[robot_state_publisher-3] [INFO] [1794003726.672686253] [p3020.robot_state_publisher]: got segment p3020_link_2
+[robot_state_publisher-3] [INFO] [1794003726.672689779] [p3020.robot_state_publisher]: got segment p3020_link_3
+[robot_state_publisher-3] [INFO] [1794003726.672693080] [p3020.robot_state_publisher]: got segment p3020_link_4
+[robot_state_publisher-3] [INFO] [1794003726.672696408] [p3020.robot_state_publisher]: got segment p3020_link_5
+[robot_state_publisher-3] [INFO] [1794003726.672699781] [p3020.robot_state_publisher]: got segment p3020_link_6
+[robot_state_publisher-3] [INFO] [1794003726.672703088] [p3020.robot_state_publisher]: got segment world
+[parameter_bridge-2] [INFO] [1794003726.697970620] [cell_clock]: Creating GZ->ROS Bridge: [/clock (ignition.msgs.Clock) -> /clock (rosgraph_msgs/msg/Clock)] (Lazy 0)
+[create-4] [INFO] [1794003727.018888639] [spawn_p3020]: Requested creation of entity.
+[create-4] [INFO] [1794003727.019031193] [spawn_p3020]: OK creation of entity.
+[INFO] [create-4]: process has finished cleanly [pid 60354]
+[INFO] [spawner-6]: process started with pid [60423]
+[spawner-6] [INFO] [1794003727.293756434] [p3020.spawner_joint_state_broadcaster]: waiting for service /p3020/controller_manager/list_controllers to become available...
+[ign-1] [INFO] [1794003728.834907334] [GazeboSimROS2ControlPlugin]: robot_param_node is robot_state_publisher
+[ign-1] [INFO] [1794003728.834939806] [GazeboSimROS2ControlPlugin]: robot_param_node is robot_description
+[ign-1] [INFO] [1794003728.850315324] [p3020.gz_ros2_control]: connected to service!! /p3020/robot_state_publisher asking for robot_description
+[ign-1] [INFO] [1794003728.850704275] [p3020.gz_ros2_control]: Received URDF from param server
+[ign-1] [INFO] [1794003728.851416674] [p3020.gz_ros2_control]: [gz_ros2_control] Fixed joint ['p3020_world_mount'] (Entity='61') is skipped.
+[ign-1] [INFO] [1794003728.853690656] [p3020.gz_ros2_control]: The position_proportional_gain has been set to: 0.1
+[ign-1] [INFO] [1794003728.853725221] [p3020.gz_ros2_control]: Loading joint: p3020_joint_1
+[ign-1] [INFO] [1794003728.853732671] [p3020.gz_ros2_control]: 	State:
+[ign-1] [INFO] [1794003728.853737336] [p3020.gz_ros2_control]: 		 position
+[ign-1] [INFO] [1794003728.853744956] [p3020.gz_ros2_control]: 			 found initial value: 0.000000
+[ign-1] [INFO] [1794003728.853751315] [p3020.gz_ros2_control]: 		 velocity
+[ign-1] [INFO] [1794003728.853757078] [p3020.gz_ros2_control]: 	Command:
+[ign-1] [INFO] [1794003728.853760840] [p3020.gz_ros2_control]: 		 position
+[ign-1] [INFO] [1794003728.853770734] [p3020.gz_ros2_control]: Loading joint: p3020_joint_2
+[ign-1] [INFO] [1794003728.853774730] [p3020.gz_ros2_control]: 	State:
+[ign-1] [INFO] [1794003728.853778064] [p3020.gz_ros2_control]: 		 position
+[ign-1] [INFO] [1794003728.853781256] [p3020.gz_ros2_control]: 			 found initial value: 0.000000
+[ign-1] [INFO] [1794003728.853785068] [p3020.gz_ros2_control]: 		 velocity
+[ign-1] [INFO] [1794003728.853788398] [p3020.gz_ros2_control]: 	Command:
+[ign-1] [INFO] [1794003728.853791633] [p3020.gz_ros2_control]: 		 position
+[ign-1] [INFO] [1794003728.853797765] [p3020.gz_ros2_control]: Loading joint: p3020_joint_3
+[ign-1] [INFO] [1794003728.853803314] [p3020.gz_ros2_control]: 	State:
+[ign-1] [INFO] [1794003728.853808170] [p3020.gz_ros2_control]: 		 position
+[ign-1] [INFO] [1794003728.853811546] [p3020.gz_ros2_control]: 			 found initial value: 0.000000
+[ign-1] [INFO] [1794003728.853815376] [p3020.gz_ros2_control]: 		 velocity
+[ign-1] [INFO] [1794003728.853818793] [p3020.gz_ros2_control]: 	Command:
+[ign-1] [INFO] [1794003728.853821917] [p3020.gz_ros2_control]: 		 position
+[ign-1] [INFO] [1794003728.853830321] [p3020.gz_ros2_control]: Loading joint: p3020_joint_5
+[ign-1] [INFO] [1794003728.853836568] [p3020.gz_ros2_control]: 	State:
+[ign-1] [INFO] [1794003728.853840391] [p3020.gz_ros2_control]: 		 position
+[ign-1] [INFO] [1794003728.853843535] [p3020.gz_ros2_control]: 			 found initial value: 0.000000
+[ign-1] [INFO] [1794003728.853847325] [p3020.gz_ros2_control]: 		 velocity
+[ign-1] [INFO] [1794003728.853850565] [p3020.gz_ros2_control]: 	Command:
+[ign-1] [INFO] [1794003728.853855476] [p3020.gz_ros2_control]: 		 position
+[ign-1] [INFO] [1794003728.853871808] [p3020.gz_ros2_control]: Loading joint: p3020_joint_6
+[ign-1] [INFO] [1794003728.853875966] [p3020.gz_ros2_control]: 	State:
+[ign-1] [INFO] [1794003728.853879199] [p3020.gz_ros2_control]: 		 position
+[ign-1] [INFO] [1794003728.853885034] [p3020.gz_ros2_control]: 			 found initial value: 0.000000
+[ign-1] [INFO] [1794003728.853888825] [p3020.gz_ros2_control]: 		 velocity
+[ign-1] [INFO] [1794003728.853892009] [p3020.gz_ros2_control]: 	Command:
+[ign-1] [INFO] [1794003728.853895468] [p3020.gz_ros2_control]: 		 position
+[ign-1] [INFO] [1794003728.853966152] [resource_manager]: Initialize hardware 'p3020_system' 
+[ign-1] [INFO] [1794003728.854006629] [resource_manager]: Successful initialization of hardware 'p3020_system'
+[ign-1] [INFO] [1794003728.854028893] [resource_manager]: 'configure' hardware 'p3020_system' 
+[ign-1] [INFO] [1794003728.854031339] [p3020.gz_ros2_control]: System Successfully configured!
+[ign-1] [INFO] [1794003728.854038839] [resource_manager]: Successful 'configure' of hardware 'p3020_system'
+[ign-1] [INFO] [1794003728.854042806] [resource_manager]: 'activate' hardware 'p3020_system' 
+[ign-1] [INFO] [1794003728.854048573] [resource_manager]: Successful 'activate' of hardware 'p3020_system'
+[ign-1] [INFO] [1794003728.854054400] [p3020.gz_ros2_control]: Loading controller_manager
+[ign-1] [WARN] [1794003728.956253882] [p3020.gz_ros2_control]:  Desired controller update period (0.01 s) is slower than the gazebo simulation period (0.002 s).
+[ign-1] [INFO] [1794003729.047277637] [p3020.controller_manager]: Loading controller 'joint_state_broadcaster'
+[spawner-6] [INFO] [1794003729.054512641] [p3020.spawner_joint_state_broadcaster]: [94mLoaded [1mjoint_state_broadcaster[0m
+[ign-1] [INFO] [1794003729.055066540] [p3020.controller_manager]: Configuring controller 'joint_state_broadcaster'
+[ign-1] [INFO] [1794003729.055174734] [p3020.joint_state_broadcaster]: 'joints' or 'interfaces' parameter is empty. All available state interfaces will be published
+[spawner-6] [INFO] [1794003729.084204009] [p3020.spawner_joint_state_broadcaster]: [92mConfigured and activated [1mjoint_state_broadcaster[0m
+[INFO] [spawner-6]: process has finished cleanly [pid 60423]
+[INFO] [spawner-7]: process started with pid [60482]
+[spawner-7] [INFO] [1794003729.398253595] [p3020.spawner_arm_controller]: [96mSetting controller param "params_file" to "['/tmp/thesis_validate_7_2xy_i4/p3020_controllers.yaml']" for [1marm_controller[0m
+[ign-1] [INFO] [1794003729.400320314] [p3020.controller_manager]: Loading controller 'arm_controller'
+[ign-1] [WARN] [1794003729.408070394] [p3020.arm_controller]: [Deprecated]: "allow_nonzero_velocity_at_trajectory_end" is set to true. The default behavior will change to false.
+[spawner-7] [INFO] [1794003729.414023445] [p3020.spawner_arm_controller]: [94mLoaded [1marm_controller[0m
+[ign-1] [INFO] [1794003729.414566699] [p3020.controller_manager]: Configuring controller 'arm_controller'
+[ign-1] [INFO] [1794003729.414673334] [p3020.arm_controller]: No specific joint names are used for command interfaces. Using 'joints' parameter.
+[ign-1] [INFO] [1794003729.414688666] [p3020.arm_controller]: Command interfaces are [position] and state interfaces are [position velocity].
+[ign-1] [INFO] [1794003729.414703073] [p3020.arm_controller]: Using 'splines' interpolation method.
+[ign-1] [INFO] [1794003729.415272184] [p3020.arm_controller]: Controller state will be published at 50.00 Hz.
+[ign-1] [INFO] [1794003729.416298799] [p3020.arm_controller]: Action status changes will be monitored at 20.00 Hz.
+[spawner-7] [INFO] [1794003729.444072807] [p3020.spawner_arm_controller]: [92mConfigured and activated [1marm_controller[0m
+[ign-1] [INFO] [1794003729.466193244] [p3020.arm_controller]: Received new action goal
+[ign-1] [INFO] [1794003729.466244470] [p3020.arm_controller]: Accepted new action goal
+[INFO] [spawner-7]: process has finished cleanly [pid 60482]
+[ign-1] [INFO] [1794003730.979845963] [p3020.arm_controller]: Goal reached, success!
+[ign-1] [INFO] [1794003732.529728482] [p3020.arm_controller]: Received new action goal
+[ign-1] [INFO] [1794003732.529774134] [p3020.arm_controller]: Accepted new action goal
+[ign-1] [INFO] [1794003734.057768933] [p3020.arm_controller]: Goal reached, success!
+[ign-1] [INFO] [1794003735.626462915] [p3020.arm_controller]: Received new action goal
+[ign-1] [INFO] [1794003735.626505637] [p3020.arm_controller]: Accepted new action goal
+[ign-1] [INFO] [1794003736.069310082] [p3020.arm_controller]: Got request to cancel goal
+[ign-1] [INFO] [1794003736.069348829] [p3020.arm_controller]: Canceling active action goal because cancel callback received.
+[WARNING] [launch]: user interrupted with ctrl-c (SIGINT)
+[INFO] [profile_supervisor-5]: sending signal 'SIGINT' to process[profile_supervisor-5]
+[INFO] [robot_state_publisher-3]: sending signal 'SIGINT' to process[robot_state_publisher-3]
+[INFO] [parameter_bridge-2]: sending signal 'SIGINT' to process[parameter_bridge-2]
+[INFO] [ign-1]: sending signal 'SIGINT' to process[ign-1]
+[robot_state_publisher-3] [INFO] [1794003738.764967376] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[parameter_bridge-2] [INFO] [1794003738.765493109] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[ign-1] [INFO] [1794003738.766063982] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[ign-1] [INFO] [1794003738.766127592] [p3020.controller_manager]: Shutdown request received....
+[ign-1] [INFO] [1794003738.766168468] [p3020.controller_manager]: Shutting down all controllers in the controller manager.
+[ign-1] [INFO] [1794003738.766190656] [p3020.controller_manager]: Deactivating controller 'joint_state_broadcaster'
+[ign-1] [INFO] [1794003738.766224175] [p3020.controller_manager]: Shutting down controller 'joint_state_broadcaster'
+[ign-1] [INFO] [1794003738.766253594] [p3020.controller_manager]: Deactivating controller 'arm_controller'
+[ign-1] [INFO] [1794003738.766284048] [p3020.controller_manager]: Shutting down controller 'arm_controller'
+[ign-1] [INFO] [1794003738.766319778] [resource_manager]: 'deactivate' hardware 'p3020_system' 
+[ign-1] [INFO] [1794003738.766334629] [resource_manager]: Successful 'deactivate' of hardware 'p3020_system'
+[ign-1] [INFO] [1794003738.766337442] [resource_manager]: 'shutdown' hardware 'p3020_system' 
+[ign-1] [INFO] [1794003738.766342906] [resource_manager]: Successful 'shutdown' of hardware 'p3020_system'
+[ign-1] [INFO] [1794003738.766346564] [p3020.controller_manager]: Shutting down the controller manager.
+[INFO] [robot_state_publisher-3]: process has finished cleanly [pid 60352]
+[INFO] [parameter_bridge-2]: process has finished cleanly [pid 60350]
+[INFO] [ign-1]: process has finished cleanly [pid 60348]
+[INFO] [profile_supervisor-5]: process has finished cleanly [pid 60356]

@@ -1,0 +1,7 @@
+{
+  "domain": 93,
+  "runtime": "/tmp/thesis_gui_validate_5l3katmy",
+  "checks": [],
+  "pass": false,
+  "error": "TimeoutError: fresh state and ALLOW for every GUI profile"
+}

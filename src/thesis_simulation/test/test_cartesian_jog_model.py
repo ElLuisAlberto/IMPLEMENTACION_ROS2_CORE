@@ -10,6 +10,7 @@ from thesis_core.cartesian_kinematics import (
     solve_inverse_kinematics_transform,
 )
 from thesis_core.jaco_kinematics import end_effector_transform
+from thesis_core.robot_profile import load_robot_profile
 from thesis_simulation.cartesian_jog_model import (
     apply_twist_deadzone,
     bounded_integration_step,
@@ -153,3 +154,61 @@ def test_recommended_pose_supports_each_local_jog_axis(linear, angular):
         orientation_tolerance_rad=math.radians(0.1),
     )
     assert result.success
+
+
+@pytest.mark.parametrize(
+    'axis',
+    (0, 1, 2),
+)
+def test_recommended_pose_tracks_one_cartesian_wheel_notch(axis):
+    joints = tuple(math.radians(value) for value in (
+        -45.0, 160.0, 200.0, 0.0, 15.0, 0.0
+    ))
+    current = end_effector_transform(joints)
+    linear = [0.0, 0.0, 0.0]
+    linear[axis] = 0.02
+    target = integrate_world_twist(
+        current, linear, (0.0, 0.0, 0.0), 0.10
+    )
+    coarse_result = solve_inverse_kinematics_transform(
+        joints,
+        target,
+        position_tolerance_m=0.003,
+        orientation_tolerance_rad=math.radians(0.1),
+    )
+    result = solve_inverse_kinematics_transform(
+        joints,
+        target,
+        position_tolerance_m=0.0002,
+        orientation_tolerance_rad=math.radians(0.1),
+    )
+
+    assert coarse_result.success
+    assert coarse_result.positions == pytest.approx(joints)
+    assert result.success
+    assert result.position_error_m < 0.0002
+    assert result.positions != pytest.approx(joints)
+
+
+def test_default_jaco_startup_pose_is_cartesian_ready_and_obstacle_clear():
+    profile = load_robot_profile(None, 'jaco2')
+    expected = tuple(math.radians(value) for value in (
+        -45.0, 160.0, 200.0, 0.0, 15.0, 0.0
+    ))
+    assert profile.initial_positions == pytest.approx(expected)
+
+    current = end_effector_transform(profile.initial_positions)
+    for axis in range(3):
+        linear = [0.0, 0.0, 0.0]
+        linear[axis] = 0.02
+        target = integrate_world_twist(
+            current, linear, (0.0, 0.0, 0.0), 0.10
+        )
+        result = solve_inverse_kinematics_transform(
+            profile.initial_positions,
+            target,
+            position_tolerance_m=0.0002,
+            orientation_tolerance_rad=math.radians(0.1),
+        )
+        assert result.success
+        assert result.positions != pytest.approx(profile.initial_positions)

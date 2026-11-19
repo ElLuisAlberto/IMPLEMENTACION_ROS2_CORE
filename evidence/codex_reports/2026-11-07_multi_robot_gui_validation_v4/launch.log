@@ -1,0 +1,134 @@
+[INFO] [launch]: All log files can be found below /tmp/thesis_gui_validate_jepd4wux/ros_logs/2026-11-07-14-57-53-370664-miNave-119861
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [ign-1]: process started with pid [119862]
+[INFO] [parameter_bridge-2]: process started with pid [119864]
+[INFO] [robot_state_publisher-3]: process started with pid [119866]
+[INFO] [create-4]: process started with pid [119868]
+[INFO] [profile_supervisor-5]: process started with pid [119870]
+[INFO] [robot_state_publisher-6]: process started with pid [119872]
+[INFO] [create-7]: process started with pid [119874]
+[INFO] [profile_supervisor-8]: process started with pid [119878]
+[INFO] [robot_state_publisher-9]: process started with pid [119881]
+[INFO] [create-10]: process started with pid [119885]
+[INFO] [profile_supervisor-11]: process started with pid [119890]
+[INFO] [robot_state_publisher-12]: process started with pid [119893]
+[INFO] [create-13]: process started with pid [119895]
+[INFO] [profile_supervisor-14]: process started with pid [119900]
+[INFO] [demo_obstacle-15]: process started with pid [119904]
+[robot_state_publisher-6] [INFO] [1794034674.201972391] [ur17g.robot_state_publisher]: got segment ur17g_base
+[robot_state_publisher-6] [INFO] [1794034674.202061942] [ur17g.robot_state_publisher]: got segment ur17g_base_link
+[robot_state_publisher-6] [INFO] [1794034674.202071824] [ur17g.robot_state_publisher]: got segment ur17g_base_link_inertia
+[robot_state_publisher-6] [INFO] [1794034674.202077945] [ur17g.robot_state_publisher]: got segment ur17g_flange
+[robot_state_publisher-6] [INFO] [1794034674.202083752] [ur17g.robot_state_publisher]: got segment ur17g_forearm_link
+[robot_state_publisher-6] [INFO] [1794034674.202089210] [ur17g.robot_state_publisher]: got segment ur17g_ft_frame
+[robot_state_publisher-6] [INFO] [1794034674.202094818] [ur17g.robot_state_publisher]: got segment ur17g_shoulder_link
+[robot_state_publisher-6] [INFO] [1794034674.202100146] [ur17g.robot_state_publisher]: got segment ur17g_smart_panel
+[robot_state_publisher-6] [INFO] [1794034674.202105265] [ur17g.robot_state_publisher]: got segment ur17g_tool0
+[robot_state_publisher-6] [INFO] [1794034674.202110300] [ur17g.robot_state_publisher]: got segment ur17g_upper_arm_link
+[robot_state_publisher-6] [INFO] [1794034674.202115630] [ur17g.robot_state_publisher]: got segment ur17g_wrist_1_link
+[robot_state_publisher-6] [INFO] [1794034674.202121073] [ur17g.robot_state_publisher]: got segment ur17g_wrist_2_link
+[robot_state_publisher-6] [INFO] [1794034674.202126645] [ur17g.robot_state_publisher]: got segment ur17g_wrist_3_link
+[robot_state_publisher-6] [INFO] [1794034674.202132369] [ur17g.robot_state_publisher]: got segment world
+[robot_state_publisher-9] [INFO] [1794034674.207148324] [tm25s.robot_state_publisher]: got segment tm25s_base
+[robot_state_publisher-9] [INFO] [1794034674.209792291] [tm25s.robot_state_publisher]: got segment tm25s_flange
+[robot_state_publisher-9] [INFO] [1794034674.209861405] [tm25s.robot_state_publisher]: got segment tm25s_link_0
+[robot_state_publisher-9] [INFO] [1794034674.209890193] [tm25s.robot_state_publisher]: got segment tm25s_link_1
+[robot_state_publisher-9] [INFO] [1794034674.209918079] [tm25s.robot_state_publisher]: got segment tm25s_link_2
+[robot_state_publisher-9] [INFO] [1794034674.209943538] [tm25s.robot_state_publisher]: got segment tm25s_link_3
+[robot_state_publisher-9] [INFO] [1794034674.209968345] [tm25s.robot_state_publisher]: got segment tm25s_link_4
+[robot_state_publisher-9] [INFO] [1794034674.209993054] [tm25s.robot_state_publisher]: got segment tm25s_link_5
+[robot_state_publisher-9] [INFO] [1794034674.210018515] [tm25s.robot_state_publisher]: got segment tm25s_link_6
+[robot_state_publisher-9] [INFO] [1794034674.210044039] [tm25s.robot_state_publisher]: got segment world
+[robot_state_publisher-3] [INFO] [1794034674.221653134] [jaco2.robot_state_publisher]: got segment jaco2_j2n6s300_end_effector
+[robot_state_publisher-3] [INFO] [1794034674.222809285] [jaco2.robot_state_publisher]: got segment jaco2_j2n6s300_link_1
+[robot_state_publisher-3] [INFO] [1794034674.222827049] [jaco2.robot_state_publisher]: got segment jaco2_j2n6s300_link_2
+[robot_state_publisher-3] [INFO] [1794034674.222833395] [jaco2.robot_state_publisher]: got segment jaco2_j2n6s300_link_3
+[robot_state_publisher-3] [INFO] [1794034674.222838916] [jaco2.robot_state_publisher]: got segment jaco2_j2n6s300_link_4
+[robot_state_publisher-3] [INFO] [1794034674.222844236] [jaco2.robot_state_publisher]: got segment jaco2_j2n6s300_link_5
+[robot_state_publisher-3] [INFO] [1794034674.222849769] [jaco2.robot_state_publisher]: got segment jaco2_j2n6s300_link_6
+[robot_state_publisher-3] [INFO] [1794034674.222855154] [jaco2.robot_state_publisher]: got segment jaco2_j2n6s300_link_base
+[robot_state_publisher-3] [INFO] [1794034674.222860565] [jaco2.robot_state_publisher]: got segment jaco2_j2n6s300_link_finger_1
+[robot_state_publisher-3] [INFO] [1794034674.222865916] [jaco2.robot_state_publisher]: got segment jaco2_j2n6s300_link_finger_2
+[robot_state_publisher-3] [INFO] [1794034674.222871362] [jaco2.robot_state_publisher]: got segment jaco2_j2n6s300_link_finger_3
+[robot_state_publisher-3] [INFO] [1794034674.222876644] [jaco2.robot_state_publisher]: got segment jaco2_j2n6s300_link_finger_tip_1
+[robot_state_publisher-3] [INFO] [1794034674.222882192] [jaco2.robot_state_publisher]: got segment jaco2_j2n6s300_link_finger_tip_2
+[robot_state_publisher-3] [INFO] [1794034674.222887421] [jaco2.robot_state_publisher]: got segment jaco2_j2n6s300_link_finger_tip_3
+[robot_state_publisher-3] [INFO] [1794034674.222892899] [jaco2.robot_state_publisher]: got segment jaco2_root
+[robot_state_publisher-3] [INFO] [1794034674.222898280] [jaco2.robot_state_publisher]: got segment world
+[robot_state_publisher-12] [INFO] [1794034674.223635284] [p3020.robot_state_publisher]: got segment p3020_base
+[robot_state_publisher-12] [INFO] [1794034674.223836018] [p3020.robot_state_publisher]: got segment p3020_base_link
+[robot_state_publisher-12] [INFO] [1794034674.223864315] [p3020.robot_state_publisher]: got segment p3020_link_1
+[robot_state_publisher-12] [INFO] [1794034674.223880916] [p3020.robot_state_publisher]: got segment p3020_link_2
+[robot_state_publisher-12] [INFO] [1794034674.223896234] [p3020.robot_state_publisher]: got segment p3020_link_3
+[robot_state_publisher-12] [INFO] [1794034674.223913248] [p3020.robot_state_publisher]: got segment p3020_link_4
+[robot_state_publisher-12] [INFO] [1794034674.223928912] [p3020.robot_state_publisher]: got segment p3020_link_5
+[robot_state_publisher-12] [INFO] [1794034674.223945836] [p3020.robot_state_publisher]: got segment p3020_link_6
+[robot_state_publisher-12] [INFO] [1794034674.223962173] [p3020.robot_state_publisher]: got segment world
+[parameter_bridge-2] [INFO] [1794034674.274762020] [cell_clock]: Creating GZ->ROS Bridge: [/clock (ignition.msgs.Clock) -> /clock (rosgraph_msgs/msg/Clock)] (Lazy 0)
+[create-7] [INFO] [1794034674.622697119] [spawn_ur17g]: Requested creation of entity.
+[create-7] [INFO] [1794034674.623168985] [spawn_ur17g]: OK creation of entity.
+[create-10] [INFO] [1794034674.722583769] [spawn_tm25s]: Requested creation of entity.
+[create-10] [INFO] [1794034674.722681087] [spawn_tm25s]: OK creation of entity.
+[INFO] [create-7]: process has finished cleanly [pid 119874]
+[INFO] [spawner-16]: process started with pid [120087]
+[create-13] [INFO] [1794034674.822716066] [spawn_p3020]: Requested creation of entity.
+[create-13] [INFO] [1794034674.822826450] [spawn_p3020]: OK creation of entity.
+[INFO] [create-10]: process has finished cleanly [pid 119885]
+[INFO] [spawner-17]: process started with pid [120089]
+[create-4] [INFO] [1794034674.922944248] [spawn_jaco2]: Requested creation of entity.
+[create-4] [INFO] [1794034674.923046683] [spawn_jaco2]: OK creation of entity.
+[spawner-16] [INFO] [1794034674.925657206] [ur17g.spawner_joint_state_broadcaster]: waiting for service /ur17g/controller_manager/list_controllers to become available...
+[INFO] [create-13]: process has finished cleanly [pid 119895]
+[INFO] [spawner-18]: process started with pid [120101]
+[spawner-17] [INFO] [1794034675.025291971] [tm25s.spawner_joint_state_broadcaster]: waiting for service /tm25s/controller_manager/list_controllers to become available...
+[INFO] [create-4]: process has finished cleanly [pid 119868]
+[INFO] [spawner-19]: process started with pid [120113]
+[spawner-18] [INFO] [1794034675.122744563] [p3020.spawner_joint_state_broadcaster]: waiting for service /p3020/controller_manager/list_controllers to become available...
+[spawner-19] [INFO] [1794034675.552819120] [jaco2.spawner_joint_state_broadcaster]: waiting for service /jaco2/controller_manager/list_controllers to become available...
+[ign-1] [INFO] [1794034676.432428961] [GazeboSimROS2ControlPlugin]: robot_param_node is robot_state_publisher
+[ign-1] [INFO] [1794034676.432455128] [GazeboSimROS2ControlPlugin]: robot_param_node is robot_description
+[ign-1] [ERROR] [1794034677.292189746] [ur17g.gz_ros2_control]: /ur17g/robot_state_publisher service not available, waiting again...
+[ign-1] [INFO] [1794034677.792471880] [ur17g.gz_ros2_control]: connected to service!! /ur17g/robot_state_publisher asking for robot_description
+[robot_state_publisher-6] [WARN] [1794034678.623747847] [ur17g.robot_state_publisher.rclcpp]: failed to send response to /ur17g/robot_state_publisher/get_parameters (timeout): client will not receive response, at ./src/rmw_response.cpp:154, at ./src/rcl/service.c:314
+[WARNING] [launch]: user interrupted with ctrl-c (SIGINT)
+[INFO] [spawner-19]: sending signal 'SIGINT' to process[spawner-19]
+[INFO] [spawner-18]: sending signal 'SIGINT' to process[spawner-18]
+[INFO] [spawner-17]: sending signal 'SIGINT' to process[spawner-17]
+[INFO] [spawner-16]: sending signal 'SIGINT' to process[spawner-16]
+[INFO] [demo_obstacle-15]: sending signal 'SIGINT' to process[demo_obstacle-15]
+[INFO] [profile_supervisor-14]: sending signal 'SIGINT' to process[profile_supervisor-14]
+[INFO] [robot_state_publisher-12]: sending signal 'SIGINT' to process[robot_state_publisher-12]
+[INFO] [profile_supervisor-11]: sending signal 'SIGINT' to process[profile_supervisor-11]
+[INFO] [robot_state_publisher-9]: sending signal 'SIGINT' to process[robot_state_publisher-9]
+[INFO] [profile_supervisor-8]: sending signal 'SIGINT' to process[profile_supervisor-8]
+[INFO] [robot_state_publisher-6]: sending signal 'SIGINT' to process[robot_state_publisher-6]
+[INFO] [profile_supervisor-5]: sending signal 'SIGINT' to process[profile_supervisor-5]
+[INFO] [robot_state_publisher-3]: sending signal 'SIGINT' to process[robot_state_publisher-3]
+[INFO] [parameter_bridge-2]: sending signal 'SIGINT' to process[parameter_bridge-2]
+[INFO] [ign-1]: sending signal 'SIGINT' to process[ign-1]
+[robot_state_publisher-12] [INFO] [1794034794.319759683] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[robot_state_publisher-9] [INFO] [1794034794.330560556] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[robot_state_publisher-6] [INFO] [1794034794.336934458] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[robot_state_publisher-3] [INFO] [1794034794.349791073] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[parameter_bridge-2] [INFO] [1794034794.352768910] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[ign-1] [INFO] [1794034794.357010934] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[INFO] [robot_state_publisher-12]: process has finished cleanly [pid 119893]
+[INFO] [robot_state_publisher-9]: process has finished cleanly [pid 119881]
+[INFO] [robot_state_publisher-6]: process has finished cleanly [pid 119872]
+[INFO] [robot_state_publisher-3]: process has finished cleanly [pid 119866]
+[INFO] [parameter_bridge-2]: process has finished cleanly [pid 119864]
+[INFO] [spawner-19]: process has finished cleanly [pid 120113]
+[INFO] [spawner-18]: process has finished cleanly [pid 120101]
+[INFO] [spawner-16]: process has finished cleanly [pid 120087]
+[INFO] [demo_obstacle-15]: process has finished cleanly [pid 119904]
+[INFO] [spawner-17]: process has finished cleanly [pid 120089]
+[INFO] [profile_supervisor-14]: process has finished cleanly [pid 119900]
+[INFO] [profile_supervisor-5]: process has finished cleanly [pid 119870]
+[INFO] [profile_supervisor-11]: process has finished cleanly [pid 119890]
+[INFO] [profile_supervisor-8]: process has finished cleanly [pid 119878]
+[ERROR] [ign-1]: process[ign-1] failed to terminate '5' seconds after receiving 'SIGINT', escalating to 'SIGTERM'
+[INFO] [ign-1]: sending signal 'SIGTERM' to process[ign-1]
+[ign-1] [INFO] [1794034799.317863678] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[ERROR] [ign-1]: process[ign-1] failed to terminate '10.0' seconds after receiving 'SIGTERM', escalating to 'SIGKILL'
+[INFO] [ign-1]: sending signal 'SIGKILL' to process[ign-1]
+[ERROR] [ign-1]: process has died [pid 119862, exit code -9, cmd 'ign gazebo -r -v 2 -s /home/luis/Escritorio/TESIS_JACO2/IMPLEMENTACION_ROS2_CORE/install/thesis_multi_robot/share/thesis_multi_robot/worlds/cell.sdf'].

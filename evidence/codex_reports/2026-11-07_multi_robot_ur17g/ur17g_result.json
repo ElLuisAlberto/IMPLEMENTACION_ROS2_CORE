@@ -1,0 +1,10 @@
+{
+  "robot": "ur17g",
+  "domain": 88,
+  "runtime": "/tmp/thesis_validate_eoeyft2e",
+  "checks": [
+    "all robot states fresh; all supervisors ALLOW"
+  ],
+  "pass": false,
+  "error": "AssertionError: ur17g: inactive controllers {'joint_state_broadcaster'}"
+}

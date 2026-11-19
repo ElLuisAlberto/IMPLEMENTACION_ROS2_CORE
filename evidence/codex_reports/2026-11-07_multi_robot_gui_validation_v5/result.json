@@ -1,0 +1,20 @@
+{
+  "domain": 94,
+  "runtime": "/tmp/thesis_gui_validate_re1fkim0",
+  "checks": [
+    "GUI backend discovered four fresh profiles in ALLOW",
+    "all profile controllers are active",
+    "jaco2: GUI candidate routed only to selected profile and returned",
+    "ur17g: GUI candidate routed only to selected profile and returned",
+    "tm25s: GUI candidate routed only to selected profile and returned",
+    "p3020: GUI candidate routed only to selected profile and returned",
+    "Qt entry point stayed alive offscreen with the four-profile manifest"
+  ],
+  "pass": true,
+  "dofs": {
+    "jaco2": 6,
+    "ur17g": 6,
+    "tm25s": 6,
+    "p3020": 5
+  }
+}

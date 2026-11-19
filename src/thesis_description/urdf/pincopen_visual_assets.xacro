@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<!--
+  Reusable visual-only building block for the staged PincOpen assets.
+
+  This macro intentionally declares neither collision nor inertial geometry.
+  A caller must first supply a transform measured from the validated Inventor
+  assembly. It is not included by the active JACO2 description.
+-->
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+  <xacro:macro name="pincopen_visual_link"
+      params="name parent joint_name mesh_file xyz:='0 0 0' rpy:='0 0 0'">
+    <link name="${name}">
+      <visual>
+        <geometry>
+          <mesh filename="package://thesis_description/meshes/pincopen/original_mm/${mesh_file}"
+                scale="0.001 0.001 0.001"/>
+        </geometry>
+      </visual>
+    </link>
+    <joint name="${joint_name}" type="fixed">
+      <parent link="${parent}"/>
+      <child link="${name}"/>
+      <origin xyz="${xyz}" rpy="${rpy}"/>
+    </joint>
+  </xacro:macro>
+</robot>

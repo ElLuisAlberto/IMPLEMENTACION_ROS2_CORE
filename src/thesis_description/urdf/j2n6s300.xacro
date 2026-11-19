@@ -18,6 +18,12 @@
 
     <xacro:include filename="$(find thesis_description)/urdf/kinova_common.xacro" />
     <xacro:include filename="$(find thesis_description)/urdf/kinova_finger_set.xacro" />
+    <xacro:include filename="$(find thesis_description)/urdf/thesis_gripper_interface.xacro" />
+    <xacro:include filename="$(find thesis_description)/urdf/thesis_gripper_fixture.xacro" />
+    <xacro:include filename="$(find thesis_description)/urdf/synthetic_gripper.xacro" />
+    <!-- Visual PincOpen assets are staged only; no tool mode invokes them until
+         the mounting transform and safety geometry are validated. -->
+    <xacro:include filename="$(find thesis_description)/urdf/pincopen_visual_assets.xacro" />
 
     <!-- Import all Gazebo-customization elements -->
     <xacro:include filename="$(find thesis_description)/urdf/kinova.gazebo" />
@@ -120,7 +126,15 @@
 
 
 
-    <xacro:macro name="j2n6s300" params="base_parent prefix:=j2n6s300">
+    <xacro:macro name="j2n6s300"
+        params="base_parent prefix:=j2n6s300 tool_mode:=legacy
+                tool_mount_xyz:='0 0 0' tool_mount_rpy:='0 0 0'
+                tool_tcp_xyz:='0 0 0' tool_tcp_rpy:='0 0 0'">
+
+        <!-- Referencing this property from every branch makes invalid modes
+             fail during expansion instead of silently producing no tool. -->
+        <xacro:property name="validated_tool_mode"
+            value="${tool_mode if tool_mode in ['legacy', 'interface', 'fixture', 'synthetic_gripper'] else 1 / 0}"/>
 
         <!--
         Legacy Gazebo Classic ros_control plugin disabled.
@@ -152,7 +166,25 @@
         <xacro:kinova_virtual_link link_name="${prefix}_end_effector"/>
         <xacro:kinova_virtual_joint joint_name="${prefix}_joint_end_effector" type="${joint_end_effector_type}" parent="${prefix}_link_6" child="${prefix}_end_effector" joint_axis_xyz="${joint_end_effector_axis_xyz}" joint_origin_xyz="${joint_end_effector_origin_xyz}" joint_origin_rpy="${joint_end_effector_origin_rpy}" joint_lower_limit="0" joint_upper_limit="0"/>
 
-    <xacro:kinova_3fingers link_hand="${prefix}_link_6" prefix="${prefix}_"/>
+        <xacro:if value="${validated_tool_mode == 'legacy'}">
+          <xacro:kinova_3fingers
+              link_hand="${prefix}_link_6" prefix="${prefix}_"/>
+        </xacro:if>
+        <xacro:if value="${validated_tool_mode in ['interface', 'fixture', 'synthetic_gripper']}">
+          <xacro:thesis_gripper_interface
+              parent="${prefix}_end_effector"
+              prefix="${prefix}"
+              mount_xyz="${tool_mount_xyz}"
+              mount_rpy="${tool_mount_rpy}"
+              tcp_xyz="${tool_tcp_xyz}"
+              tcp_rpy="${tool_tcp_rpy}"/>
+        </xacro:if>
+        <xacro:if value="${validated_tool_mode == 'fixture'}">
+          <xacro:thesis_gripper_fixture prefix="${prefix}"/>
+        </xacro:if>
+        <xacro:if value="${validated_tool_mode == 'synthetic_gripper'}">
+          <xacro:synthetic_gripper prefix="${prefix}"/>
+        </xacro:if>
     </xacro:macro>
 
 

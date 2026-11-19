@@ -1,0 +1,10 @@
+check,value,status,notes
+source_assembly,SISTEMA_GRIPPER_INSTRUMENTADO_JACO2.iam,pass,Opened under DISEÑOS_CAD_GENERAL.ipj with all direct references resolved
+export_file,ros2_ws/src/sistema_gripper_instrumentado_description/models/sistema_gripper_instrumentado/meshes/sistema_gripper_instrumentado.glb,pass,Exported directly by Autodesk Inventor glTF translator
+gltf_version,2.0,pass,Validated from GLB header and JSON chunk
+node_count,802,pass,Assembly and solid hierarchy in exported GLB
+mesh_count,461,pass,Validated from GLB JSON
+material_count,113,pass,Inventor appearances retained in GLB
+texture_count,1,pass,Embedded in GLB
+length_conversion,0.01,pass,Mesh root transform converts Inventor internal cm coordinates to metres
+gazebo_visual_uri,model://sistema_gripper_instrumentado/meshes/sistema_gripper_instrumentado.glb,configured,model.sdf visual uses coloured GLB; collision uses high quality STL

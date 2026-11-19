@@ -19,10 +19,14 @@ from thesis_core.cartesian_kinematics import (
 )
 from thesis_core.jaco_kinematics import end_effector_transform
 from thesis_core.joint_model import (
+    CONTINUOUS_JOINTS,
     JOINT_NAMES,
+    JOINT_POSITION_LIMITS,
+    JOINT_VELOCITY_LIMITS,
     saturate_target_by_velocity,
     shortest_joint_delta,
 )
+from thesis_core.robot_profile import load_robot_profile
 from thesis_core.ros_runtime import spin_node
 from thesis_interfaces.msg import JointCommand
 import tf2_ros
@@ -34,6 +38,10 @@ from thesis_simulation.cartesian_jog_model import (
     limit_twist_acceleration,
     validate_world_twist,
 )
+from thesis_simulation.profile_cartesian import (
+    CartesianProfileModel,
+    position_only_is_permitted,
+)
 
 
 class CartesianJogAdapter(Node):
@@ -41,6 +49,8 @@ class CartesianJogAdapter(Node):
 
     def __init__(self):
         super().__init__('cartesian_jog_adapter')
+        self.declare_parameter('manifest_path', '')
+        self.declare_parameter('robot_name', 'jaco2')
         self.declare_parameter('maximum_state_age_sec', 0.50)
         self.declare_parameter('horizon_sec', 1.0)
         self.declare_parameter('integration_step_sec', 0.10)
@@ -131,6 +141,21 @@ class CartesianJogAdapter(Node):
             raise ValueError('Cartesian JOG horizon must belong to [0.1, 2.0]')
         if self.integration_step_sec > self.horizon_sec:
             raise ValueError('Cartesian JOG integration step exceeds horizon')
+
+        manifest_path = str(self.get_parameter('manifest_path').value)
+        robot_name = str(self.get_parameter('robot_name').value)
+        self.robot_profile = load_robot_profile(
+            manifest_path or None, robot_name
+        )
+        self.joint_names = self.robot_profile.joint_names
+        self.position_limits = self.robot_profile.joint_position_limits
+        self.velocity_limits = self.robot_profile.joint_velocity_limits
+        self.continuous_joints = self.robot_profile.continuous_joints
+        self.world_frame = self.robot_profile.world_frame
+        self.tip_link = self.robot_profile.tip_link
+        self.cartesian_model = CartesianProfileModel(
+            self.robot_profile, legacy_jaco2=not manifest_path
+        )
 
         self.positions = {}
         self.state_received_at = None
@@ -236,22 +261,25 @@ class CartesianJogAdapter(Node):
         positions = {
             name: float(value)
             for name, value in zip(message.name, message.position)
-            if name in JOINT_NAMES and math.isfinite(value)
+            if name in self.joint_names and math.isfinite(value)
         }
-        if all(name in positions for name in JOINT_NAMES):
+        if all(name in positions for name in self.joint_names):
             self.positions = positions
             self.state_received_at = time.monotonic()
 
     def current_joint_vector(self):
         if self.state_received_at is None:
             return None
-        if time.monotonic() - self.state_received_at > self.maximum_state_age_sec:
+        if (
+            time.monotonic() - self.state_received_at
+            > self.maximum_state_age_sec
+        ):
             return None
-        return tuple(self.positions[name] for name in JOINT_NAMES)
+        return tuple(self.positions[name] for name in self.joint_names)
 
     def current_world_transform(self):
         message = self.tf_buffer.lookup_transform(
-            'world', 'j2n6s300_end_effector', Time()
+            self.world_frame, self.tip_link, Time()
         )
         transform = message.transform
         return transform_from_translation_quaternion(
@@ -280,7 +308,9 @@ class CartesianJogAdapter(Node):
         message = JointCommand()
         message.stamp = source_stamp
         message.command_id = self.jog_command_id
-        message.joint_names = list(JOINT_NAMES)
+        message.joint_names = list(
+            getattr(self, 'joint_names', JOINT_NAMES)
+        )
         message.positions = list(positions)
         whole_seconds = int(self.horizon_sec)
         message.duration.sec = whole_seconds
@@ -290,8 +320,11 @@ class CartesianJogAdapter(Node):
         self.command_publisher.publish(message)
 
     def receive_twist(self, message):
-        if message.header.frame_id != 'world':
-            self.warn_limited('frame_id debe ser world.')
+        world_frame = getattr(self, 'world_frame', 'world')
+        if message.header.frame_id != world_frame:
+            self.warn_limited(
+                f'frame_id debe ser {world_frame}.'
+            )
             return
         current = self.current_joint_vector()
         if current is None:
@@ -365,33 +398,73 @@ class CartesianJogAdapter(Node):
                 angular,
                 integration_step,
             )
-            current_model = end_effector_transform(current)
+            cartesian_model = getattr(self, 'cartesian_model', None)
+            current_model = (
+                end_effector_transform(current)
+                if cartesian_model is None
+                else cartesian_model.forward(current)
+            )
             model_target = align_relative_target(
                 current_world, target_world, current_model
             )
-            result = solve_inverse_kinematics_transform(
-                current,
-                model_target,
-                position_tolerance_m=self.position_tolerance_m,
-                orientation_tolerance_rad=self.orientation_tolerance_rad,
-            )
+            orientation_motion = math.sqrt(
+                sum(value * value for value in angular)
+            ) * integration_step
+            if cartesian_model is None:
+                result = solve_inverse_kinematics_transform(
+                    current,
+                    model_target,
+                    position_tolerance_m=self.position_tolerance_m,
+                    orientation_tolerance_rad=self.orientation_tolerance_rad,
+                )
+            else:
+                result = cartesian_model.inverse(
+                    current,
+                    model_target,
+                    self.position_tolerance_m,
+                    self.orientation_tolerance_rad,
+                    position_only=position_only_is_permitted(
+                        self.robot_profile, orientation_motion
+                    ),
+                )
         except (ValueError, tf2_ros.TransformException) as exception:
             self.warn_limited(str(exception))
             self.publish_hold_and_reset(message.header.stamp, current)
             return
         if not result.success:
+            solver_detail = str(getattr(result, 'detail', '')).strip()
+            detail = (
+                f' ({solver_detail})'
+                if solver_detail else ''
+            )
             self.warn_limited(
-                'IK local sin solución; '
+                f'IK local sin solución{detail}; '
                 f'error={result.position_error_m:.4f} m, '
                 f'{math.degrees(result.orientation_error_rad):.2f} deg.'
             )
             self.publish_hold_and_reset(message.header.stamp, current)
             return
+        joint_names = getattr(self, 'joint_names', JOINT_NAMES)
+        position_limits = getattr(
+            self, 'position_limits', JOINT_POSITION_LIMITS
+        )
+        velocity_limits = getattr(
+            self, 'velocity_limits', JOINT_VELOCITY_LIMITS
+        )
+        continuous_joints = getattr(
+            self, 'continuous_joints', CONTINUOUS_JOINTS
+        )
         local_velocities = tuple(
-            shortest_joint_delta(name, target, start)
+            shortest_joint_delta(
+                name,
+                target,
+                start,
+                position_limits=position_limits,
+                continuous_joints=continuous_joints,
+            )
             / integration_step
             for name, start, target in zip(
-                JOINT_NAMES, current, result.positions
+                joint_names, current, result.positions
             )
         )
         horizon_target = tuple(
@@ -400,7 +473,13 @@ class CartesianJogAdapter(Node):
         )
         try:
             saturation = saturate_target_by_velocity(
-                current, horizon_target, self.horizon_sec
+                current,
+                horizon_target,
+                self.horizon_sec,
+                joint_names=joint_names,
+                position_limits=position_limits,
+                velocity_limits=velocity_limits,
+                continuous_joints=continuous_joints,
             )
         except ValueError as exception:
             self.warn_limited(str(exception))

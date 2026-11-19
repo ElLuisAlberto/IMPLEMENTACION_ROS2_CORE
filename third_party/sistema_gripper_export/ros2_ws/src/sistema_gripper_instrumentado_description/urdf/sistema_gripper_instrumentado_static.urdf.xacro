@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<!-- Complete system visual in saved Inventor pose. The STL is in mm. -->
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="sistema_gripper_instrumentado">
+  <xacro:arg name="mesh_scale" default="0.001"/>
+  <xacro:property name="mesh_uri" value="package://sistema_gripper_instrumentado_description/models/sistema_gripper_instrumentado/meshes/sistema_gripper_instrumentado.stl"/>
+  <link name="sistema_gripper_base">
+    <visual>
+      <geometry>
+        <mesh filename="${mesh_uri}" scale="${mesh_scale} ${mesh_scale} ${mesh_scale}"/>
+      </geometry>
+      <material name="stl_fallback_gray"><color rgba="0.70 0.70 0.70 1.0"/></material>
+    </visual>
+    <collision>
+      <geometry>
+        <mesh filename="${mesh_uri}" scale="${mesh_scale} ${mesh_scale} ${mesh_scale}"/>
+      </geometry>
+    </collision>
+  </link>
+</robot>

@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<!-- Static visual import. It purposely has no joints or actuator plugin. -->
+<sdf version="1.9">
+  <model name="gripper_instrumentado">
+    <static>true</static>
+    <link name="gripper_base">
+      <inertial>
+        <pose>-0.010155988 0.000289119 0.007553288 0 0 0</pose>
+        <mass>0.167021876</mass>
+        <inertia>
+          <ixx>0.000125076281</ixx><ixy>-0.000003399789</ixy><ixz>0.000000350575</ixz>
+          <iyy>0.000220432356</iyy><iyz>0.000023732197</iyz><izz>0.000286119524</izz>
+        </inertia>
+      </inertial>
+      <visual name="cad_visual">
+        <geometry>
+          <mesh>
+            <uri>model://gripper_instrumentado/meshes/gripper_complete.stl</uri>
+            <scale>0.001 0.001 0.001</scale>
+          </mesh>
+        </geometry>
+      </visual>
+      <collision name="cad_collision">
+        <geometry>
+          <mesh>
+            <uri>model://gripper_instrumentado/meshes/gripper_complete.stl</uri>
+            <scale>0.001 0.001 0.001</scale>
+          </mesh>
+        </geometry>
+      </collision>
+    </link>
+  </model>
+</sdf>

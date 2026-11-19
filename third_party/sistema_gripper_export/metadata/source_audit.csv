@@ -1,0 +1,4 @@
+item,source_relative_path,top_level_occurrences,visible,suppressed,missing_references,units,notes
+System assembly,02_FUENTES_INVENTOR/01_ENSAMBLES/SISTEMA_GRIPPER_INSTRUMENTADO_JACO2.iam,15,15,0,0,mm,Complete source assembly used for all exports
+Electronics module,02_FUENTES_INVENTOR/01_ENSAMBLES/MODULO_ELECTRONICA_PERCEPCION_RGBD.iam,embedded,embedded,embedded,0,mm,Included through the system assembly
+Adaptive gripper,02_FUENTES_INVENTOR/01_ENSAMBLES/GRIPPER_ADAPTATIVO_INSTRUMENTADO.iam,embedded,embedded,embedded,0,mm,Included through the system assembly

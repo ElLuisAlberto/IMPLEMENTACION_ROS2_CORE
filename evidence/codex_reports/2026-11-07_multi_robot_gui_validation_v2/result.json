@@ -1,0 +1,15 @@
+{
+  "domain": 93,
+  "runtime": "/tmp/thesis_gui_validate_6ulbexgc",
+  "checks": [
+    "GUI backend discovered four fresh profiles in ALLOW"
+  ],
+  "pass": false,
+  "dofs": {
+    "jaco2": 6,
+    "ur17g": 6,
+    "tm25s": 6,
+    "p3020": 5
+  },
+  "error": "TimeoutError: jaco2 GUI joint target reached"
+}

@@ -1,0 +1,40 @@
+{
+  "robot": "p3020",
+  "domain": 88,
+  "runtime": "/tmp/thesis_validate_yb9qhk1j",
+  "checks": [
+    "all robot states fresh; all supervisors ALLOW",
+    "p3020: controllers active; 5 joints; FK/TF error=0.000000m",
+    "p3020: supervised +0.02rad and return reached <0.008rad error",
+    "p3020: active goal cancelled on obstacle; hold drift=0.000001rad",
+    "p3020: obstacle overlap rejected with STOP",
+    "p3020: stale obstacle rejected and recovery observed",
+    "operator command_robot.py read live p3020 description and submitted an accepted supervised candidate"
+  ],
+  "pass": true,
+  "operator_cli": {
+    "accepted": true,
+    "command_id": "sim-p3020-ac739f36f9414fb38f342c12188c0125",
+    "command_kind": "joint_delta",
+    "duration_s": 2.0,
+    "execution_confirmed": false,
+    "joint_names": [
+      "p3020_joint_1",
+      "p3020_joint_2",
+      "p3020_joint_3",
+      "p3020_joint_5",
+      "p3020_joint_6"
+    ],
+    "positions_rad": [
+      0.010832845669142287,
+      2.3223801704622994e-10,
+      2.4108254901904947e-09,
+      -2.722578885400059e-07,
+      6.044380953251454e-08
+    ],
+    "reason": "SIMULATION_GOAL_ACCEPTED",
+    "reason_code": "SIMULATION_GOAL_ACCEPTED",
+    "robot": "p3020",
+    "state": "ALLOW"
+  }
+}

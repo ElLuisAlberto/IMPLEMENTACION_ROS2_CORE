@@ -1,0 +1,4 @@
+item,source_relative_path,last_write_local,sha256,revision_property,length_unit,reference_status,notes
+Inventor project,02_FUENTES_INVENTOR/DISEÑOS_CAD_GENERAL.ipj,2026-10-22 10:40:40,TBD_NOT_HASHED,TBD_NOT_APPLICABLE,TBD_NOT_APPLICABLE,loaded,Project used to resolve the assembly references
+Source assembly,02_FUENTES_INVENTOR/01_ENSAMBLES/GRIPPER_ADAPTATIVO_INSTRUMENTADO.iam,2026-10-29 14:38:38,16ECA5D47D53BAC5F1CA3088C31B0F2C4F1482436E617D4BF39B8133CA304C32,empty,mm,all_references_resolved,70 top-level occurrences; 0 missing references
+Reference copy,04_ENSAMBLES/A10_GRIPPER_INSTRUMENTADO.iam,2026-10-29 14:38:38,16ECA5D47D53BAC5F1CA3088C31B0F2C4F1482436E617D4BF39B8133CA304C32,not_reopened_after_hash,mm,byte_identical_to_source,Same SHA-256 and size as source assembly

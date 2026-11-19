@@ -20,6 +20,18 @@ def test_minimum_duration_checks_every_uniform_segment():
     assert minimum_joint_path_duration(path) == pytest.approx(1.0)
 
 
+def test_minimum_duration_accepts_five_axis_profile():
+    """Use profile joint names and limits for an underactuated arm."""
+    names = tuple(f'axis_{index}' for index in range(5))
+    velocity = {name: 0.5 for name in names}
+    limits = {name: (-2.0, 2.0) for name in names}
+    path = ((0.0,) * 5, (0.25, -0.5, 0.0, 0.0, 0.0))
+
+    assert minimum_joint_path_duration(
+        path, names, velocity, limits, ()
+    ) == pytest.approx(1.0)
+
+
 def test_supervised_progress_stops_and_scales():
     assert advance_progress(0.25, 0.0, 1.0, 4.0) == pytest.approx(0.25)
     assert advance_progress(0.25, 0.5, 1.0, 4.0) == pytest.approx(0.375)

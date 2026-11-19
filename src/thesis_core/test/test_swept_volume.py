@@ -49,6 +49,49 @@ def test_rest_volume_equals_current_inflated_capsules():
     assert maximum_endpoint_travel(volume) == 0.0
 
 
+def test_profile_model_accepts_non_six_axis_joint_vector():
+    """Sampling is driven by a profile model, not a JACO2 joint count."""
+    radii = (0.08, 0.04)
+
+    def profile_segments(positions):
+        assert len(positions) == 5
+        return (
+            ((0.0, 0.0, 0.0), (positions[0], 0.0, 0.2)),
+            ((positions[0], 0.0, 0.2), (positions[1], 0.0, 0.5)),
+        )
+
+    volume = build_swept_volume(
+        ((0.0,) * 5, (0.1, 0.2, 0.0, 0.0, 0.0)),
+        0.01,
+        0.04,
+        capsule_radii=radii,
+        segment_function=profile_segments,
+        joint_count=5,
+    )
+
+    assert len(volume.current_capsules) == 2
+    assert tuple(
+        capsule.radius for capsule in volume.current_capsules
+    ) == pytest.approx((0.09, 0.05))
+    assert len(volume.endpoint_traces) == 2
+    assert maximum_endpoint_travel(volume) > 0.0
+
+
+def test_profile_model_rejects_mixed_joint_vector_sizes():
+    def profile_segments(positions):
+        return (((0.0, 0.0, 0.0), (positions[0], 0.0, 0.0)),)
+
+    with pytest.raises(ValueError, match='model joint count'):
+        build_swept_volume(
+            ((0.0,) * 5, (0.0,) * 6),
+            0.01,
+            0.04,
+            capsule_radii=(0.1,),
+            segment_function=profile_segments,
+            joint_count=5,
+        )
+
+
 @pytest.mark.parametrize('delta', (0.20, -0.20))
 def test_joint_one_positive_and_negative_create_swept_motion(delta):
     volume = build_swept_volume(

@@ -2,7 +2,7 @@
 
 from dataclasses import dataclass
 import math
-from typing import Optional, Sequence, Tuple
+from typing import Callable, Optional, Sequence, Tuple
 
 from thesis_core.clearance_geometry import (
     DEGENERATE_SEGMENT_EPSILON_SQ,
@@ -43,6 +43,8 @@ class HorizonClearance:
     first_protective_entry_time: Optional[float]
     first_collision_time: Optional[float]
     sample_clearances: Tuple[float, ...]
+    obstacle_clearances: tuple = ()
+    obstacle_minima: tuple = ()
 
 
 def total_protective_margin(
@@ -179,6 +181,7 @@ def evaluate_capsule_horizon(
     obstacle_velocity: Sequence[float],
     obstacle_radius: float,
     protective_margin: float = DEFAULT_PROTECTIVE_MARGIN_M,
+    *, table=None,
 ) -> HorizonClearance:
     """Evaluate every capsule/sample pair and both safety thresholds."""
     raw_samples = tuple(tuple(sample) for sample in capsule_samples)
@@ -210,6 +213,8 @@ def evaluate_capsule_horizon(
     if not math.isfinite(margin) or margin < 0.0:
         raise ValueError('protective margin must be finite and non-negative')
     results = []
+    sphere_path, table_path = [], []
+    sphere_minimum = table_minimum = None
     for sample_index, (sample_time, segments) in enumerate(
         zip(times, samples)
     ):
@@ -219,7 +224,7 @@ def evaluate_capsule_horizon(
         )
         if not all(math.isfinite(value) for value in predicted_center):
             raise ValueError('predicted obstacle center must be finite')
-        results.append(_minimum_prevalidated_clearance(
+        result = _minimum_prevalidated_clearance(
             segments,
             names,
             radii,
@@ -227,14 +232,27 @@ def evaluate_capsule_horizon(
             obstacle,
             sample_index,
             sample_time,
-        ))
+        )
+        if table is not None:
+            box = table.closest(segments, names, radii, sample_index, sample_time)
+            if sphere_minimum is None or result.clearance < sphere_minimum.clearance:
+                sphere_minimum = result
+            if table_minimum is None or box.clearance < table_minimum.clearance:
+                table_minimum = box
+            sphere_path.append(result.clearance)
+            table_path.append(box.clearance)
+            if box.clearance < result.clearance:
+                result = box
+        results.append(result)
     clearances = tuple(result.clearance for result in results)
     minimum = min(results, key=lambda result: result.clearance)
     return HorizonClearance(
         current=results[0],
         minimum=minimum,
         sample_count=len(samples),
-        evaluated_combinations=len(samples) * len(radii),
+        evaluated_combinations=len(samples) * (
+            len(radii) + (sum(n not in table.excluded for n in names) if table else 0)
+        ),
         protective_margin=margin,
         minimum_protective_clearance=minimum.clearance - margin,
         first_protective_entry_time=interpolated_threshold_crossing_time(
@@ -248,6 +266,8 @@ def evaluate_capsule_horizon(
             0.0,
         ),
         sample_clearances=clearances,
+        obstacle_clearances=(tuple(sphere_path), tuple(table_path)) if table else (),
+        obstacle_minima=(sphere_minimum, table_minimum) if table else (),
     )
 
 
@@ -258,20 +278,48 @@ def evaluate_joint_horizon(
     obstacle_velocity: Sequence[float],
     obstacle_radius: float,
     protective_margin: float = DEFAULT_PROTECTIVE_MARGIN_M,
+    *,
+    capsule_radii: Sequence[float] = CAPSULE_RADII,
+    segment_names: Sequence[str] = SEGMENT_NAMES,
+    capsule_function: Callable = capsule_segments,
+    joint_count: int = 6,
+    table=None,
 ) -> HorizonClearance:
-    """Convert joint samples into capsule axes and evaluate the horizon."""
+    """
+    Convert joint samples into capsule axes and evaluate the horizon.
+
+    Defaults preserve the historical JACO2 collision model.  A robot profile
+    can inject its own joint count, capsule names/radii and FK-backed capsule
+    function while retaining the same deterministic clearance policy.
+    """
+    expected_joint_count = int(joint_count)
+    if expected_joint_count <= 0:
+        raise ValueError('joint_count must be greater than zero')
+    if not callable(capsule_function):
+        raise TypeError('capsule_function must be callable')
     samples = tuple(tuple(float(value) for value in sample)
                     for sample in joint_samples)
-    if any(len(sample) != 6 for sample in samples):
-        raise ValueError('every joint sample must contain six positions')
-    capsule_samples = tuple(capsule_segments(sample) for sample in samples)
+    if any(len(sample) != expected_joint_count for sample in samples):
+        raise ValueError(
+            'every joint sample must match the model joint count'
+        )
+    # A stopped horizon contains the same posture at every timestamp.  Compute
+    # its FK once; obstacle positions remain evaluated independently at each
+    # time below, including for moving obstacles.
+    geometry_by_position = {}
+    capsule_samples = []
+    for sample in samples:
+        if sample not in geometry_by_position:
+            geometry_by_position[sample] = tuple(capsule_function(sample))
+        capsule_samples.append(geometry_by_position[sample])
     return evaluate_capsule_horizon(
         capsule_samples,
         sample_times,
-        CAPSULE_RADII,
-        SEGMENT_NAMES,
+        capsule_radii,
+        segment_names,
         obstacle_center,
         obstacle_velocity,
         obstacle_radius,
         protective_margin,
+        table=table,
     )

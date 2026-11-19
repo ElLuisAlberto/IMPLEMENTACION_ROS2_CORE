@@ -3,6 +3,7 @@
 import os
 
 from ament_index_python.packages import get_package_share_directory
+from thesis_core.work_table import SPHERE_HEIGHT
 from launch import LaunchDescription
 from launch.actions import (
     DeclareLaunchArgument,
@@ -10,7 +11,7 @@ from launch.actions import (
 )
 from launch.conditions import IfCondition
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.substitutions import LaunchConfiguration
+from launch.substitutions import LaunchConfiguration, PythonExpression
 from launch_ros.actions import Node
 from launch_ros.parameter_descriptions import ParameterValue
 
@@ -41,6 +42,7 @@ def generate_launch_description():
             'obstacle_x': obstacle_x,
             'obstacle_y': obstacle_y,
             'obstacle_z': obstacle_z,
+            'obstacle_radius': LaunchConfiguration('obstacle_radius'),
             'initial_pose': initial_pose,
             'start_rviz': start_rviz,
             'headless': headless,
@@ -54,6 +56,7 @@ def generate_launch_description():
         launch_arguments={
             'simulation_output_enabled': simulation_output_enabled,
             'require_proximity_status': 'true',
+            'mounted_table': 'true',
             'use_sim_time': use_sim_time,
         }.items(),
     )
@@ -63,7 +66,11 @@ def generate_launch_description():
         executable='obstacle_demo_source',
         name='obstacle_demo_source',
         output='screen',
-        condition=IfCondition(LaunchConfiguration('use_demo_obstacle')),
+        condition=IfCondition(PythonExpression([
+            "'", obstacle_source_mode, "' == 'topic' and '",
+            LaunchConfiguration('use_demo_obstacle'),
+            "'.lower() in ('true', '1')",
+        ])),
         parameters=[{
             'use_sim_time': ParameterValue(
                 use_sim_time, value_type=bool
@@ -121,6 +128,7 @@ def generate_launch_description():
             ),
             'require_system_readiness': True,
             'operation_mode': 'simulation',
+            'obstacle_source_mode': obstacle_source_mode,
             'allow_hardware_arm_control': False,
         }],
     )
@@ -179,7 +187,7 @@ def generate_launch_description():
             'maximum_angular_ik_step_rad': 0.0174532925,
             'maximum_linear_speed_mps': 0.15,
             'maximum_angular_speed_radps': 0.5235987756,
-            'position_tolerance_m': 0.003,
+            'position_tolerance_m': 0.0002,
             'orientation_tolerance_rad': 0.0017453293,
         }],
     )
@@ -210,14 +218,15 @@ def generate_launch_description():
             description='Use the Gazebo simulation clock.',
         ),
         DeclareLaunchArgument(
-            'obstacle_source_mode', default_value='topic',
-            description='Obstacle source consumed by the proximity monitor.',
+            'obstacle_source_mode', default_value='gazebo',
+            choices=('gazebo', 'topic'),
+            description='Gazebo follows the visible sphere; topic uses an estimate.',
         ),
         DeclareLaunchArgument(
             'use_demo_obstacle', default_value='true',
             description=(
-                'Publish a synthetic obstacle for integration testing. '
-                'Set false when a real perception source publishes the input.'
+                'In topic mode only, publish a fixed synthetic obstacle. '
+                'Set false when a perception source publishes the input.'
             ),
         ),
         DeclareLaunchArgument(
@@ -229,18 +238,21 @@ def generate_launch_description():
             description='Obstacle Y coordinate in world, metres.',
         ),
         DeclareLaunchArgument(
-            'obstacle_z', default_value='0.65',
+            'obstacle_z', default_value=str(SPHERE_HEIGHT),
             description='Obstacle Z coordinate in world, metres.',
         ),
         DeclareLaunchArgument(
             'initial_pose',
-            default_value='default',
+            default_value='z_ready',
             choices=('default', 'z_ready'),
-            description='Initial Gazebo joint pose preset.',
+            description=(
+                'Initial Gazebo joint pose preset; z_ready avoids the '
+                'Cartesian-JOG singularity.'
+            ),
         ),
         DeclareLaunchArgument(
             'obstacle_radius', default_value='0.12',
-            description='Synthetic obstacle radius, metres.',
+            description='Gazebo sphere or topic estimate radius, metres.',
         ),
         DeclareLaunchArgument(
             'obstacle_uncertainty', default_value='0.02',

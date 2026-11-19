@@ -1,6 +1,8 @@
 import math
+import time
 
 import rclpy
+from rclpy.clock import Clock, ClockType
 from rclpy.duration import Duration
 from rclpy.node import Node
 from rclpy.qos import DurabilityPolicy, QoSProfile, ReliabilityPolicy
@@ -10,7 +12,6 @@ from geometry_msgs.msg import Point, Quaternion
 from tf2_ros import Buffer, TransformException, TransformListener
 from visualization_msgs.msg import Marker, MarkerArray
 
-from thesis_core.jaco_kinematics import CAPSULE_RADII
 from thesis_core.ros_runtime import spin_node
 from thesis_interfaces.msg import ProximityStatus, TrajectoryPrediction
 
@@ -37,20 +38,58 @@ def quaternion_from_z_axis(dx, dy, dz):
     )
 
 
+def validate_capsule_configuration(
+    segment_names, start_frames, end_frames, radii, color,
+):
+    """Validate one profile's RViz capsule-marker configuration."""
+    segment_count = len(segment_names)
+    sizes = (
+        segment_count,
+        len(start_frames),
+        len(end_frames),
+        len(radii),
+    )
+    if segment_count == 0 or len(set(sizes)) != 1:
+        raise ValueError(
+            'segment_names, segment_start_frames, '
+            'segment_end_frames and segment_radii must have '
+            'the same non-zero length'
+        )
+    if any(
+        not math.isfinite(float(radius)) or float(radius) <= 0.0
+        for radius in radii
+    ):
+        raise ValueError(
+            'Every capsule radius must be positive and finite'
+        )
+    if len(color) != 4 or any(
+        not math.isfinite(float(channel)) for channel in color
+    ):
+        raise ValueError('color_rgba must contain four finite values')
+
+
 class CapsuleVisualizer(Node):
-    """Publish shared JACO2 link capsules as RViz markers."""
+    """Publish a configured robot profile's capsules as RViz markers."""
 
     def __init__(self):
         super().__init__('capsule_visualizer')
 
+        self.per_obstacle_markers = self.declare_parameter('per_obstacle_markers', False).value
         self.declare_parameter('reference_frame', 'world')
         self.declare_parameter('publish_rate_hz', 20.0)
         self.declare_parameter('marker_topic', '/thesis/robot_capsules')
+        self.declare_parameter(
+            'proximity_topic', '/thesis/proximity_status'
+        )
+        self.declare_parameter(
+            'prediction_topic', '/thesis/trajectory_prediction'
+        )
         self.declare_parameter('segment_names', ['segment'])
         self.declare_parameter('segment_start_frames', ['world'])
         self.declare_parameter('segment_end_frames', ['world'])
         self.declare_parameter('segment_radii', [0.05])
         self.declare_parameter('color_rgba', [0.05, 0.80, 0.35, 0.38])
+        self.declare_parameter('max_evidence_age_sec', 0.5)
 
         self.reference_frame = str(
             self.get_parameter('reference_frame').value
@@ -74,6 +113,13 @@ class CapsuleVisualizer(Node):
         ]
         self.proximity_status = None
         self.trajectory_prediction = None
+        self.max_evidence_age = float(self.get_parameter('max_evidence_age_sec').value)
+        if not math.isfinite(self.max_evidence_age) or self.max_evidence_age <= 0:
+            raise ValueError('max_evidence_age_sec must be positive and finite')
+        self.proximity_received = None
+        self.prediction_received = None
+        self.last_clock_ns = None
+        self.clock_changed_at = time.monotonic()
         self.state_colors = {
             'ALLOW': [0.05, 0.80, 0.35, 0.38],
             'WARNING': [1.00, 0.82, 0.05, 0.70],
@@ -96,13 +142,13 @@ class CapsuleVisualizer(Node):
         )
         self.proximity_subscription = self.create_subscription(
             ProximityStatus,
-            '/thesis/proximity_status',
+            str(self.get_parameter('proximity_topic').value),
             self.proximity_callback,
             10,
         )
         self.prediction_subscription = self.create_subscription(
             TrajectoryPrediction,
-            '/thesis/trajectory_prediction',
+            str(self.get_parameter('prediction_topic').value),
             self.prediction_callback,
             10,
         )
@@ -116,9 +162,11 @@ class CapsuleVisualizer(Node):
         )
         if publish_rate <= 0.0:
             raise ValueError('publish_rate_hz must be greater than zero')
+        self.steady_clock = Clock(clock_type=ClockType.STEADY_TIME)
         self.timer = self.create_timer(
             1.0 / publish_rate,
             self.publish_capsules,
+            clock=self.steady_clock,
         )
 
         self.get_logger().info(
@@ -127,33 +175,13 @@ class CapsuleVisualizer(Node):
         )
 
     def _validate_configuration(self):
-        segment_count = len(self.segment_names)
-        sizes = (
-            segment_count,
-            len(self.start_frames),
-            len(self.end_frames),
-            len(self.radii),
+        validate_capsule_configuration(
+            self.segment_names,
+            self.start_frames,
+            self.end_frames,
+            self.radii,
+            self.color,
         )
-        if segment_count == 0 or len(set(sizes)) != 1:
-            raise ValueError(
-                'segment_names, segment_start_frames, '
-                'segment_end_frames and segment_radii must have '
-                'the same non-zero length'
-            )
-        if any(radius <= 0.0 for radius in self.radii):
-            raise ValueError('Every capsule radius must be greater than zero')
-        if (
-            len(self.radii) != len(CAPSULE_RADII)
-            or any(
-                not math.isclose(actual, expected, abs_tol=1.0e-12)
-                for actual, expected in zip(self.radii, CAPSULE_RADII)
-            )
-        ):
-            raise ValueError(
-                'segment_radii must match the canonical proximity model'
-            )
-        if len(self.color) != 4:
-            raise ValueError('color_rgba must contain four values')
 
     def _frame_point(self, frame_name):
         transform = self.tf_buffer.lookup_transform(
@@ -161,6 +189,12 @@ class CapsuleVisualizer(Node):
             frame_name,
             Time(),
         )
+        stamp_ns = (transform.header.stamp.sec * 1_000_000_000
+                    + transform.header.stamp.nanosec)
+        if stamp_ns:
+            age = (self.get_clock().now().nanoseconds - stamp_ns) / 1e9
+            if not -0.05 <= age <= self.max_evidence_age:
+                raise TransformException('Transform is stale or in the future')
         translation = transform.transform.translation
         return Point(
             x=translation.x,
@@ -170,9 +204,19 @@ class CapsuleVisualizer(Node):
 
     def proximity_callback(self, message):
         self.proximity_status = message
+        self.proximity_received = time.monotonic()
 
     def prediction_callback(self, message):
         self.trajectory_prediction = message
+        self.prediction_received = time.monotonic()
+
+    def _fresh(self, message, received, now, ros_ns):
+        if message is None or received is None:
+            return False
+        stamp_ns = message.stamp.sec * 1000000000 + message.stamp.nanosec
+        age = (ros_ns - stamp_ns) / 1e9
+        return (stamp_ns > 0 and -0.05 <= age <= self.max_evidence_age
+                and now - received <= self.max_evidence_age)
 
     def _base_marker(
         self,
@@ -273,7 +317,7 @@ class CapsuleVisualizer(Node):
         ]
 
     def _proximity_markers(self):
-        if self.proximity_status is None:
+        if self.per_obstacle_markers or self.proximity_status is None:
             return []
 
         status = self.proximity_status
@@ -468,13 +512,31 @@ class CapsuleVisualizer(Node):
         return [cylinder, *spheres, label, witness_line, *witnesses]
 
     def publish_capsules(self):
-        markers = []
+        now = time.monotonic()
+        ros_ns = self.get_clock().now().nanoseconds
+        previous = self.last_clock_ns
+        if previous is None or ros_ns != previous:
+            self.clock_changed_at = now
+        reversed_clock = previous is not None and ros_ns < previous
+        self.last_clock_ns = ros_ns
+        frozen = (bool(self.get_parameter('use_sim_time').value) and
+                  (ros_ns <= 0 or now - self.clock_changed_at > self.max_evidence_age))
+        if reversed_clock or frozen:
+            self.proximity_status = None
+            self.trajectory_prediction = None
+        if not self._fresh(self.proximity_status, self.proximity_received, now, ros_ns):
+            self.proximity_status = None
+        if not self._fresh(self.trajectory_prediction, self.prediction_received, now, ros_ns):
+            self.trajectory_prediction = None
+        clear = Marker()
+        clear.action = Marker.DELETEALL
+        markers = [clear]
         unavailable = set()
 
         for index, (start_frame, end_frame, radius) in enumerate(zip(
                 self.start_frames,
                 self.end_frames,
-                self.radii)):
+                self.radii) if not frozen and not reversed_clock else ()):
             try:
                 start = self._frame_point(start_frame)
                 end = self._frame_point(end_frame)
@@ -498,12 +560,12 @@ class CapsuleVisualizer(Node):
                 )
             self.missing_frames = unavailable
 
-        if markers:
+        if len(markers) > 1:
             markers.extend(self._proximity_markers())
             markers.extend(self._prediction_markers())
-            message = MarkerArray()
-            message.markers = markers
-            self.publisher.publish(message)
+        message = MarkerArray()
+        message.markers = markers
+        self.publisher.publish(message)
 
 
 def main(args=None):

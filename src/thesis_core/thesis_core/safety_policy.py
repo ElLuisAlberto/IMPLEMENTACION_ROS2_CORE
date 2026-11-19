@@ -38,6 +38,7 @@ class SafetyPolicyInput:
     proximity_valid: bool = True
     prediction_valid: bool = True
     withdrawal_safe: bool = False
+    predictive_threshold: float | None = None
 
 
 @dataclass(frozen=True)
@@ -105,6 +106,15 @@ def maximum_safe_scale(
         else:
             high = candidate
 
+    # The configured minimum can lie between the last safe and unsafe
+    # samples. Test it directly before declaring the search infeasible.
+    if low < minimum < high:
+        clearance = _finite(
+            'clearance_at_scale(minimum)', clearance_at_scale(minimum)
+        )
+        if clearance >= margin:
+            return ScaleSearchResult(minimum, clearance, True, iterations)
+
     feasible = low >= minimum
     return ScaleSearchResult(low, low_clearance, feasible, iterations)
 
@@ -130,12 +140,16 @@ def decide_preventive_state(data: SafetyPolicyInput) -> SafetyDecision:
         minimum = _finite('minimum_scale', data.minimum_scale)
         candidate = _finite('candidate_scale', data.candidate_scale)
         previous = _finite('previous_scale', data.previous_scale)
+        threshold = (margin if data.predictive_threshold is None else
+                     _finite('predictive_threshold', data.predictive_threshold))
     except (TypeError, ValueError):
         return SafetyDecision('STOP', 0.0, 'NUMERIC_ERROR')
 
     if not _valid_event_time(float(data.nominal_ttc)):
         return SafetyDecision('STOP', 0.0, 'NUMERIC_ERROR')
     if not 0.0 <= margin < stop < warning:
+        return SafetyDecision('STOP', 0.0, 'INVALID_THRESHOLDS')
+    if not margin <= threshold < warning:
         return SafetyDecision('STOP', 0.0, 'INVALID_THRESHOLDS')
     if not 0.0 < minimum <= 1.0:
         return SafetyDecision('STOP', 0.0, 'INVALID_THRESHOLDS')
@@ -149,10 +163,10 @@ def decide_preventive_state(data: SafetyPolicyInput) -> SafetyDecision:
             )
         return SafetyDecision('STOP', 0.0, 'CURRENT_CLEARANCE_STOP')
 
-    if nominal < margin:
+    if nominal < threshold:
         if candidate < minimum:
             return SafetyDecision('STOP', 0.0, 'NO_SAFE_SCALE')
-        if supervised < margin:
+        if supervised < threshold:
             return SafetyDecision('STOP', 0.0, 'PREDICTION_ERROR')
         return SafetyDecision(
             'REDUCTION', candidate, 'PREDICTIVE_INTRUSION'

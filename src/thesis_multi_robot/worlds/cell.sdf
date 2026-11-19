@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<sdf version="1.8">
+  <world name="thesis_cell">
+    <physics name="1ms" type="ignored">
+      <max_step_size>0.002</max_step_size><real_time_factor>1.0</real_time_factor>
+    </physics>
+    <gravity>0 0 -9.81</gravity>
+    <plugin filename="libignition-gazebo-physics-system.so" name="ignition::gazebo::systems::Physics"/>
+    <plugin filename="libignition-gazebo-user-commands-system.so" name="ignition::gazebo::systems::UserCommands"/>
+    <plugin filename="libignition-gazebo-scene-broadcaster-system.so" name="ignition::gazebo::systems::SceneBroadcaster"/>
+    <light type="directional" name="sun">
+      <pose>0 0 10 0 0 0</pose><direction>-0.5 0.1 -0.9</direction>
+      <diffuse>0.8 0.8 0.8 1</diffuse><specular>0.2 0.2 0.2 1</specular>
+    </light>
+    <model name="ground_plane">
+      <static>true</static><link name="ground">
+        <collision name="floor"><geometry><plane><normal>0 0 1</normal><size>30 30</size></plane></geometry></collision>
+        <visual name="floor"><geometry><plane><normal>0 0 1</normal><size>30 30</size></plane></geometry></visual>
+      </link>
+    </model>
+  </world>
+</sdf>

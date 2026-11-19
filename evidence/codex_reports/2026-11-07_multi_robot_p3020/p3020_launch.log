@@ -1,0 +1,122 @@
+[INFO] [launch]: All log files can be found below /tmp/thesis_validate_n0b3k0rh/ros_logs/2026-11-07-06-15-45-792275-miNave-56437
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [ign-1]: process started with pid [56456]
+[INFO] [parameter_bridge-2]: process started with pid [56458]
+[INFO] [robot_state_publisher-3]: process started with pid [56460]
+[INFO] [create-4]: process started with pid [56462]
+[INFO] [profile_supervisor-5]: process started with pid [56464]
+[robot_state_publisher-3] [INFO] [1794003346.191231496] [p3020.robot_state_publisher]: got segment p3020_base
+[robot_state_publisher-3] [INFO] [1794003346.191323793] [p3020.robot_state_publisher]: got segment p3020_base_link
+[robot_state_publisher-3] [INFO] [1794003346.191330318] [p3020.robot_state_publisher]: got segment p3020_link_1
+[robot_state_publisher-3] [INFO] [1794003346.191334786] [p3020.robot_state_publisher]: got segment p3020_link_2
+[robot_state_publisher-3] [INFO] [1794003346.191338707] [p3020.robot_state_publisher]: got segment p3020_link_3
+[robot_state_publisher-3] [INFO] [1794003346.191342364] [p3020.robot_state_publisher]: got segment p3020_link_4
+[robot_state_publisher-3] [INFO] [1794003346.191345874] [p3020.robot_state_publisher]: got segment p3020_link_5
+[robot_state_publisher-3] [INFO] [1794003346.191349419] [p3020.robot_state_publisher]: got segment p3020_link_6
+[robot_state_publisher-3] [INFO] [1794003346.191353055] [p3020.robot_state_publisher]: got segment world
+[parameter_bridge-2] [INFO] [1794003346.225215787] [cell_clock]: Creating GZ->ROS Bridge: [/clock (ignition.msgs.Clock) -> /clock (rosgraph_msgs/msg/Clock)] (Lazy 0)
+[profile_supervisor-5] Traceback (most recent call last):
+[profile_supervisor-5]   File "/home/luis/Escritorio/TESIS_JACO2/IMPLEMENTACION_ROS2_CORE/install/thesis_multi_robot/lib/thesis_multi_robot/profile_supervisor", line 33, in <module>
+[profile_supervisor-5]     sys.exit(load_entry_point('thesis-multi-robot', 'console_scripts', 'profile_supervisor')())
+[profile_supervisor-5]   File "/home/luis/Escritorio/TESIS_JACO2/IMPLEMENTACION_ROS2_CORE/build/thesis_multi_robot/thesis_multi_robot/supervisor.py", line 118, in main
+[profile_supervisor-5]     from .geometry import capsule_sets_clearance, sphere_clearance, world_capsules
+[profile_supervisor-5] ImportError: cannot import name 'capsule_sets_clearance' from 'thesis_multi_robot.geometry' (/home/luis/Escritorio/TESIS_JACO2/IMPLEMENTACION_ROS2_CORE/build/thesis_multi_robot/thesis_multi_robot/geometry.py)
+[create-4] [INFO] [1794003346.554618846] [spawn_p3020]: Requested creation of entity.
+[create-4] [INFO] [1794003346.554744220] [spawn_p3020]: OK creation of entity.
+[ERROR] [profile_supervisor-5]: process has died [pid 56464, exit code 1, cmd '/home/luis/Escritorio/TESIS_JACO2/IMPLEMENTACION_ROS2_CORE/install/thesis_multi_robot/lib/thesis_multi_robot/profile_supervisor --ros-args -r __node:=profile_supervisor -r __ns:=/p3020 --params-file /tmp/launch_params_4uduxrpe'].
+[INFO] [create-4]: process has finished cleanly [pid 56462]
+[INFO] [spawner-6]: process started with pid [56520]
+[spawner-6] [INFO] [1794003346.840138713] [p3020.spawner_joint_state_broadcaster]: waiting for service /p3020/controller_manager/list_controllers to become available...
+[ign-1] [INFO] [1794003348.373856624] [GazeboSimROS2ControlPlugin]: robot_param_node is robot_state_publisher
+[ign-1] [INFO] [1794003348.373882820] [GazeboSimROS2ControlPlugin]: robot_param_node is robot_description
+[ign-1] [ERROR] [1794003348.888652329] [p3020.gz_ros2_control]: /p3020/robot_state_publisher service not available, waiting again...
+[ign-1] [ERROR] [1794003349.389015993] [p3020.gz_ros2_control]: /p3020/robot_state_publisher service not available, waiting again...
+[ign-1] [INFO] [1794003349.753434521] [p3020.gz_ros2_control]: connected to service!! /p3020/robot_state_publisher asking for robot_description
+[ign-1] [INFO] [1794003349.754004672] [p3020.gz_ros2_control]: Received URDF from param server
+[ign-1] [INFO] [1794003349.754769632] [p3020.gz_ros2_control]: [gz_ros2_control] Fixed joint ['p3020_world_mount'] (Entity='61') is skipped.
+[ign-1] [INFO] [1794003349.757107898] [p3020.gz_ros2_control]: The position_proportional_gain has been set to: 0.1
+[ign-1] [INFO] [1794003349.757174553] [p3020.gz_ros2_control]: Loading joint: p3020_joint_1
+[ign-1] [INFO] [1794003349.757184128] [p3020.gz_ros2_control]: 	State:
+[ign-1] [INFO] [1794003349.757188782] [p3020.gz_ros2_control]: 		 position
+[ign-1] [INFO] [1794003349.757195030] [p3020.gz_ros2_control]: 			 found initial value: 0.000000
+[ign-1] [INFO] [1794003349.757201402] [p3020.gz_ros2_control]: 		 velocity
+[ign-1] [INFO] [1794003349.757205460] [p3020.gz_ros2_control]: 	Command:
+[ign-1] [INFO] [1794003349.757208905] [p3020.gz_ros2_control]: 		 position
+[ign-1] [INFO] [1794003349.757220757] [p3020.gz_ros2_control]: Loading joint: p3020_joint_2
+[ign-1] [INFO] [1794003349.757224626] [p3020.gz_ros2_control]: 	State:
+[ign-1] [INFO] [1794003349.757227833] [p3020.gz_ros2_control]: 		 position
+[ign-1] [INFO] [1794003349.757231409] [p3020.gz_ros2_control]: 			 found initial value: 0.000000
+[ign-1] [INFO] [1794003349.757235187] [p3020.gz_ros2_control]: 		 velocity
+[ign-1] [INFO] [1794003349.757238433] [p3020.gz_ros2_control]: 	Command:
+[ign-1] [INFO] [1794003349.757241587] [p3020.gz_ros2_control]: 		 position
+[ign-1] [INFO] [1794003349.757247921] [p3020.gz_ros2_control]: Loading joint: p3020_joint_3
+[ign-1] [INFO] [1794003349.757251536] [p3020.gz_ros2_control]: 	State:
+[ign-1] [INFO] [1794003349.757254660] [p3020.gz_ros2_control]: 		 position
+[ign-1] [INFO] [1794003349.757257782] [p3020.gz_ros2_control]: 			 found initial value: 0.000000
+[ign-1] [INFO] [1794003349.757261849] [p3020.gz_ros2_control]: 		 velocity
+[ign-1] [INFO] [1794003349.757265241] [p3020.gz_ros2_control]: 	Command:
+[ign-1] [INFO] [1794003349.757268939] [p3020.gz_ros2_control]: 		 position
+[ign-1] [INFO] [1794003349.757276350] [p3020.gz_ros2_control]: Loading joint: p3020_joint_5
+[ign-1] [INFO] [1794003349.757284883] [p3020.gz_ros2_control]: 	State:
+[ign-1] [INFO] [1794003349.757291000] [p3020.gz_ros2_control]: 		 position
+[ign-1] [INFO] [1794003349.757294705] [p3020.gz_ros2_control]: 			 found initial value: 0.000000
+[ign-1] [INFO] [1794003349.757298855] [p3020.gz_ros2_control]: 		 velocity
+[ign-1] [INFO] [1794003349.757302567] [p3020.gz_ros2_control]: 	Command:
+[ign-1] [INFO] [1794003349.757306516] [p3020.gz_ros2_control]: 		 position
+[ign-1] [INFO] [1794003349.757312916] [p3020.gz_ros2_control]: Loading joint: p3020_joint_6
+[ign-1] [INFO] [1794003349.757325091] [p3020.gz_ros2_control]: 	State:
+[ign-1] [INFO] [1794003349.757330473] [p3020.gz_ros2_control]: 		 position
+[ign-1] [INFO] [1794003349.757334715] [p3020.gz_ros2_control]: 			 found initial value: 0.000000
+[ign-1] [INFO] [1794003349.757339260] [p3020.gz_ros2_control]: 		 velocity
+[ign-1] [INFO] [1794003349.757342427] [p3020.gz_ros2_control]: 	Command:
+[ign-1] [INFO] [1794003349.757345587] [p3020.gz_ros2_control]: 		 position
+[ign-1] [INFO] [1794003349.757426258] [resource_manager]: Initialize hardware 'p3020_system' 
+[ign-1] [INFO] [1794003349.757480512] [resource_manager]: Successful initialization of hardware 'p3020_system'
+[ign-1] [INFO] [1794003349.757507319] [resource_manager]: 'configure' hardware 'p3020_system' 
+[ign-1] [INFO] [1794003349.757510946] [p3020.gz_ros2_control]: System Successfully configured!
+[ign-1] [INFO] [1794003349.757520035] [resource_manager]: Successful 'configure' of hardware 'p3020_system'
+[ign-1] [INFO] [1794003349.757524382] [resource_manager]: 'activate' hardware 'p3020_system' 
+[ign-1] [INFO] [1794003349.757529768] [resource_manager]: Successful 'activate' of hardware 'p3020_system'
+[ign-1] [INFO] [1794003349.757533652] [p3020.gz_ros2_control]: Loading controller_manager
+[ign-1] [WARN] [1794003349.864824675] [p3020.gz_ros2_control]:  Desired controller update period (0.01 s) is slower than the gazebo simulation period (0.002 s).
+[ign-1] [INFO] [1794003350.459658794] [p3020.controller_manager]: Loading controller 'joint_state_broadcaster'
+[spawner-6] [INFO] [1794003350.472291178] [p3020.spawner_joint_state_broadcaster]: [94mLoaded [1mjoint_state_broadcaster[0m
+[ign-1] [INFO] [1794003350.473130987] [p3020.controller_manager]: Configuring controller 'joint_state_broadcaster'
+[ign-1] [INFO] [1794003350.473352947] [p3020.joint_state_broadcaster]: 'joints' or 'interfaces' parameter is empty. All available state interfaces will be published
+[spawner-6] [INFO] [1794003350.502140396] [p3020.spawner_joint_state_broadcaster]: [92mConfigured and activated [1mjoint_state_broadcaster[0m
+[INFO] [spawner-6]: process has finished cleanly [pid 56520]
+[INFO] [spawner-7]: process started with pid [56624]
+[ign-1] [INFO] [1794003350.851974458] [p3020.controller_manager]: Loading controller 'arm_controller'
+[ign-1] [WARN] [1794003350.858990145] [p3020.arm_controller]: [Deprecated]: "allow_nonzero_velocity_at_trajectory_end" is set to true. The default behavior will change to false.
+[spawner-7] [INFO] [1794003350.881660001] [p3020.spawner_arm_controller]: [94mLoaded [1marm_controller[0m
+[ign-1] [INFO] [1794003350.882728883] [p3020.controller_manager]: Configuring controller 'arm_controller'
+[ign-1] [INFO] [1794003350.882850442] [p3020.arm_controller]: No specific joint names are used for command interfaces. Using 'joints' parameter.
+[ign-1] [INFO] [1794003350.882865089] [p3020.arm_controller]: Command interfaces are [position] and state interfaces are [position velocity].
+[ign-1] [INFO] [1794003350.882882373] [p3020.arm_controller]: Using 'splines' interpolation method.
+[ign-1] [INFO] [1794003350.883505172] [p3020.arm_controller]: Controller state will be published at 50.00 Hz.
+[ign-1] [INFO] [1794003350.884577084] [p3020.arm_controller]: Action status changes will be monitored at 20.00 Hz.
+[spawner-7] [INFO] [1794003350.909405102] [p3020.spawner_arm_controller]: [92mConfigured and activated [1marm_controller[0m
+[INFO] [spawner-7]: process has finished cleanly [pid 56624]
+[WARNING] [launch]: user interrupted with ctrl-c (SIGINT)
+[INFO] [robot_state_publisher-3]: sending signal 'SIGINT' to process[robot_state_publisher-3]
+[INFO] [parameter_bridge-2]: sending signal 'SIGINT' to process[parameter_bridge-2]
+[INFO] [ign-1]: sending signal 'SIGINT' to process[ign-1]
+[robot_state_publisher-3] [INFO] [1794003374.236344616] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[parameter_bridge-2] [INFO] [1794003374.236342357] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[ERROR] [robot_state_publisher-3]: process has died [pid 56460, exit code -2, cmd '/opt/ros/humble/lib/robot_state_publisher/robot_state_publisher --ros-args -r __node:=robot_state_publisher -r __ns:=/p3020 --params-file /tmp/launch_params_g2nom8hp'].
+[ign-1] [INFO] [1794003374.236455969] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[ign-1] [INFO] [1794003374.236527256] [p3020.controller_manager]: Shutdown request received....
+[ign-1] [INFO] [1794003374.236573987] [p3020.controller_manager]: Shutting down all controllers in the controller manager.
+[ign-1] [INFO] [1794003374.236598683] [p3020.controller_manager]: Deactivating controller 'joint_state_broadcaster'
+[ign-1] [INFO] [1794003374.236633953] [p3020.controller_manager]: Shutting down controller 'joint_state_broadcaster'
+[ign-1] [INFO] [1794003374.236665437] [p3020.controller_manager]: Deactivating controller 'arm_controller'
+[ign-1] [INFO] [1794003374.236699577] [p3020.controller_manager]: Shutting down controller 'arm_controller'
+[ign-1] [INFO] [1794003374.236729755] [resource_manager]: 'deactivate' hardware 'p3020_system' 
+[ign-1] [INFO] [1794003374.236747002] [resource_manager]: Successful 'deactivate' of hardware 'p3020_system'
+[ign-1] [INFO] [1794003374.236750435] [resource_manager]: 'shutdown' hardware 'p3020_system' 
+[ign-1] [INFO] [1794003374.236753884] [resource_manager]: Successful 'shutdown' of hardware 'p3020_system'
+[ign-1] [INFO] [1794003374.236757697] [p3020.controller_manager]: Shutting down the controller manager.
+[parameter_bridge-2] [INFO] [1794003374.239579308] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[ign-1] [INFO] [1794003374.240111603] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[INFO] [parameter_bridge-2]: process has finished cleanly [pid 56458]
+[INFO] [ign-1]: process has finished cleanly [pid 56456]

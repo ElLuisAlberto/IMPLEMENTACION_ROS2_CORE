@@ -1,0 +1,30 @@
+{
+  "domain": 97,
+  "robot": "tm25s",
+  "runtime": "/tmp/thesis_gui_validate_fmc433z2",
+  "checks": [
+    "GUI backend discovered 1 fresh profile(s) in ALLOW",
+    "all profile controllers are active",
+    "tm25s: GUI candidate routed only to selected profile and returned",
+    "Qt entry point stayed alive offscreen with the runtime manifest"
+  ],
+  "pass": true,
+  "dofs": {
+    "tm25s": 6
+  },
+  "node_diagnostics": {
+    "tm25s": {
+      "use_sim_time": true,
+      "clock_nanoseconds": 20332000000,
+      "input_counts": {
+        "joint_state": 2022,
+        "proximity": 203,
+        "decision": 4
+      },
+      "input_errors": {
+        "joint_state": "",
+        "proximity": ""
+      }
+    }
+  }
+}

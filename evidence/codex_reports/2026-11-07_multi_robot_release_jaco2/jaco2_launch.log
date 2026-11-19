@@ -1,0 +1,140 @@
+[INFO] [launch]: All log files can be found below /tmp/thesis_validate_lbgax5n9/ros_logs/2026-11-07-06-34-17-838407-miNave-65575
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [ign-1]: process started with pid [65578]
+[INFO] [parameter_bridge-2]: process started with pid [65580]
+[INFO] [robot_state_publisher-3]: process started with pid [65582]
+[INFO] [create-4]: process started with pid [65584]
+[INFO] [profile_supervisor-5]: process started with pid [65586]
+[robot_state_publisher-3] [INFO] [1794004458.380053806] [jaco2.robot_state_publisher]: got segment jaco2_j2n6s300_end_effector
+[robot_state_publisher-3] [INFO] [1794004458.380120061] [jaco2.robot_state_publisher]: got segment jaco2_j2n6s300_link_1
+[robot_state_publisher-3] [INFO] [1794004458.380125605] [jaco2.robot_state_publisher]: got segment jaco2_j2n6s300_link_2
+[robot_state_publisher-3] [INFO] [1794004458.380129248] [jaco2.robot_state_publisher]: got segment jaco2_j2n6s300_link_3
+[robot_state_publisher-3] [INFO] [1794004458.380132325] [jaco2.robot_state_publisher]: got segment jaco2_j2n6s300_link_4
+[robot_state_publisher-3] [INFO] [1794004458.380135422] [jaco2.robot_state_publisher]: got segment jaco2_j2n6s300_link_5
+[robot_state_publisher-3] [INFO] [1794004458.380138459] [jaco2.robot_state_publisher]: got segment jaco2_j2n6s300_link_6
+[robot_state_publisher-3] [INFO] [1794004458.380141623] [jaco2.robot_state_publisher]: got segment jaco2_j2n6s300_link_base
+[robot_state_publisher-3] [INFO] [1794004458.380144806] [jaco2.robot_state_publisher]: got segment jaco2_j2n6s300_link_finger_1
+[robot_state_publisher-3] [INFO] [1794004458.380147952] [jaco2.robot_state_publisher]: got segment jaco2_j2n6s300_link_finger_2
+[robot_state_publisher-3] [INFO] [1794004458.380150961] [jaco2.robot_state_publisher]: got segment jaco2_j2n6s300_link_finger_3
+[robot_state_publisher-3] [INFO] [1794004458.380154009] [jaco2.robot_state_publisher]: got segment jaco2_j2n6s300_link_finger_tip_1
+[robot_state_publisher-3] [INFO] [1794004458.380157186] [jaco2.robot_state_publisher]: got segment jaco2_j2n6s300_link_finger_tip_2
+[robot_state_publisher-3] [INFO] [1794004458.380160198] [jaco2.robot_state_publisher]: got segment jaco2_j2n6s300_link_finger_tip_3
+[robot_state_publisher-3] [INFO] [1794004458.380163229] [jaco2.robot_state_publisher]: got segment jaco2_root
+[robot_state_publisher-3] [INFO] [1794004458.380166442] [jaco2.robot_state_publisher]: got segment world
+[parameter_bridge-2] [INFO] [1794004458.406108032] [cell_clock]: Creating GZ->ROS Bridge: [/clock (ignition.msgs.Clock) -> /clock (rosgraph_msgs/msg/Clock)] (Lazy 0)
+[create-4] [INFO] [1794004458.716938183] [spawn_jaco2]: Requested creation of entity.
+[create-4] [INFO] [1794004458.717056922] [spawn_jaco2]: OK creation of entity.
+[INFO] [create-4]: process has finished cleanly [pid 65584]
+[INFO] [spawner-6]: process started with pid [65658]
+[spawner-6] [INFO] [1794004458.979456654] [jaco2.spawner_joint_state_broadcaster]: waiting for service /jaco2/controller_manager/list_controllers to become available...
+[ign-1] [INFO] [1794004460.531867535] [GazeboSimROS2ControlPlugin]: robot_param_node is robot_state_publisher
+[ign-1] [INFO] [1794004460.531891764] [GazeboSimROS2ControlPlugin]: robot_param_node is robot_description
+[ign-1] [INFO] [1794004460.879934984] [jaco2.gz_ros2_control]: connected to service!! /jaco2/robot_state_publisher asking for robot_description
+[ign-1] [INFO] [1794004460.880229192] [jaco2.gz_ros2_control]: Received URDF from param server
+[ign-1] [INFO] [1794004460.880761369] [jaco2.gz_ros2_control]: [gz_ros2_control] Fixed joint ['jaco2_world_mount'] (Entity='50') is skipped.
+[ign-1] [INFO] [1794004460.882841437] [jaco2.gz_ros2_control]: The position_proportional_gain has been set to: 0.1
+[ign-1] [INFO] [1794004460.882876683] [jaco2.gz_ros2_control]: Loading joint: jaco2_j2n6s300_joint_1
+[ign-1] [INFO] [1794004460.882886297] [jaco2.gz_ros2_control]: 	State:
+[ign-1] [INFO] [1794004460.882893509] [jaco2.gz_ros2_control]: 		 position
+[ign-1] [INFO] [1794004460.882901037] [jaco2.gz_ros2_control]: 			 found initial value: 0.000000
+[ign-1] [INFO] [1794004460.882906692] [jaco2.gz_ros2_control]: 		 velocity
+[ign-1] [INFO] [1794004460.882910540] [jaco2.gz_ros2_control]: 	Command:
+[ign-1] [INFO] [1794004460.882914621] [jaco2.gz_ros2_control]: 		 position
+[ign-1] [INFO] [1794004460.882929025] [jaco2.gz_ros2_control]: Loading joint: jaco2_j2n6s300_joint_2
+[ign-1] [INFO] [1794004460.882933796] [jaco2.gz_ros2_control]: 	State:
+[ign-1] [INFO] [1794004460.882937280] [jaco2.gz_ros2_control]: 		 position
+[ign-1] [INFO] [1794004460.882941320] [jaco2.gz_ros2_control]: 			 found initial value: 3.141593
+[ign-1] [INFO] [1794004460.882945229] [jaco2.gz_ros2_control]: 		 velocity
+[ign-1] [INFO] [1794004460.882948561] [jaco2.gz_ros2_control]: 	Command:
+[ign-1] [INFO] [1794004460.882951771] [jaco2.gz_ros2_control]: 		 position
+[ign-1] [INFO] [1794004460.882958373] [jaco2.gz_ros2_control]: Loading joint: jaco2_j2n6s300_joint_3
+[ign-1] [INFO] [1794004460.882962186] [jaco2.gz_ros2_control]: 	State:
+[ign-1] [INFO] [1794004460.882965461] [jaco2.gz_ros2_control]: 		 position
+[ign-1] [INFO] [1794004460.882968789] [jaco2.gz_ros2_control]: 			 found initial value: 3.141593
+[ign-1] [INFO] [1794004460.882972473] [jaco2.gz_ros2_control]: 		 velocity
+[ign-1] [INFO] [1794004460.882975643] [jaco2.gz_ros2_control]: 	Command:
+[ign-1] [INFO] [1794004460.882978760] [jaco2.gz_ros2_control]: 		 position
+[ign-1] [INFO] [1794004460.882985937] [jaco2.gz_ros2_control]: Loading joint: jaco2_j2n6s300_joint_4
+[ign-1] [INFO] [1794004460.882991302] [jaco2.gz_ros2_control]: 	State:
+[ign-1] [INFO] [1794004460.882994735] [jaco2.gz_ros2_control]: 		 position
+[ign-1] [INFO] [1794004460.882998039] [jaco2.gz_ros2_control]: 			 found initial value: 0.000000
+[ign-1] [INFO] [1794004460.883003297] [jaco2.gz_ros2_control]: 		 velocity
+[ign-1] [INFO] [1794004460.883006701] [jaco2.gz_ros2_control]: 	Command:
+[ign-1] [INFO] [1794004460.883009828] [jaco2.gz_ros2_control]: 		 position
+[ign-1] [INFO] [1794004460.883016742] [jaco2.gz_ros2_control]: Loading joint: jaco2_j2n6s300_joint_5
+[ign-1] [INFO] [1794004460.883021082] [jaco2.gz_ros2_control]: 	State:
+[ign-1] [INFO] [1794004460.883024545] [jaco2.gz_ros2_control]: 		 position
+[ign-1] [INFO] [1794004460.883030354] [jaco2.gz_ros2_control]: 			 found initial value: 0.000000
+[ign-1] [INFO] [1794004460.883034207] [jaco2.gz_ros2_control]: 		 velocity
+[ign-1] [INFO] [1794004460.883037770] [jaco2.gz_ros2_control]: 	Command:
+[ign-1] [INFO] [1794004460.883041000] [jaco2.gz_ros2_control]: 		 position
+[ign-1] [INFO] [1794004460.883047315] [jaco2.gz_ros2_control]: Loading joint: jaco2_j2n6s300_joint_6
+[ign-1] [INFO] [1794004460.883051420] [jaco2.gz_ros2_control]: 	State:
+[ign-1] [INFO] [1794004460.883054857] [jaco2.gz_ros2_control]: 		 position
+[ign-1] [INFO] [1794004460.883057886] [jaco2.gz_ros2_control]: 			 found initial value: 0.000000
+[ign-1] [INFO] [1794004460.883061594] [jaco2.gz_ros2_control]: 		 velocity
+[ign-1] [INFO] [1794004460.883064898] [jaco2.gz_ros2_control]: 	Command:
+[ign-1] [INFO] [1794004460.883068080] [jaco2.gz_ros2_control]: 		 position
+[ign-1] [INFO] [1794004460.883118997] [resource_manager]: Initialize hardware 'jaco2_system' 
+[ign-1] [INFO] [1794004460.883153738] [resource_manager]: Successful initialization of hardware 'jaco2_system'
+[ign-1] [INFO] [1794004460.883180145] [resource_manager]: 'configure' hardware 'jaco2_system' 
+[ign-1] [INFO] [1794004460.883184222] [jaco2.gz_ros2_control]: System Successfully configured!
+[ign-1] [INFO] [1794004460.883194511] [resource_manager]: Successful 'configure' of hardware 'jaco2_system'
+[ign-1] [INFO] [1794004460.883199489] [resource_manager]: 'activate' hardware 'jaco2_system' 
+[ign-1] [INFO] [1794004460.883204320] [resource_manager]: Successful 'activate' of hardware 'jaco2_system'
+[ign-1] [INFO] [1794004460.883221952] [jaco2.gz_ros2_control]: Loading controller_manager
+[ign-1] [INFO] [1794004460.983231070] [jaco2.controller_manager]: Loading controller 'joint_state_broadcaster'
+[spawner-6] [INFO] [1794004460.988588180] [jaco2.spawner_joint_state_broadcaster]: [94mLoaded [1mjoint_state_broadcaster[0m
+[ign-1] [INFO] [1794004460.989070230] [jaco2.controller_manager]: Configuring controller 'joint_state_broadcaster'
+[ign-1] [INFO] [1794004460.989157474] [jaco2.joint_state_broadcaster]: 'joints' or 'interfaces' parameter is empty. All available state interfaces will be published
+[ign-1] [WARN] [1794004461.095229921] [jaco2.gz_ros2_control]:  Desired controller update period (0.01 s) is slower than the gazebo simulation period (0.002 s).
+[spawner-6] [INFO] [1794004461.112184154] [jaco2.spawner_joint_state_broadcaster]: [92mConfigured and activated [1mjoint_state_broadcaster[0m
+[INFO] [spawner-6]: process has finished cleanly [pid 65658]
+[INFO] [spawner-7]: process started with pid [65717]
+[spawner-7] [INFO] [1794004461.422606734] [jaco2.spawner_arm_controller]: [96mSetting controller param "params_file" to "['/tmp/thesis_validate_lbgax5n9/jaco2_controllers.yaml']" for [1marm_controller[0m
+[ign-1] [INFO] [1794004461.424649760] [jaco2.controller_manager]: Loading controller 'arm_controller'
+[ign-1] [WARN] [1794004461.431841510] [jaco2.arm_controller]: [Deprecated]: "allow_nonzero_velocity_at_trajectory_end" is set to true. The default behavior will change to false.
+[spawner-7] [INFO] [1794004461.442089981] [jaco2.spawner_arm_controller]: [94mLoaded [1marm_controller[0m
+[ign-1] [INFO] [1794004461.442703580] [jaco2.controller_manager]: Configuring controller 'arm_controller'
+[ign-1] [INFO] [1794004461.442826632] [jaco2.arm_controller]: No specific joint names are used for command interfaces. Using 'joints' parameter.
+[ign-1] [INFO] [1794004461.442842429] [jaco2.arm_controller]: Command interfaces are [position] and state interfaces are [position velocity].
+[ign-1] [INFO] [1794004461.442859665] [jaco2.arm_controller]: Using 'splines' interpolation method.
+[ign-1] [INFO] [1794004461.443443252] [jaco2.arm_controller]: Controller state will be published at 50.00 Hz.
+[ign-1] [INFO] [1794004461.444463178] [jaco2.arm_controller]: Action status changes will be monitored at 20.00 Hz.
+[spawner-7] [INFO] [1794004461.471934597] [jaco2.spawner_arm_controller]: [92mConfigured and activated [1marm_controller[0m
+[ign-1] [INFO] [1794004461.496832726] [jaco2.arm_controller]: Received new action goal
+[ign-1] [INFO] [1794004461.496887709] [jaco2.arm_controller]: Accepted new action goal
+[INFO] [spawner-7]: process has finished cleanly [pid 65717]
+[ign-1] [INFO] [1794004463.001206597] [jaco2.arm_controller]: Goal reached, success!
+[ign-1] [INFO] [1794004464.516271164] [jaco2.arm_controller]: Received new action goal
+[ign-1] [INFO] [1794004464.516314867] [jaco2.arm_controller]: Accepted new action goal
+[ign-1] [INFO] [1794004466.021329675] [jaco2.arm_controller]: Goal reached, success!
+[ign-1] [INFO] [1794004467.538847815] [jaco2.arm_controller]: Received new action goal
+[ign-1] [INFO] [1794004467.538922746] [jaco2.arm_controller]: Accepted new action goal
+[ign-1] [INFO] [1794004468.003842183] [jaco2.arm_controller]: Got request to cancel goal
+[ign-1] [INFO] [1794004468.003874438] [jaco2.arm_controller]: Canceling active action goal because cancel callback received.
+[ign-1] [INFO] [1794004470.448541244] [jaco2.arm_controller]: Received new action goal
+[ign-1] [INFO] [1794004470.448574258] [jaco2.arm_controller]: Accepted new action goal
+[WARNING] [launch]: user interrupted with ctrl-c (SIGINT)
+[INFO] [profile_supervisor-5]: sending signal 'SIGINT' to process[profile_supervisor-5]
+[INFO] [robot_state_publisher-3]: sending signal 'SIGINT' to process[robot_state_publisher-3]
+[INFO] [parameter_bridge-2]: sending signal 'SIGINT' to process[parameter_bridge-2]
+[INFO] [ign-1]: sending signal 'SIGINT' to process[ign-1]
+[robot_state_publisher-3] [INFO] [1794004470.602316581] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[parameter_bridge-2] [INFO] [1794004470.602837169] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[ign-1] [INFO] [1794004470.603401574] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[ign-1] [INFO] [1794004470.603453971] [jaco2.controller_manager]: Shutdown request received....
+[ign-1] [INFO] [1794004470.603487026] [jaco2.controller_manager]: Shutting down all controllers in the controller manager.
+[ign-1] [INFO] [1794004470.603504662] [jaco2.controller_manager]: Deactivating controller 'joint_state_broadcaster'
+[ign-1] [INFO] [1794004470.603539057] [jaco2.controller_manager]: Shutting down controller 'joint_state_broadcaster'
+[ign-1] [INFO] [1794004470.603570711] [jaco2.controller_manager]: Deactivating controller 'arm_controller'
+[ign-1] [INFO] [1794004470.603591959] [jaco2.controller_manager]: Shutting down controller 'arm_controller'
+[ign-1] [INFO] [1794004470.603607082] [resource_manager]: 'deactivate' hardware 'jaco2_system' 
+[ign-1] [INFO] [1794004470.603621422] [resource_manager]: Successful 'deactivate' of hardware 'jaco2_system'
+[ign-1] [INFO] [1794004470.603625364] [resource_manager]: 'shutdown' hardware 'jaco2_system' 
+[ign-1] [INFO] [1794004470.603630153] [resource_manager]: Successful 'shutdown' of hardware 'jaco2_system'
+[ign-1] [INFO] [1794004470.603633943] [jaco2.controller_manager]: Shutting down the controller manager.
+[INFO] [parameter_bridge-2]: process has finished cleanly [pid 65580]
+[INFO] [robot_state_publisher-3]: process has finished cleanly [pid 65582]
+[INFO] [ign-1]: process has finished cleanly [pid 65578]
+[INFO] [profile_supervisor-5]: process has finished cleanly [pid 65586]

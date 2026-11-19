@@ -1,17 +1,43 @@
 import os
+from pathlib import Path
 
 from ament_index_python.packages import (
     get_package_prefix,
     get_package_share_directory,
 )
 
+from thesis_core.work_table import SPHERE_HEIGHT, TABLE_CENTER, JACO2_SIM_TABLE_SIZE, MOUNT_HEIGHT
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, ExecuteProcess, TimerAction
+from launch.actions import (
+    DeclareLaunchArgument, ExecuteProcess, OpaqueFunction, TimerAction,
+)
 from launch.conditions import IfCondition, UnlessCondition
-from launch.substitutions import Command, LaunchConfiguration
+from launch.substitutions import Command, LaunchConfiguration, PythonExpression
 
 from launch_ros.actions import Node
 from launch_ros.parameter_descriptions import ParameterValue
+
+from thesis_simulation.simulation_scene import spherical_obstacle_sdf
+
+
+def _spawn_scene_obstacle(context, model_file):
+    """Only the Gazebo source owns a physical sphere in this scene."""
+    source = LaunchConfiguration('obstacle_source_mode').perform(context)
+    if source != 'gazebo':
+        return []
+    radius = LaunchConfiguration('obstacle_radius').perform(context)
+    sdf = spherical_obstacle_sdf(
+        Path(model_file).read_text(encoding='utf-8'), radius,
+    )
+    return [Node(
+        package='ros_gz_sim', executable='create', name='spawn_safety_obstacle',
+        output='screen', arguments=[
+            '-name', 'safety_obstacle', '-string', sdf,
+            '-x', LaunchConfiguration('obstacle_x'),
+            '-y', LaunchConfiguration('obstacle_y'),
+            '-z', LaunchConfiguration('obstacle_z'),
+        ],
+    )]
 
 
 def generate_launch_description():
@@ -90,7 +116,7 @@ def generate_launch_description():
     world_file = os.path.join(
         simulation_share,
         'worlds',
-        'jaco_empty.sdf'
+        'jaco2_workstation.sdf'
     )
 
     obstacle_file = os.path.join(
@@ -119,6 +145,7 @@ def generate_launch_description():
                 xacro_file,
                 ' initial_pose:=',
                 initial_pose,
+                f' mount_height:={MOUNT_HEIGHT}',
             ]),
             value_type=str
         )
@@ -134,7 +161,9 @@ def generate_launch_description():
         output='screen',
         parameters=[
             robot_description,
-            {'use_sim_time': True}
+            # Match the 100 Hz joint-state broadcaster so exact-stamp TF
+            # consumers do not routinely wait for the default 20 Hz output.
+            {'use_sim_time': True, 'publish_frequency': 100.0}
         ]
     )
 
@@ -206,23 +235,9 @@ def generate_launch_description():
         ]
     )
 
-    spawn_obstacle = Node(
-        package='ros_gz_sim',
-        executable='create',
-        name='spawn_safety_obstacle',
-        output='screen',
-        arguments=[
-            '-name',
-            'safety_obstacle',
-            '-file',
-            obstacle_file,
-            '-x',
-            obstacle_x,
-            '-y',
-            obstacle_y,
-            '-z',
-            obstacle_z,
-        ]
+    spawn_obstacle = OpaqueFunction(
+        function=_spawn_scene_obstacle,
+        kwargs={'model_file': obstacle_file},
     )
 
     # =========================================================
@@ -269,11 +284,18 @@ def generate_launch_description():
         package='ros_gz_bridge',
         executable='parameter_bridge',
         name='gazebo_pose_bridge',
+        condition=IfCondition(PythonExpression([
+            "'", obstacle_source_mode, "' == 'gazebo'",
+        ])),
         output='screen',
         parameters=[{'use_sim_time': True}],
+        remappings=[(
+            '/model/safety_obstacle/pose',
+            '/world/jaco_world/pose/info',
+        )],
         arguments=[
             (
-                '/world/jaco_world/pose/info@'
+                '/model/safety_obstacle/pose@'
                 'tf2_msgs/msg/TFMessage[ignition.msgs.Pose_V'
             )
         ],
@@ -298,7 +320,7 @@ def generate_launch_description():
         output='screen',
         parameters=[
             capsule_config,
-            {'use_sim_time': True}
+            {'use_sim_time': True, 'per_obstacle_markers': True}
         ]
     )
 
@@ -326,6 +348,14 @@ def generate_launch_description():
                     obstacle_z,
                     value_type=float,
                 ),
+                'obstacle_radius': ParameterValue(
+                    LaunchConfiguration('obstacle_radius'), value_type=float,
+                ),
+                'table_enabled': True,
+                'table_with_legs': True,
+                'table_center': list(TABLE_CENTER),
+                'table_size': list(JACO2_SIM_TABLE_SIZE),
+                'table_excluded_segments': ['base_to_shoulder'],
             }
         ]
     )
@@ -334,6 +364,9 @@ def generate_launch_description():
         package='thesis_core',
         executable='obstacle_input_bridge',
         name='obstacle_input_bridge',
+        condition=IfCondition(PythonExpression([
+            "'", obstacle_source_mode, "' == 'topic'",
+        ])),
         output='screen',
         parameters=[{
             'use_sim_time': True,
@@ -358,21 +391,29 @@ def generate_launch_description():
         ),
         DeclareLaunchArgument(
             'obstacle_z',
-            default_value='0.65',
+            default_value=str(SPHERE_HEIGHT),
             description='Gazebo safety obstacle Z position in metres',
+        ),
+        DeclareLaunchArgument(
+            'obstacle_radius', default_value='0.12',
+            description='Radius shared by the Gazebo sphere and its monitor.',
         ),
         DeclareLaunchArgument(
             'obstacle_source_mode',
             default_value='gazebo',
+            choices=('gazebo', 'topic'),
             description=(
                 'Obstacle source: gazebo (default) or topic (validated input)'
             ),
         ),
         DeclareLaunchArgument(
             'initial_pose',
-            default_value='default',
+            default_value='z_ready',
             choices=('default', 'z_ready'),
-            description='Initial Gazebo joint pose preset.',
+            description=(
+                'Initial Gazebo joint pose preset; z_ready avoids the '
+                'Cartesian-JOG singularity.'
+            ),
         ),
         DeclareLaunchArgument(
             'start_rviz',

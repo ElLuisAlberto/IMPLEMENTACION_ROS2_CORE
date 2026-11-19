@@ -12,7 +12,6 @@ from std_msgs.msg import String
 from thesis_core.cartesian_kinematics import (
     align_relative_target,
     pose_error,
-    solve_inverse_kinematics_transform,
     transform_from_translation_quaternion,
 )
 from thesis_core.cartesian_path import (
@@ -23,12 +22,17 @@ from thesis_core.cartesian_path import (
     synchronized_duration,
 )
 from thesis_core.jaco_kinematics import (
-    end_effector_transform,
     rotation_matrix_to_rpy,
     transform_matrix,
     translation,
 )
-from thesis_core.joint_model import JOINT_NAMES
+from thesis_core.joint_model import (
+    CONTINUOUS_JOINTS,
+    JOINT_NAMES,
+    JOINT_POSITION_LIMITS,
+    JOINT_VELOCITY_LIMITS,
+)
+from thesis_core.robot_profile import load_robot_profile
 from thesis_core.ros_runtime import spin_node
 from thesis_interfaces.msg import (
     CartesianTrajectoryCommand,
@@ -41,14 +45,20 @@ from thesis_simulation.cartesian_trajectory_model import (
     minimum_joint_path_duration,
     rolling_target_fraction,
 )
+from thesis_simulation.profile_cartesian import (
+    CartesianProfileModel,
+    position_only_is_permitted,
+)
 import tf2_ros
 
 
 class CartesianTrajectoryAdapter(Node):
-    """Convert one Cartesian intention into supervised rolling joint intents."""
+    """Convert a Cartesian intention into supervised rolling intents."""
 
     def __init__(self):
         super().__init__('cartesian_trajectory_adapter')
+        self.declare_parameter('manifest_path', '')
+        self.declare_parameter('robot_name', 'jaco2')
         self.declare_parameter('rate_hz', 10.0)
         self.declare_parameter('horizon_sec', 1.0)
         self.declare_parameter('maximum_state_age_sec', 0.50)
@@ -132,6 +142,21 @@ class CartesianTrajectoryAdapter(Node):
         if self.joint_timing_margin < 1.0:
             raise ValueError('joint_timing_margin must be at least 1.0')
 
+        manifest_path = str(self.get_parameter('manifest_path').value)
+        robot_name = str(self.get_parameter('robot_name').value)
+        self.robot_profile = load_robot_profile(
+            manifest_path or None, robot_name
+        )
+        self.joint_names = self.robot_profile.joint_names
+        self.position_limits = self.robot_profile.joint_position_limits
+        self.velocity_limits = self.robot_profile.joint_velocity_limits
+        self.continuous_joints = self.robot_profile.continuous_joints
+        self.world_frame = self.robot_profile.world_frame
+        self.tip_link = self.robot_profile.tip_link
+        self.cartesian_model = CartesianProfileModel(
+            self.robot_profile, legacy_jaco2=not manifest_path
+        )
+
         self.positions = {}
         self.state_received_at = None
         self.active = None
@@ -189,22 +214,25 @@ class CartesianTrajectoryAdapter(Node):
         positions = {
             name: float(value)
             for name, value in zip(message.name, message.position)
-            if name in JOINT_NAMES and math.isfinite(value)
+            if name in self.joint_names and math.isfinite(value)
         }
-        if all(name in positions for name in JOINT_NAMES):
+        if all(name in positions for name in self.joint_names):
             self.positions = positions
             self.state_received_at = time.monotonic()
 
     def current_joint_vector(self):
         if self.state_received_at is None:
             return None
-        if time.monotonic() - self.state_received_at > self.maximum_state_age_sec:
+        if (
+            time.monotonic() - self.state_received_at
+            > self.maximum_state_age_sec
+        ):
             return None
-        return tuple(self.positions[name] for name in JOINT_NAMES)
+        return tuple(self.positions[name] for name in self.joint_names)
 
     def current_world_transform(self):
         message = self.tf_buffer.lookup_transform(
-            'world', 'j2n6s300_end_effector', Time()
+            self.world_frame, self.tip_link, Time()
         )
         transform = message.transform
         return transform_from_translation_quaternion(
@@ -258,24 +286,36 @@ class CartesianTrajectoryAdapter(Node):
     def validate_speed(self, message):
         linear = float(message.linear_speed_mps)
         angular = float(message.angular_speed_radps)
-        if not self.minimum_linear_speed_mps <= linear <= self.maximum_linear_speed_mps:
+        if not (
+            self.minimum_linear_speed_mps
+            <= linear
+            <= self.maximum_linear_speed_mps
+        ):
             raise ValueError(
                 'velocidad lineal fuera de '
                 f'[{self.minimum_linear_speed_mps:.3f}, '
                 f'{self.maximum_linear_speed_mps:.3f}] m/s'
             )
-        if not self.minimum_angular_speed_radps <= angular <= self.maximum_angular_speed_radps:
+        if not (
+            self.minimum_angular_speed_radps
+            <= angular
+            <= self.maximum_angular_speed_radps
+        ):
             raise ValueError(
                 'velocidad angular fuera de '
                 f'[{math.degrees(self.minimum_angular_speed_radps):.1f}, '
-                f'{math.degrees(self.maximum_angular_speed_radps):.1f}] grados/s'
+                f'{math.degrees(self.maximum_angular_speed_radps):.1f}] '
+                'grados/s'
             )
 
     def plan_joint_path(
         self, start_joints, current_world, target_world, distance, angle
     ):
         segment_count = path_segment_count(distance, angle)
-        current_model = end_effector_transform(start_joints)
+        current_model = self.cartesian_model.forward(start_joints)
+        position_only = position_only_is_permitted(
+            self.robot_profile, angle
+        )
         seed = tuple(start_joints)
         path = [seed]
         for index in range(1, segment_count + 1):
@@ -286,11 +326,12 @@ class CartesianTrajectoryAdapter(Node):
             model_waypoint = align_relative_target(
                 current_world, world_waypoint, current_model
             )
-            result = solve_inverse_kinematics_transform(
+            result = self.cartesian_model.inverse(
                 seed,
                 model_waypoint,
-                position_tolerance_m=self.position_tolerance_m,
-                orientation_tolerance_rad=self.orientation_tolerance_rad,
+                self.position_tolerance_m,
+                self.orientation_tolerance_rad,
+                position_only=position_only,
             )
             if not result.success:
                 raise ValueError(
@@ -304,17 +345,22 @@ class CartesianTrajectoryAdapter(Node):
         return tuple(path)
 
     def command_callback(self, message):
+        world_frame = getattr(self, 'world_frame', 'world')
         if not message.command_id:
             self.reject(message.command_id, 'ID vacío.')
             return
         if self.active is not None:
             self.reject(
                 message.command_id,
-                f'Ya existe una trayectoria activa: {self.active["command_id"]}.',
+                'Ya existe una trayectoria activa: '
+                f'{self.active["command_id"]}.',
             )
             return
-        if message.frame_id != 'world':
-            self.reject(message.command_id, 'frame_id debe ser world.')
+        if message.frame_id != world_frame:
+            self.reject(
+                message.command_id,
+                f'frame_id debe ser {world_frame}.',
+            )
             return
 
         start_joints = self.current_joint_vector()
@@ -359,7 +405,13 @@ class CartesianTrajectoryAdapter(Node):
                 distance,
                 angle,
             )
-            minimum_duration = minimum_joint_path_duration(path)
+            minimum_duration = minimum_joint_path_duration(
+                path,
+                getattr(self, 'joint_names', JOINT_NAMES),
+                getattr(self, 'velocity_limits', JOINT_VELOCITY_LIMITS),
+                getattr(self, 'position_limits', JOINT_POSITION_LIMITS),
+                getattr(self, 'continuous_joints', CONTINUOUS_JOINTS),
+            )
             guarded_minimum_duration = (
                 minimum_duration * self.joint_timing_margin
             )
@@ -385,6 +437,10 @@ class CartesianTrajectoryAdapter(Node):
             'target_rpy': target_rpy,
             'distance': distance,
             'angle': angle,
+            'position_only': (
+                position_only_is_permitted(self.robot_profile, angle)
+                if hasattr(self, 'robot_profile') else False
+            ),
             'duration': duration,
             'progress': 0.0,
             'speed_scale': 0.0,
@@ -443,7 +499,9 @@ class CartesianTrajectoryAdapter(Node):
         message = JointCommand()
         message.stamp = self.get_clock().now().to_msg()
         message.command_id = active['command_id']
-        message.joint_names = list(JOINT_NAMES)
+        message.joint_names = list(
+            getattr(self, 'joint_names', JOINT_NAMES)
+        )
         message.positions = list(target)
         self.set_duration(message, self.horizon_sec)
         self.intent_publisher.publish(message)
@@ -494,10 +552,15 @@ class CartesianTrajectoryAdapter(Node):
         if active['progress'] >= 1.0 - 1.0e-9:
             if active['completion_started_at'] is None:
                 active['completion_started_at'] = now
-            if (
-                0.0 <= position_error <= self.completion_position_tolerance_m
-                and 0.0 <= orientation_error
+            orientation_complete = (
+                active['position_only']
+                or 0.0 <= orientation_error
                 <= self.completion_orientation_tolerance_rad
+            )
+            if (
+                0.0 <= position_error
+                <= self.completion_position_tolerance_m
+                and orientation_complete
             ):
                 self.finish(
                     'SUCCEEDED',
@@ -506,7 +569,10 @@ class CartesianTrajectoryAdapter(Node):
                     orientation_error,
                 )
                 return
-            if now - active['completion_started_at'] > self.completion_timeout_sec:
+            if (
+                now - active['completion_started_at']
+                > self.completion_timeout_sec
+            ):
                 self.finish(
                     'FAILED',
                     'El controlador no alcanzó la tolerancia final a tiempo.',
@@ -522,7 +588,7 @@ class CartesianTrajectoryAdapter(Node):
         self.publish_active_status(status, position_error, orientation_error)
 
     def fill_target(self, message, active):
-        message.frame_id = 'world'
+        message.frame_id = self.world_frame
         (
             message.target_x,
             message.target_y,
@@ -572,7 +638,7 @@ class CartesianTrajectoryAdapter(Node):
         message.remaining_distance_m = -1.0
         message.position_error_m = -1.0
         message.orientation_error_rad = -1.0
-        message.frame_id = 'world'
+        message.frame_id = self.world_frame
         self.status_publisher.publish(message)
         self.get_logger().warning(
             f'CARTESIAN TRAJECTORY REJECTED {command_id}: {detail}'

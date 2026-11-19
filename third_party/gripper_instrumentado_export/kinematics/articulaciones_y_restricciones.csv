@@ -1,0 +1,12 @@
+joint_id,parent_body,child_body,joint_type,axis_frame,axis_x,axis_y,axis_z,origin_x_m,origin_y_m,origin_z_m,actuated,dependent_on,relation,status,source
+J00,gripper_base,cam,revolute,gripper_base,TBD_MEASURE,TBD_MEASURE,TBD_MEASURE,TBD_MEASURE,TBD_MEASURE,TBD_MEASURE,true,servo_sts3215,direct,pending_measurement,PincOpen+Inventor
+J01,cam,left_driving_rod,revolute,cam,TBD_MEASURE,TBD_MEASURE,TBD_MEASURE,TBD_MEASURE,TBD_MEASURE,TBD_MEASURE,false,J00,closed_loop,pending_measurement,Inventor
+J02,cam,right_driving_rod,revolute,cam,TBD_MEASURE,TBD_MEASURE,TBD_MEASURE,TBD_MEASURE,TBD_MEASURE,TBD_MEASURE,false,J00,closed_loop,pending_measurement,Inventor
+J03,gripper_base,left_internal_rod,revolute,gripper_base,TBD_MEASURE,TBD_MEASURE,TBD_MEASURE,TBD_MEASURE,TBD_MEASURE,TBD_MEASURE,false,J00,closed_loop,pending_measurement,Inventor
+J04,gripper_base,right_internal_rod,revolute,gripper_base,TBD_MEASURE,TBD_MEASURE,TBD_MEASURE,TBD_MEASURE,TBD_MEASURE,TBD_MEASURE,false,J00,closed_loop,pending_measurement,Inventor
+J05,left_internal_rod,left_external_rod,revolute,left_internal_rod,TBD_MEASURE,TBD_MEASURE,TBD_MEASURE,TBD_MEASURE,TBD_MEASURE,TBD_MEASURE,false,J00,closed_loop,pending_measurement,Inventor
+J06,right_internal_rod,right_external_rod,revolute,right_internal_rod,TBD_MEASURE,TBD_MEASURE,TBD_MEASURE,TBD_MEASURE,TBD_MEASURE,TBD_MEASURE,false,J00,closed_loop,pending_measurement,Inventor
+J07,left_external_rod,left_distal_rod,revolute,left_external_rod,TBD_MEASURE,TBD_MEASURE,TBD_MEASURE,TBD_MEASURE,TBD_MEASURE,TBD_MEASURE,false,J00,closed_loop,pending_measurement,Inventor
+J08,right_external_rod,right_distal_rod,revolute,right_external_rod,TBD_MEASURE,TBD_MEASURE,TBD_MEASURE,TBD_MEASURE,TBD_MEASURE,TBD_MEASURE,false,J00,closed_loop,pending_measurement,Inventor
+J09,left_distal_rod,left_distal_shell,fixed,left_distal_rod,0,0,0,TBD_MEASURE,TBD_MEASURE,TBD_MEASURE,false,none,rigid_attachment,pending_confirmation,Inventor
+J10,right_distal_rod,right_distal_shell,fixed,right_distal_rod,0,0,0,TBD_MEASURE,TBD_MEASURE,TBD_MEASURE,false,none,rigid_attachment,pending_confirmation,Inventor

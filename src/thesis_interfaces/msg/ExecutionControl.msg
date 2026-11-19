@@ -1,6 +1,7 @@
 # Runtime safety decision for an already accepted trajectory.
 builtin_interfaces/Time stamp
 string command_id
+builtin_interfaces/Time intent_stamp
 
 # ALLOW, WARNING, REDUCTION or STOP.
 string state
@@ -14,6 +15,8 @@ string limiting_segment
 
 # All absent events use -1.0. Nominal TTC is never overwritten by scaling.
 float64 protective_margin
+# Clearance threshold that triggered the current predictive decision.
+float64 predictive_threshold
 float64 time_to_protective_volume
 float64 time_to_collision
 float64 supervised_time_to_protective_volume

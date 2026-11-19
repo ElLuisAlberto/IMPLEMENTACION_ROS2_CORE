@@ -240,7 +240,7 @@ Visualization Manager:
         Value: /thesis/horizon_volume
       Name: HorizonVolume
       Namespaces:
-        current_capsules: true
+        current_capsules: false
         horizon_endpoint_traces: true
         horizon_labels: true
         horizon_time_poses: true
@@ -256,7 +256,10 @@ Visualization Manager:
         Value: /thesis/obstacle_visualization
       Name: PerceivedObstacle
       Namespaces:
+        Esfera: true
+        Mesa: true
         input_obstacle: true
+        work_table: true
       Value: true
   Enabled: true
   Global Options:

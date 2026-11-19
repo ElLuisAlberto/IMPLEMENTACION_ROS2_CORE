@@ -123,3 +123,28 @@ def test_invalid_temporal_configuration_is_rejected(
 ):
     with pytest.raises(ValueError):
         predict_joint_samples(INITIAL, INITIAL, duration, horizon, samples)
+
+
+def test_prediction_accepts_five_axis_profile():
+    names = tuple(f'axis_{index}' for index in range(5))
+    limits = {name: (-2.0, 2.0) for name in names}
+    velocities = {name: 0.5 for name in names}
+
+    result = predict_joint_samples(
+        (0.0,) * 5,
+        (0.5, -0.5, 0.25, 0.0, 0.1),
+        0.5,
+        1.0,
+        3,
+        joint_names=names,
+        position_limits=limits,
+        velocity_limits=velocities,
+        continuous_joints=(),
+    )
+
+    assert len(result.positions) == 3
+    assert all(len(sample) == 5 for sample in result.positions)
+    assert result.effective_duration == pytest.approx(1.0)
+    assert result.positions[-1] == pytest.approx(
+        (0.5, -0.5, 0.25, 0.0, 0.1)
+    )

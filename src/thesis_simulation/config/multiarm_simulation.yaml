@@ -1,0 +1,35 @@
+# Declarative contract for the future four-JACO2 Gazebo launch.
+# All names are intentionally unique; world remains the common frame used by
+# the multi-arm safety coordinator.
+multiarm_simulation:
+  reference_frame: world
+  minimum_base_separation_m: 2.5
+  instances:
+    - robot_id: arm_01
+      namespace: arm_01
+      tf_prefix: arm_01
+      entity_name: arm_01_jaco
+      controller_manager_name: arm_01_controller_manager
+      arm_controller_name: arm_01_arm_controller
+      base_pose: [-1.5, -1.5, 0.0, 0.0, 0.0, 0.0]
+    - robot_id: arm_02
+      namespace: arm_02
+      tf_prefix: arm_02
+      entity_name: arm_02_jaco
+      controller_manager_name: arm_02_controller_manager
+      arm_controller_name: arm_02_arm_controller
+      base_pose: [-1.5, 1.5, 0.0, 0.0, 0.0, 0.0]
+    - robot_id: arm_03
+      namespace: arm_03
+      tf_prefix: arm_03
+      entity_name: arm_03_jaco
+      controller_manager_name: arm_03_controller_manager
+      arm_controller_name: arm_03_arm_controller
+      base_pose: [1.5, -1.5, 0.0, 0.0, 0.0, 3.141592653589793]
+    - robot_id: arm_04
+      namespace: arm_04
+      tf_prefix: arm_04
+      entity_name: arm_04_jaco
+      controller_manager_name: arm_04_controller_manager
+      arm_controller_name: arm_04_arm_controller
+      base_pose: [1.5, 1.5, 0.0, 0.0, 0.0, 3.141592653589793]

@@ -1,3 +1,4 @@
+import json
 import math
 import time
 from collections import deque
@@ -9,7 +10,9 @@ from rclpy.time import Time
 import tf2_ros
 
 from sensor_msgs.msg import JointState
-from std_msgs.msg import String
+from std_msgs.msg import Header, String
+from visualization_msgs.msg import MarkerArray
+from thesis_core.clearance_markers import clearance_markers
 from thesis_interfaces.msg import (
     CommandDecision,
     ExecutionControl,
@@ -22,6 +25,7 @@ from thesis_interfaces.msg import (
 
 from thesis_core.joint_prediction import predict_joint_samples
 from thesis_core.control_stability import ControlStabilityFilter
+from thesis_core.work_table import configured_table
 from thesis_core.horizon_clearance import (
     KINEMATIC_TF_TOLERANCE_M,
     LATENCY_UNCERTAINTY_M,
@@ -34,17 +38,20 @@ from thesis_core.horizon_clearance import (
 )
 from thesis_core.jaco_kinematics import (
     CAPSULE_RADII,
+    SEGMENT_NAMES,
+    capsule_segments,
     end_effector_transform,
-    minimum_sphere_clearance,
     translation,
 )
 from thesis_core.joint_model import (
+    CONTINUOUS_JOINTS,
     JOINT_NAMES,
     JOINT_POSITION_LIMITS,
     JOINT_VELOCITY_LIMITS,
     saturate_target_by_velocity,
     shortest_joint_delta,
 )
+from thesis_core.robot_profile import load_robot_profile
 from thesis_core.safety_policy import (
     SafetyDecision,
     SafetyPolicyInput,
@@ -63,8 +70,43 @@ MAX_FUTURE_MESSAGE_TOLERANCE_SEC = 0.05
 SAFETY_REFERENCE_FRAME = 'world'
 
 
-def kinematic_tf_position_error(joint_positions, tf_position):
-    model_position = translation(end_effector_transform(joint_positions))
+class JogClockGuard:
+    """Reject JOG while the ROS clock is stopped and stale on recovery."""
+
+    def __init__(self, timeout=0.5):
+        self.timeout = float(timeout)
+        self.last_ros = None
+        self.last_advance_wall = None
+        self.recovery_after = None
+
+    def accepts(self, ros_ns, wall_sec, stamp_ns):
+        if ros_ns <= 0:
+            return False
+        if self.last_ros is None:
+            self.last_ros, self.last_advance_wall = ros_ns, wall_sec
+            return False
+        if ros_ns < self.last_ros:
+            self.last_ros, self.last_advance_wall = ros_ns, wall_sec
+            self.recovery_after = ros_ns
+            return False
+        if ros_ns > self.last_ros:
+            if wall_sec - self.last_advance_wall > self.timeout:
+                self.recovery_after = self.last_ros
+            self.last_ros, self.last_advance_wall = ros_ns, wall_sec
+        if wall_sec - self.last_advance_wall > self.timeout:
+            self.recovery_after = ros_ns
+            return False
+        return self.recovery_after is None or stamp_ns > self.recovery_after
+
+
+def kinematic_tf_position_error(
+    joint_positions, tf_position, position_function=None
+):
+    """Return FK-to-TF translation error for the configured robot model."""
+    if position_function is None:
+        def position_function(values):
+            return translation(end_effector_transform(values))
+    model_position = position_function(joint_positions)
     return math.sqrt(sum(
         (model_value - tf_value) ** 2
         for model_value, tf_value in zip(model_position, tf_position)
@@ -72,7 +114,12 @@ def kinematic_tf_position_error(joint_positions, tf_position):
 
 
 def newest_synchronized_kinematic_sample(
-    samples, tf_buffer, now_ns, maximum_age_sec
+    samples,
+    tf_buffer,
+    now_ns,
+    maximum_age_sec,
+    reference_frame=SAFETY_REFERENCE_FRAME,
+    tip_link='j2n6s300_end_effector',
 ):
     """Return the newest fresh joint sample with its exact-stamp TF."""
     last_error = None
@@ -84,8 +131,8 @@ def newest_synchronized_kinematic_sample(
             break
         try:
             transform = tf_buffer.lookup_transform(
-                SAFETY_REFERENCE_FRAME,
-                'j2n6s300_end_effector',
+                reference_frame,
+                tip_link,
                 Time(nanoseconds=int(stamp_ns)),
             )
         except tf2_ros.TransformException as exception:
@@ -145,9 +192,58 @@ def source_stamp_is_fresh(now_nanoseconds, stamp, maximum_age_sec):
     )
 
 
-def proximity_reference_frame_is_valid(reference_frame):
+def proximity_reference_frame_is_valid(
+    reference_frame, expected_frame=SAFETY_REFERENCE_FRAME
+):
     """Accept only the canonical safety geometry frame."""
-    return reference_frame == SAFETY_REFERENCE_FRAME
+    return reference_frame == expected_frame
+
+
+def proximity_geometry_is_valid(message):
+    """
+    Reject explicit invalid geometry evidence before policy evaluation.
+
+    Older in-process test doubles do not expose the added field; generated ROS
+    messages do, and their default ``False`` is intentionally fail-closed.
+    """
+    return bool(getattr(message, 'geometry_valid', True))
+
+
+def profile_geometry(profile):
+    """Adapt a RobotProfile to the supervisor's capsule interface."""
+    capsules = tuple(profile.collision_capsules)
+    names = tuple(capsule.name for capsule in capsules)
+    radii = tuple(float(capsule.radius) for capsule in capsules)
+
+    def segments(positions):
+        evaluated = tuple(profile.capsule_segments(positions))
+        if len(evaluated) != len(capsules):
+            raise ValueError('profile capsule count changed at runtime')
+        return tuple((item.start, item.end) for item in evaluated)
+
+    def tip_position(positions):
+        transform = profile.forward(positions)[profile.tip_link]
+        return tuple(float(value) for value in transform[:3, 3])
+
+    return names, radii, segments, tip_position
+
+
+def memoize_horizon_evaluator(node, evaluate):
+    """Reuse exactly identical scales only during one policy evaluation.
+
+    Preserve the associated geometry because the decision publishes its
+    witness and crossing time.  The cache must never outlive one input state.
+    """
+    cache = {}
+
+    def cached(scale):
+        if scale not in cache:
+            result = evaluate(scale)
+            cache[scale] = (result, node.last_horizon_clearance)
+        result, node.last_horizon_clearance = cache[scale]
+        return result
+
+    return cached
 
 
 def admit_point_command(
@@ -195,9 +291,46 @@ class SafetySupervisorNode(Node):
     def __init__(self):
         super().__init__('safety_supervisor_node')
 
+        self.declare_parameter('manifest_path', '')
+        self.declare_parameter('robot_name', 'jaco2')
+        manifest_path = str(self.get_parameter('manifest_path').value)
+        robot_name = str(self.get_parameter('robot_name').value)
+        self.robot_profile = load_robot_profile(
+            manifest_path or None, robot_name
+        )
+        self.joint_names = tuple(self.robot_profile.joint_names)
+        self.position_limits = self.robot_profile.joint_position_limits
+        self.velocity_limits = self.robot_profile.joint_velocity_limits
+        self.continuous_joints = self.robot_profile.continuous_joints
+        self.safety_reference_frame = self.robot_profile.world_frame
+        self.tip_link = self.robot_profile.tip_link
+        self.table = configured_table(self, self.robot_profile if manifest_path else None)
+        height = self.declare_parameter('mount_height', 0.0).value
+        if manifest_path:
+            (
+                self.segment_names,
+                self.capsule_radii,
+                self.capsule_function,
+                self.tip_position_function,
+            ) = profile_geometry(self.robot_profile)
+        else:
+            # Preserve the historical JACO2 numerical model exactly.
+            self.segment_names = SEGMENT_NAMES
+            self.capsule_radii = CAPSULE_RADII
+            mount = ((1, 0, 0, 0), (0, 1, 0, 0), (0, 0, 1, height), (0, 0, 0, 1)) if height else None
+            self.capsule_function = capsule_segments
+            if height:
+                def world_segments(values):
+                    return tuple(((a[0], a[1], a[2] + height), (b[0], b[1], b[2] + height))
+                                 for a, b in capsule_segments(values))
+                self.capsule_function = world_segments
+            self.tip_position_function = lambda values: translation(
+                end_effector_transform(values, mount)
+            )
+
         self.declare_parameter(
             'state_topic',
-            '/joint_states',
+            self.robot_profile.joint_states_topic,
         )
 
         self.declare_parameter(
@@ -237,8 +370,9 @@ class SafetySupervisorNode(Node):
         self.declare_parameter('prediction_horizon_sec', 1.0)
 
         self.declare_parameter('warning_distance', 0.30)
-        self.declare_parameter('reduction_distance', 0.15)
         self.declare_parameter('stop_distance', 0.05)
+        # Experimental JACO2 simulation reserve; validate per scenario.
+        self.declare_parameter('predictive_stop_reserve_m', 0.005)
         self.declare_parameter('runtime_monitor_enabled', True)
         self.declare_parameter('runtime_rate_hz', 10.0)
         self.declare_parameter('runtime_horizon_sec', 1.0)
@@ -254,7 +388,9 @@ class SafetySupervisorNode(Node):
             'latency_uncertainty_m', LATENCY_UNCERTAINTY_M
         )
         self.declare_parameter('runtime_minimum_speed_scale', 0.05)
-        self.declare_parameter('runtime_scale_search_iterations', 10)
+        # A six-step search returns a verified safe lower bound at 1/64
+        # resolution; unlike interpolation it never assumes untested safety.
+        self.declare_parameter('runtime_scale_search_iterations', 6)
         self.declare_parameter('withdrawal_speed_scale', 0.10)
         self.declare_parameter('withdrawal_minimum_progress_m', 0.002)
         self.declare_parameter('withdrawal_monotonic_tolerance_m', 0.001)
@@ -297,6 +433,7 @@ class SafetySupervisorNode(Node):
         self.jog_recovery_count = 0
         self.last_jog_intent_monotonic = None
         self.last_jog_message = None
+        self.jog_clock_guard = JogClockGuard()
         self.kinematic_tf_valid = False
         self.kinematic_tf_error_latched = False
         self.tf_buffer = tf2_ros.Buffer()
@@ -388,6 +525,12 @@ class SafetySupervisorNode(Node):
             ExecutionControl,
             '/thesis/execution_control',
             10,
+        )
+        self.jog_evidence_publisher = self.create_publisher(
+            String, '/thesis/jog_horizon_evidence', 10
+        )
+        self.jog_witness_publisher = self.create_publisher(
+            MarkerArray, '/thesis/jog_nominal_witness', 1
         )
         self.timing_publisher = self.create_publisher(
             PipelineTiming, '/thesis/pipeline_timing', 100
@@ -517,11 +660,11 @@ class SafetySupervisorNode(Node):
         self.last_state_arrival_ns = now_ns
         history = getattr(self, 'kinematic_state_history', None)
         if history is not None and all(
-            name in positions for name in JOINT_NAMES
+            name in positions for name in self.joint_names
         ):
             history.append((
                 self.last_state_receive_ns,
-                tuple(positions[name] for name in JOINT_NAMES),
+                tuple(positions[name] for name in self.joint_names),
             ))
 
     def kinematic_tf_check_callback(self):
@@ -537,8 +680,14 @@ class SafetySupervisorNode(Node):
                 self.tf_buffer,
                 self.get_clock().now().nanoseconds,
                 float(self.get_parameter('max_state_age_sec').value),
+                self.safety_reference_frame,
+                self.tip_link,
             )
-            error = kinematic_tf_position_error(joints, tf_position)
+            error = kinematic_tf_position_error(
+                joints,
+                tf_position,
+                self.tip_position_function,
+            )
         except (ValueError, tf2_ros.TransformException) as exception:
             self._set_kinematic_tf_failure(
                 'KINEMATIC_TF_UNAVAILABLE',
@@ -583,9 +732,12 @@ class SafetySupervisorNode(Node):
             <= float(self.get_parameter('jog_command_timeout_sec').value)
         ):
             current = None
-            if all(name in self.current_positions for name in JOINT_NAMES):
+            if all(
+                name in self.current_positions for name in self.joint_names
+            ):
                 current = tuple(
-                    self.current_positions[name] for name in JOINT_NAMES
+                    self.current_positions[name]
+                    for name in self.joint_names
                 )
             self.publish_jog_stop(
                 self.last_jog_message, reason_code, reason, current
@@ -610,8 +762,12 @@ class SafetySupervisorNode(Node):
                 'Rejected proximity with zero, stale, or future source stamp'
             )
             return
+        expected_frame = getattr(
+            self, 'safety_reference_frame', SAFETY_REFERENCE_FRAME
+        )
         if not proximity_reference_frame_is_valid(
-                getattr(msg, 'reference_frame', '')):
+                getattr(msg, 'reference_frame', ''),
+                expected_frame):
             self.proximity_status = None
             self.last_proximity_receive_ns = None
             self.last_proximity_arrival_ns = now_ns
@@ -619,7 +775,16 @@ class SafetySupervisorNode(Node):
             self.get_logger().warning(
                 'Rejected proximity with invalid reference frame '
                 f'{getattr(msg, "reference_frame", "")!r}; expected '
-                f'{SAFETY_REFERENCE_FRAME!r}'
+                f'{expected_frame!r}'
+            )
+            return
+        if not proximity_geometry_is_valid(msg):
+            self.proximity_status = None
+            self.last_proximity_receive_ns = None
+            self.last_proximity_arrival_ns = now_ns
+            self.last_proximity_rejection_reason = 'PROXIMITY_GEOMETRY_INVALID'
+            self.get_logger().warning(
+                'Rejected proximity with invalid geometry evidence'
             )
             return
         self.proximity_status = msg
@@ -680,7 +845,10 @@ class SafetySupervisorNode(Node):
         }
         if msg.status in terminal_statuses and active_matches:
             self.active_execution = None
-            if getattr(self, 'pending_point_command_id', None) == msg.command_id:
+            if (
+                getattr(self, 'pending_point_command_id', None)
+                == msg.command_id
+            ):
                 self.pending_point_command_id = None
             self.last_execution_receive_ns = None
             self.last_runtime_command_id = None
@@ -843,15 +1011,28 @@ class SafetySupervisorNode(Node):
         nominal_clearance=math.nan,
         stability=None,
         requested_reason_code='',
+        predictive_threshold=None,
+        intent_stamp=None,
     ):
         control = ExecutionControl()
         control.stamp = self.get_clock().now().to_msg()
         control.command_id = command_id
+        if intent_stamp is not None:
+            control.intent_stamp = intent_stamp
         control.state = state
         control.speed_scale = float(speed_scale)
         control.minimum_clearance = float(clearance)
         control.limiting_segment = segment
         control.protective_margin = self.protective_margin()
+        if predictive_threshold is None:
+            predictive_threshold = max(
+                control.protective_margin,
+                float(self.get_parameter('stop_distance').value)
+                + float(self.get_parameter(
+                    'predictive_stop_reserve_m'
+                ).value),
+            )
+        control.predictive_threshold = float(predictive_threshold)
         control.time_to_protective_volume = NO_EVENT_TIME
         control.time_to_collision = NO_EVENT_TIME
         control.supervised_time_to_protective_volume = NO_EVENT_TIME
@@ -942,6 +1123,10 @@ class SafetySupervisorNode(Node):
                 effective_duration,
                 horizon,
                 sample_count,
+                joint_names=self.joint_names,
+                position_limits=self.position_limits,
+                velocity_limits=self.velocity_limits,
+                continuous_joints=self.continuous_joints,
             ).positions
         sample_times = tuple(
             horizon * index / float(sample_count - 1)
@@ -955,6 +1140,11 @@ class SafetySupervisorNode(Node):
             obstacle_velocity,
             obstacle_radius,
             self.protective_margin(),
+            capsule_radii=self.capsule_radii,
+            segment_names=self.segment_names,
+            capsule_function=self.capsule_function,
+            table=getattr(self, 'table', None),
+            joint_count=len(self.joint_names),
         )
         self.last_horizon_clearance = result
         collision_time = (
@@ -969,15 +1159,78 @@ class SafetySupervisorNode(Node):
             collision_time,
         )
 
-    def decide_horizon(self, current_clearance, nominal_geometry,
-                       evaluator, previous_scale=1.0):
-        """Apply one shared policy to a previously evaluated horizon."""
+    def current_sphere_clearance(
+        self, positions, obstacle_center, obstacle_radius
+    ):
+        """Evaluate current clearance through the configured robot model."""
+        result = evaluate_joint_horizon(
+            (positions,),
+            (0.0,),
+            obstacle_center,
+            (0.0, 0.0, 0.0),
+            obstacle_radius,
+            0.0,
+            capsule_radii=self.capsule_radii,
+            segment_names=self.segment_names,
+            capsule_function=self.capsule_function,
+            table=getattr(self, 'table', None),
+            joint_count=len(self.joint_names),
+        )
+        return result.current.legacy_tuple()
+
+    def scene_limits(self, geometry):
+        """Evaluate each obstacle against its own reserve before taking the worst."""
+        paths = getattr(geometry, 'obstacle_clearances', ())
+        if not paths:
+            return ()
+        stop = float(self.get_parameter('stop_distance').value)
+        reserve = float(self.get_parameter('predictive_stop_reserve_m').value)
+        if not math.isfinite(reserve) or reserve < 0:
+            raise ValueError('invalid predictive stop reserve')
+        full = max(self.protective_margin(), stop + reserve)
+        sphere, table = paths
+        sphere_floor = full
+        if sphere[0] < full and withdrawal_path_is_non_approaching(sphere, 0.001):
+            sphere_floor = sphere[0]
+        # A mounted shoulder can stay inside the reserve for all joint poses.
+        # Require the board clearance to hold at least its starting value in
+        # this case, while independently enforcing the sphere's reserve.
+        return sphere_floor, min(full, table[0])
+
+    def predictive_threshold_for_horizon(
+        self, current_clearance, nominal_geometry
+    ):
+        """Return the exact clearance threshold used for this horizon."""
         margin = self.protective_margin()
         stop_distance = float(
             self.get_parameter('stop_distance').value
         )
+        reserve = float(self.get_parameter('predictive_stop_reserve_m').value)
+        if not math.isfinite(reserve) or reserve < 0.0:
+            raise ValueError('predictive_stop_reserve_m must be non-negative')
+        threshold = max(margin, stop_distance + reserve)
+        if current_clearance <= stop_distance:
+            return margin
+        limits = SafetySupervisorNode.scene_limits(self, nominal_geometry)
+        if limits:
+            paths = nominal_geometry.obstacle_clearances
+            limiting = min(range(len(paths)), key=lambda i: min(paths[i]) - limits[i])
+            return limits[limiting]
+        if (current_clearance < threshold and
+                withdrawal_path_is_non_approaching(
+                    nominal_geometry.sample_clearances, 0.001)):
+            return margin
+        return threshold
+
+    def decide_horizon(self, current_clearance, nominal_geometry,
+                       evaluator, previous_scale=1.0):
+        """Apply one shared policy to a previously evaluated horizon."""
+        margin = self.protective_margin()
         warning_distance = float(
             self.get_parameter('warning_distance').value
+        )
+        stop_distance = float(
+            self.get_parameter('stop_distance').value
         )
         minimum_scale = float(
             self.get_parameter('runtime_minimum_speed_scale').value
@@ -986,6 +1239,20 @@ class SafetySupervisorNode(Node):
             self.get_parameter('runtime_scale_search_iterations').value
         )
         nominal_clearance = nominal_geometry.minimum.clearance
+        threshold = SafetySupervisorNode.predictive_threshold_for_horizon(
+            self,
+            current_clearance, nominal_geometry
+        )
+        # The first horizon sample is the current pose.  If already inside
+        # the predictive buffer, allow a verified non-approaching path rather
+        # than rejecting it solely because of that initial sample.
+
+        limits = SafetySupervisorNode.scene_limits(self, nominal_geometry)
+        limiting = None
+        if limits and current_clearance > stop_distance:
+            paths = nominal_geometry.obstacle_clearances
+            limiting = min(range(len(paths)), key=lambda i: min(paths[i]) - limits[i])
+            nominal_clearance = min(paths[limiting])
 
         candidate_scale = 1.0
         withdrawal_safe = False
@@ -1006,10 +1273,17 @@ class SafetySupervisorNode(Node):
                     'runtime_minimum_speed_scale and 1.0'
                 )
             candidate_scale = withdrawal_scale
-        elif nominal_clearance < margin:
+        elif nominal_clearance < threshold:
+            def feasible_clearance(scale):
+                clearance = evaluator(scale)[0][0]
+                if limiting is None:
+                    return clearance
+                paths = self.last_horizon_clearance.obstacle_clearances
+                return min(min(path) - floor for path, floor in zip(paths, limits))
+
             search = maximum_safe_scale(
-                lambda scale: evaluator(scale)[0][0],
-                margin,
+                feasible_clearance,
+                threshold if limiting is None else 0.0,
                 minimum_scale,
                 iterations,
             )
@@ -1026,6 +1300,13 @@ class SafetySupervisorNode(Node):
                 supervised_geometry.sample_clearances,
                 monotonic_tolerance,
             )
+            for geometry in (nominal_geometry, supervised_geometry):
+                for path in getattr(geometry, 'obstacle_clearances', ()):
+                    if path[0] > stop_distance:
+                        withdrawal_safe &= min(path) > stop_distance
+                    else:
+                        withdrawal_safe &= withdrawal_path_is_non_approaching(
+                            path, monotonic_tolerance)
             if not withdrawal_safe:
                 candidate_scale = 0.0
                 selected_evaluation = evaluator(candidate_scale)
@@ -1034,7 +1315,8 @@ class SafetySupervisorNode(Node):
             current_clearance=current_clearance,
             nominal_clearance=nominal_clearance,
             supervised_clearance=(
-                supervised_geometry.minimum.clearance
+                supervised_geometry.minimum.clearance if limiting is None else
+                min(supervised_geometry.obstacle_clearances[limiting])
             ),
             protective_margin=margin,
             stop_distance=stop_distance,
@@ -1046,6 +1328,7 @@ class SafetySupervisorNode(Node):
             ),
             previous_scale=previous_scale,
             withdrawal_safe=withdrawal_safe,
+            predictive_threshold=threshold,
         ))
         if decision.speed_scale != candidate_scale:
             selected_evaluation = evaluator(decision.speed_scale)
@@ -1082,7 +1365,7 @@ class SafetySupervisorNode(Node):
         # Preserve the origin stamp for end-to-end correlation.
         output.stamp = source.stamp
         output.command_id = source.command_id
-        output.joint_names = list(JOINT_NAMES)
+        output.joint_names = list(self.joint_names)
         output.positions = list(positions)
         whole_seconds = int(horizon)
         nanoseconds = int(round(
@@ -1103,6 +1386,16 @@ class SafetySupervisorNode(Node):
             msg, 'SUPERVISOR_RECEIVE', receive_monotonic_ns
         )
         now_ns = self.get_clock().now().nanoseconds
+        stamp_ns = int(msg.stamp.sec) * 1_000_000_000 + int(msg.stamp.nanosec)
+        if not self.jog_clock_guard.accepts(
+                now_ns, time.monotonic(), stamp_ns):
+            self.last_jog_intent_monotonic = None
+            self.last_jog_message = None
+            self.publish_jog_stop(
+                msg, 'CLOCK_UNAVAILABLE_OR_PAUSED',
+                'El reloj ROS no avanza o la intención precede a su recuperación.',
+            )
+            return
         message_age = message_age_seconds(now_ns, msg.stamp)
         maximum_age = float(
             self.get_parameter('max_jog_message_age_sec').value
@@ -1124,18 +1417,18 @@ class SafetySupervisorNode(Node):
                 'Existe una trayectoria completa activa.',
             )
             return
-        if tuple(msg.joint_names) != tuple(JOINT_NAMES):
+        if tuple(msg.joint_names) != self.joint_names:
             self.publish_jog_stop(
                 msg,
                 'INVALID_JOINT_ORDER',
                 'El JOG no usa el orden articular canónico.',
             )
             return
-        if len(msg.positions) != len(JOINT_NAMES):
+        if len(msg.positions) != len(self.joint_names):
             self.publish_jog_stop(
                 msg,
                 'INVALID_JOINT_COUNT',
-                'El JOG no contiene seis posiciones.',
+                'El JOG no contiene el número articular del perfil.',
             )
             return
         if not all(math.isfinite(value) for value in msg.positions):
@@ -1147,7 +1440,7 @@ class SafetySupervisorNode(Node):
             return
         if not all(
             name in self.current_positions
-            for name in JOINT_NAMES
+            for name in self.joint_names
         ):
             self.publish_jog_stop(
                 msg,
@@ -1165,7 +1458,7 @@ class SafetySupervisorNode(Node):
 
         current = tuple(
             self.current_positions[name]
-            for name in JOINT_NAMES
+            for name in self.joint_names
         )
 
         if not self.kinematic_tf_valid:
@@ -1205,6 +1498,10 @@ class SafetySupervisorNode(Node):
                 current,
                 msg.positions,
                 horizon,
+                joint_names=self.joint_names,
+                position_limits=self.position_limits,
+                velocity_limits=self.velocity_limits,
+                continuous_joints=self.continuous_joints,
             )
         except ValueError as exc:
             self.get_logger().warning(
@@ -1254,12 +1551,14 @@ class SafetySupervisorNode(Node):
                 obstacle,
             )
 
+        evaluator = memoize_horizon_evaluator(self, evaluator)
+
         prediction_start_ns = time.monotonic_ns()
         self.publish_timing(
             msg, 'PREDICTION_START', prediction_start_ns
         )
         try:
-            current_result = minimum_sphere_clearance(
+            current_result = self.current_sphere_clearance(
                 current,
                 obstacle_center,
                 obstacle_radius,
@@ -1304,6 +1603,22 @@ class SafetySupervisorNode(Node):
             supervised_geometry = self.last_horizon_clearance
         state = decision.state
         speed_scale = decision.speed_scale
+        if self.jog_evidence_publisher.get_subscription_count():
+            evidence = String()
+            evidence.data = json.dumps({
+                'command_id': msg.command_id,
+                'state_stamp_ns': self.last_state_receive_ns,
+                'joint_names': self.joint_names,
+                'current': current,
+                'bounded_target': bounded_target,
+                'duration': horizon,
+                'horizon': horizon,
+                'sample_count': sample_count,
+                'scale': speed_scale,
+                'state': state,
+                'limiting_segment': nominal_geometry.minimum.segment_name,
+            }, allow_nan=False)
+            self.jog_evidence_publisher.publish(evidence)
         margin = self.protective_margin()
         full_clearance = nominal_geometry.minimum.clearance
         best, sample_index, minimum_time, collision_time = selected_evaluation
@@ -1351,7 +1666,29 @@ class SafetySupervisorNode(Node):
             nominal_clearance=nominal_geometry.minimum.clearance,
             stability=stability,
             requested_reason_code=raw_decision.reason_code,
+            predictive_threshold=self.predictive_threshold_for_horizon(
+                current_clearance, nominal_geometry
+            ),
+            intent_stamp=msg.stamp,
         )
+        if (
+            self.jog_witness_publisher.get_subscription_count()
+            and raw_decision.reason_code in (
+                'PREDICTIVE_INTRUSION', 'NO_SAFE_SCALE', 'CURRENT_CLEARANCE_STOP'
+            )
+        ):
+            hit = nominal_geometry.minimum
+            if nominal_geometry.obstacle_minima and current_clearance > float(
+                    self.get_parameter('stop_distance').value):
+                # Mirror the admission check: each obstacle has its own reserve.
+                hit, _ = min(
+                    zip(nominal_geometry.obstacle_minima, self.scene_limits(nominal_geometry)),
+                    key=lambda pair: pair[0].clearance - pair[1],
+                )
+            header = Header(frame_id=self.safety_reference_frame, stamp=msg.stamp)
+            markers = clearance_markers(header, 'JOG_nominal', hit,
+                                        (1., .44, .06), None, nominal=True)
+            self.jog_witness_publisher.publish(MarkerArray(markers=markers))
         if (
             state != self.last_jog_state
             or self.last_jog_scale is None
@@ -1381,7 +1718,7 @@ class SafetySupervisorNode(Node):
             return
         if not all(
             joint_name in self.current_positions
-            for joint_name in JOINT_NAMES
+            for joint_name in self.joint_names
         ) or self.last_state_receive_ns is None:
             self.publish_runtime_stop(
                 command_id,
@@ -1428,7 +1765,7 @@ class SafetySupervisorNode(Node):
 
         current = tuple(
             self.current_positions[name]
-            for name in JOINT_NAMES
+            for name in self.joint_names
         )
         target = tuple(float(value) for value in execution.target_positions)
         horizon = min(
@@ -1463,8 +1800,10 @@ class SafetySupervisorNode(Node):
                 obstacle,
             )
 
+        evaluator = memoize_horizon_evaluator(self, evaluator)
+
         try:
-            current_result = minimum_sphere_clearance(
+            current_result = self.current_sphere_clearance(
                 current,
                 obstacle_center,
                 obstacle_radius,
@@ -1544,6 +1883,9 @@ class SafetySupervisorNode(Node):
             nominal_clearance=nominal_geometry.minimum.clearance,
             stability=stability,
             requested_reason_code=raw_decision.reason_code,
+            predictive_threshold=self.predictive_threshold_for_horizon(
+                current_clearance, nominal_geometry
+            ),
         )
 
         if (
@@ -1551,11 +1893,14 @@ class SafetySupervisorNode(Node):
             or self.last_runtime_scale is None
             or abs(speed_scale - self.last_runtime_scale) > 1.0e-3
         ):
+            nominal_collision_time = event_time_or_invalid(
+                nominal_geometry.first_collision_time
+            )
             self.get_logger().warning(
                 f'RUNTIME {command_id}: {state}, '
                 f'd_min={clearance:.3f} m, scale={speed_scale:.2f}, '
                 f't_min={minimum_time_from_now:.3f} s, '
-                f'TTC_nom={event_time_or_invalid(nominal_geometry.first_collision_time):.3f} s'
+                f'TTC_nom={nominal_collision_time:.3f} s'
             )
         self.last_runtime_state = state
         self.last_runtime_scale = speed_scale
@@ -1585,20 +1930,26 @@ class SafetySupervisorNode(Node):
         duration_sec,
     ):
         """Return a velocity-bounded copy before predictive evaluation."""
-        if not all(name in self.current_positions for name in JOINT_NAMES):
+        if not all(
+            name in self.current_positions for name in self.joint_names
+        ):
             self.publish_decision(
                 msg, False, 'REJECTED', 'VALIDATION_REJECTED',
                 f'REJECTED {msg.command_id}: current joint state unavailable',
             )
             return None
         current = tuple(
-            self.current_positions[name] for name in JOINT_NAMES
+            self.current_positions[name] for name in self.joint_names
         )
         try:
             saturation = saturate_target_by_velocity(
                 current,
                 msg.positions,
                 duration_sec,
+                joint_names=self.joint_names,
+                position_limits=self.position_limits,
+                velocity_limits=self.velocity_limits,
+                continuous_joints=self.continuous_joints,
             )
         except ValueError as exc:
             self.publish_decision(
@@ -1646,9 +1997,9 @@ class SafetySupervisorNode(Node):
     def joint_limit_violation(self, joint_positions):
         """Return the first joint-limit violation in a configuration."""
         for joint_name, position in zip(
-                JOINT_NAMES,
+                self.joint_names,
                 joint_positions):
-            lower, upper = JOINT_POSITION_LIMITS[joint_name]
+            lower, upper = self.position_limits[joint_name]
             if not math.isfinite(position) or not lower <= position <= upper:
                 return joint_name, position, lower, upper
         return None
@@ -1681,7 +2032,7 @@ class SafetySupervisorNode(Node):
 
         if not all(
             joint_name in self.current_positions
-            for joint_name in JOINT_NAMES
+            for joint_name in self.joint_names
         ) or self.last_state_receive_ns is None:
             self.get_logger().warning(
                 f'REJECTED {msg.command_id}: '
@@ -1735,7 +2086,7 @@ class SafetySupervisorNode(Node):
 
         current = tuple(
             self.current_positions[name]
-            for name in JOINT_NAMES
+            for name in self.joint_names
         )
         target = tuple(float(value) for value in msg.positions)
         trajectory_duration = (
@@ -1764,6 +2115,10 @@ class SafetySupervisorNode(Node):
                 trajectory_duration,
                 prediction_horizon,
                 sample_count,
+                joint_names=self.joint_names,
+                position_limits=self.position_limits,
+                velocity_limits=self.velocity_limits,
+                continuous_joints=self.continuous_joints,
             )
         except ValueError as exc:
             self.get_logger().warning(
@@ -1819,6 +2174,11 @@ class SafetySupervisorNode(Node):
                 obstacle_velocity,
                 obstacle_radius,
                 self.protective_margin(),
+                capsule_radii=self.capsule_radii,
+                segment_names=self.segment_names,
+                capsule_function=self.capsule_function,
+                table=getattr(self, 'table', None),
+                joint_count=len(self.joint_names),
             )
         except (TypeError, ValueError, ZeroDivisionError) as exc:
             self.publish_decision(
@@ -1897,7 +2257,7 @@ class SafetySupervisorNode(Node):
         prediction.capsule_end.x = end[0]
         prediction.capsule_end.y = end[1]
         prediction.capsule_end.z = end[2]
-        prediction.capsule_radius = CAPSULE_RADII[segment_index]
+        prediction.capsule_radius = self.capsule_radii[segment_index]
         prediction.minimum_time_from_now = witness.sample_time
         prediction.current_clearance = current_clearance
         prediction.nominal_clearance = nominal_geometry.minimum.clearance
@@ -2098,6 +2458,12 @@ class SafetySupervisorNode(Node):
             joint_name,
             target_position,
             current_position,
+            position_limits=getattr(
+                self, 'position_limits', JOINT_POSITION_LIMITS
+            ),
+            continuous_joints=getattr(
+                self, 'continuous_joints', CONTINUOUS_JOINTS
+            ),
         )
 
     def validate_velocity(
@@ -2124,7 +2490,8 @@ class SafetySupervisorNode(Node):
             if require_state:
                 self.publish_decision(
                     msg, False, 'REJECTED', 'VALIDATION_REJECTED',
-                    f'REJECTED {msg.command_id}: current joint state unavailable',
+                    f'REJECTED {msg.command_id}: '
+                    'current joint state unavailable',
                 )
                 self.get_logger().warning(
                     f'REJECTED {msg.command_id}: '
@@ -2147,7 +2514,8 @@ class SafetySupervisorNode(Node):
             if require_state:
                 self.publish_decision(
                     msg, False, 'REJECTED', 'VALIDATION_REJECTED',
-                    f'REJECTED {msg.command_id}: joint state is stale ({state_age_sec:.3f} s)',
+                    f'REJECTED {msg.command_id}: joint state is stale '
+                    f'({state_age_sec:.3f} s)',
                 )
                 self.get_logger().warning(
                     f'REJECTED {msg.command_id}: '
@@ -2171,7 +2539,8 @@ class SafetySupervisorNode(Node):
                 if require_state:
                     self.publish_decision(
                         msg, False, 'REJECTED', 'VALIDATION_REJECTED',
-                        f'REJECTED {msg.command_id}: no current state for {joint_name}',
+                        f'REJECTED {msg.command_id}: no current state for '
+                        f'{joint_name}',
                     )
                     self.get_logger().warning(
                         f'REJECTED {msg.command_id}: '
@@ -2195,7 +2564,10 @@ class SafetySupervisorNode(Node):
 
             requested_velocity = abs(delta) / duration_sec
 
-            allowed_velocity = JOINT_VELOCITY_LIMITS[joint_name]
+            velocity_limits = getattr(
+                self, 'velocity_limits', JOINT_VELOCITY_LIMITS
+            )
+            allowed_velocity = velocity_limits[joint_name]
 
             if requested_velocity > allowed_velocity + 1.0e-9:
                 self.publish_decision(
@@ -2253,7 +2625,8 @@ class SafetySupervisorNode(Node):
         if len(msg.joint_names) != len(msg.positions):
             self.publish_decision(
                 msg, False, 'REJECTED', 'VALIDATION_REJECTED',
-                f'REJECTED {msg.command_id}: joint_names and positions have different sizes',
+                f'REJECTED {msg.command_id}: joint_names and positions '
+                'have different sizes',
             )
             self.get_logger().warning(
                 f'REJECTED {msg.command_id}: '
@@ -2264,7 +2637,8 @@ class SafetySupervisorNode(Node):
         if not all(math.isfinite(value) for value in msg.positions):
             self.publish_decision(
                 msg, False, 'REJECTED', 'VALIDATION_REJECTED',
-                f'REJECTED {msg.command_id}: non-finite joint position detected',
+                f'REJECTED {msg.command_id}: '
+                'non-finite joint position detected',
             )
             self.get_logger().warning(
                 f'REJECTED {msg.command_id}: '
@@ -2272,14 +2646,16 @@ class SafetySupervisorNode(Node):
             )
             return
 
-        if tuple(msg.joint_names) != JOINT_NAMES:
+        joint_names = getattr(self, 'joint_names', JOINT_NAMES)
+        if tuple(msg.joint_names) != joint_names:
             self.publish_decision(
                 msg, False, 'REJECTED', 'VALIDATION_REJECTED',
-                f'REJECTED {msg.command_id}: expected six arm joints in canonical order',
+                f'REJECTED {msg.command_id}: expected profile joints '
+                'in canonical order',
             )
             self.get_logger().warning(
                 f'REJECTED {msg.command_id}: '
-                'expected six arm joints in canonical order'
+                'expected profile joints in canonical order'
             )
             return
 
@@ -2287,7 +2663,10 @@ class SafetySupervisorNode(Node):
             msg.joint_names,
             msg.positions,
         ):
-            lower, upper = JOINT_POSITION_LIMITS[joint_name]
+            position_limits = getattr(
+                self, 'position_limits', JOINT_POSITION_LIMITS
+            )
+            lower, upper = position_limits[joint_name]
 
             if not lower <= position <= upper:
                 self.publish_decision(

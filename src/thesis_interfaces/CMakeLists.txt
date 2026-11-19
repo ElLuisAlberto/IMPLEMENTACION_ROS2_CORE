@@ -24,6 +24,9 @@ rosidl_generate_interfaces(${PROJECT_NAME}
   "msg/ExecutionTrajectory.msg"
   "msg/ExecutionControl.msg"
   "msg/PipelineTiming.msg"
+  "msg/GripperState.msg"
+  "msg/GeometrySnapshot.msg"
+  "msg/MultiArmSafetyStatus.msg"
   DEPENDENCIES
     builtin_interfaces
     geometry_msgs

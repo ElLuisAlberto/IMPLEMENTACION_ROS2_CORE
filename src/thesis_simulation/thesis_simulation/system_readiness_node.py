@@ -12,11 +12,31 @@ from rclpy.qos import QoSProfile, ReliabilityPolicy
 from rosgraph_msgs.msg import Clock
 from sensor_msgs.msg import JointState
 from std_msgs.msg import Bool, String
+from thesis_core.robot_profile import load_robot_profile
 from thesis_core.ros_runtime import spin_node
 from thesis_interfaces.msg import Obstacle, ProximityStatus
 from tf2_msgs.msg import TFMessage
 
+from thesis_core.jaco_kinematics import SEGMENT_NAMES
 from thesis_simulation.readiness_contract import sample_is_fresh
+
+
+def default_readiness_endpoints(profile):
+    """Return profile-scoped readiness endpoints without ROS side effects."""
+    namespace = profile.controller_paths.namespace
+    prefix = '' if namespace == '/' else str(namespace).rstrip('/')
+    manager = profile.controller_paths.controller_manager.rstrip('/')
+    return {
+        'prefix': prefix,
+        'joint_states': profile.joint_states_topic,
+        'proximity': f'{prefix}/thesis/proximity_status',
+        'obstacle_input': f'{prefix}/thesis/obstacle_in_model_frame',
+        'ready': f'{prefix}/thesis/system_ready',
+        'status': f'{prefix}/thesis/system_readiness',
+        'controller_service': f'{manager}/list_controllers',
+        'controller_action': profile.controller_action,
+        'obstacle_pose': f'/world/{profile.world_name}/pose/info',
+    }
 
 
 class SystemReadinessNode(Node):
@@ -24,6 +44,8 @@ class SystemReadinessNode(Node):
 
     def __init__(self):
         super().__init__('system_readiness')
+        self.declare_parameter('manifest_path', '')
+        self.declare_parameter('robot_name', 'jaco2')
         self.declare_parameter('obstacle_source_mode', 'topic')
         self.declare_parameter('use_demo_obstacle', True)
         self.declare_parameter('require_gui', True)
@@ -32,12 +54,51 @@ class SystemReadinessNode(Node):
         self.declare_parameter('controller_request_timeout_sec', 2.0)
         self.declare_parameter(
             'controller_manager_service',
-            '/controller_manager/list_controllers',
+            '',
         )
         self.declare_parameter(
             'controller_action',
-            '/arm_controller/follow_joint_trajectory',
+            '',
         )
+        self.declare_parameter('controller_name', 'arm_controller')
+        self.declare_parameter('joint_state_topic', '')
+        self.declare_parameter('proximity_topic', '')
+        self.declare_parameter('obstacle_input_topic', '')
+        self.declare_parameter('obstacle_pose_topic', '')
+        self.declare_parameter('ready_topic', '')
+        self.declare_parameter('status_topic', '')
+
+        manifest_path = str(self.get_parameter('manifest_path').value)
+        robot_name = str(self.get_parameter('robot_name').value)
+        self.profile_mode = bool(manifest_path)
+        self.robot_profile = load_robot_profile(
+            manifest_path or None, robot_name
+        )
+        defaults = default_readiness_endpoints(self.robot_profile)
+        self.topic_prefix = defaults['prefix']
+
+        def configured_topic(parameter, default):
+            value = str(self.get_parameter(parameter).value)
+            return value or default
+
+        self.joint_state_topic = configured_topic(
+            'joint_state_topic', defaults['joint_states']
+        )
+        self.proximity_topic = configured_topic(
+            'proximity_topic', defaults['proximity']
+        )
+        self.obstacle_input_topic = configured_topic(
+            'obstacle_input_topic', defaults['obstacle_input']
+        )
+        self.ready_topic = configured_topic(
+            'ready_topic', defaults['ready']
+        )
+        self.status_topic = configured_topic(
+            'status_topic', defaults['status']
+        )
+        self.obstacle_pose_topic = str(
+            self.get_parameter('obstacle_pose_topic').value
+        ) or defaults['obstacle_pose']
 
         self.obstacle_source_mode = str(
             self.get_parameter('obstacle_source_mode').value
@@ -73,6 +134,7 @@ class SystemReadinessNode(Node):
             '/thesis/proximity_status': None,
         }
         self.last_received['/thesis/obstacle_source'] = None
+        self.proximity_issue = 'esperando geometría de proximidad válida'
         self.last_status = None
         self.controller_active = False
         self.controller_error = 'esperando controller_manager'
@@ -87,41 +149,54 @@ class SystemReadinessNode(Node):
             Clock, '/clock', self.clock_callback, clock_qos
         )
         self.create_subscription(
-            JointState, '/joint_states', self.joint_state_callback, 10
+            JointState,
+            self.joint_state_topic,
+            self.joint_state_callback,
+            10,
         )
         self.create_subscription(
             ProximityStatus,
-            '/thesis/proximity_status',
+            self.proximity_topic,
             self.proximity_callback,
             10,
         )
         if self.obstacle_source_mode == 'topic':
             self.create_subscription(
                 Obstacle,
-                '/thesis/obstacle_in_model_frame',
+                self.obstacle_input_topic,
                 self.obstacle_callback,
                 10,
             )
         else:
             self.create_subscription(
                 TFMessage,
-                '/world/jaco_world/pose/info',
+                self.obstacle_pose_topic,
                 self.obstacle_pose_callback,
                 10,
             )
 
         self.ready_publisher = self.create_publisher(
-            Bool, '/thesis/system_ready', 10
+            Bool, self.ready_topic, 10
         )
         self.status_publisher = self.create_publisher(
-            String, '/thesis/system_readiness', 10
+            String, self.status_topic, 10
         )
         service_name = str(
             self.get_parameter('controller_manager_service').value
         )
+        if not service_name:
+            service_name = defaults['controller_service']
         action_name = str(
             self.get_parameter('controller_action').value
         )
+        if not action_name:
+            action_name = defaults['controller_action']
+        self.controller_action_name = action_name
+        self.controller_name = str(
+            self.get_parameter('controller_name').value
+        )
+        if not self.controller_name:
+            raise ValueError('controller_name must be nonempty')
         self.controller_client = self.create_client(
             ListControllers, service_name
         )
@@ -142,11 +217,26 @@ class SystemReadinessNode(Node):
 
     def joint_state_callback(self, _msg):
         """Record receipt of a live robot state sample."""
-        self._mark_received('/joint_states')
+        if all(
+            name in _msg.name for name in self.robot_profile.joint_names
+        ):
+            self._mark_received('/joint_states')
 
-    def proximity_callback(self, _msg):
-        """Record receipt of a live proximity evaluation."""
+    def proximity_callback(self, message):
+        """Receipt alone does not establish that proximity was measurable."""
         self._mark_received('/thesis/proximity_status')
+        valid = (
+            bool(message.geometry_valid)
+            and message.reference_frame == getattr(getattr(self, 'robot_profile', None), 'world_frame', 'world')
+            and (bool(message.limiting_segment) if getattr(self, 'profile_mode', False) else message.limiting_segment in SEGMENT_NAMES)
+            and math.isfinite(message.minimum_clearance)
+            and math.isfinite(message.obstacle_radius)
+            and message.obstacle_radius > 0.0
+        )
+        self.proximity_issue = (
+            '' if valid else
+            'geometría de proximidad no disponible: ' + message.limiting_segment
+        )
 
     def obstacle_callback(self, _msg):
         """Record receipt of a transformed perception input."""
@@ -173,16 +263,21 @@ class SystemReadinessNode(Node):
             else:
                 try:
                     response = self.controller_future.result()
+                    controller_name = getattr(
+                        self, 'controller_name', 'arm_controller'
+                    )
                     self.controller_active = any(
-                        item.name == 'arm_controller'
+                        item.name == controller_name
                         and item.state.lower() == 'active'
                         for item in response.controller
                     )
                     self.controller_error = (
                         '' if self.controller_active
-                        else 'arm_controller no está active'
+                        else f'{controller_name} no está active'
                     )
-                except Exception as exc:  # ROS service errors are runtime data.
+                # ROS service failures are runtime input, not programming
+                # errors, so the monitor reports them and retries.
+                except Exception as exc:
                     self.controller_active = False
                     self.controller_error = f'falló list_controllers: {exc}'
                 self.controller_future = None
@@ -196,23 +291,27 @@ class SystemReadinessNode(Node):
             self.controller_future_started_at = now
 
     def _node_graph_status(self):
-        expected = {
-            'gazebo_clock_bridge',
-            'robot_state_publisher',
-            'joint_state_broadcaster',
-            'proximity_monitor',
-            'safety_supervisor_node',
-            'simulation_command_adapter',
-            'cartesian_command_adapter',
-            'cartesian_jog_adapter',
-            'cartesian_trajectory_adapter',
-            'horizon_preview',
+        common = {
+            'robot_state_publisher', 'joint_state_broadcaster',
+            'safety_supervisor_node', 'simulation_command_adapter',
+            'cartesian_command_adapter', 'cartesian_jog_adapter',
+            'cartesian_trajectory_adapter', 'horizon_preview',
             'system_readiness',
         }
-        if self.obstacle_source_mode == 'topic':
-            expected.add('obstacle_input_bridge')
+        if getattr(self, 'profile_mode', False):
+            expected = common | {
+                'cell_clock', 'profile_proximity_monitor',
+            }
             if self.use_demo_obstacle:
-                expected.add('obstacle_demo_source')
+                expected.add('cell_demo_obstacle')
+        else:
+            expected = common | {
+                'gazebo_clock_bridge', 'proximity_monitor',
+            }
+            if self.obstacle_source_mode == 'topic':
+                expected.add('obstacle_input_bridge')
+                if self.use_demo_obstacle:
+                    expected.add('obstacle_demo_source')
         if self.require_gui:
             expected.add('joint_control_gui_node')
 
@@ -244,18 +343,23 @@ class SystemReadinessNode(Node):
             if not sample_is_fresh(
                     self.last_received[key], now, self.timeout_sec):
                 missing.append(f'sin dato reciente: {label}')
+        if getattr(self, 'proximity_issue', ''):
+            missing.append(self.proximity_issue)
         return missing
 
     def _connection_status(self):
+        prefix = self.topic_prefix
         expected_subscribers = {
-            '/thesis/candidate_command': 'supervisor',
-            '/thesis/jog_intent': 'supervisor',
-            '/thesis/proximity_status': 'supervisor',
-            '/thesis/supervised_command': 'adaptador',
-            '/thesis/supervised_jog_command': 'adaptador',
-            '/thesis/cartesian_candidate': 'adaptador cartesiano',
-            '/thesis/cartesian_jog_intent': 'adaptador JOG cartesiano',
-            '/thesis/cartesian_trajectory_candidate': (
+            f'{prefix}/thesis/candidate_command': 'supervisor',
+            f'{prefix}/thesis/jog_intent': 'supervisor',
+            f'{prefix}/thesis/proximity_status': 'supervisor',
+            f'{prefix}/thesis/supervised_command': 'adaptador',
+            f'{prefix}/thesis/supervised_jog_command': 'adaptador',
+            f'{prefix}/thesis/cartesian_candidate': 'adaptador cartesiano',
+            f'{prefix}/thesis/cartesian_jog_intent': (
+                'adaptador JOG cartesiano'
+            ),
+            f'{prefix}/thesis/cartesian_trajectory_candidate': (
                 'coordinador cartesiano'
             ),
         }
@@ -276,8 +380,13 @@ class SystemReadinessNode(Node):
         if not self.controller_active:
             missing.append(self.controller_error)
         if not self.action_client.server_is_ready():
+            action_name = getattr(
+                self,
+                'controller_action_name',
+                '/arm_controller/follow_joint_trajectory',
+            )
             missing.append(
-                'acción /arm_controller/follow_joint_trajectory no disponible'
+                f'acción {action_name} no disponible'
             )
 
         ready = not missing

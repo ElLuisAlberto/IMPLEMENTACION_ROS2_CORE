@@ -1,0 +1,42 @@
+{
+  "robot": "ur17g",
+  "domain": 89,
+  "runtime": "/tmp/thesis_validate_s5fdo6rj",
+  "checks": [
+    "all robot states fresh; all supervisors ALLOW",
+    "ur17g: controllers active; 6 joints; FK/TF error=0.000000m",
+    "ur17g: supervised +0.02rad and return reached <0.008rad error",
+    "ur17g: active goal cancelled on obstacle; hold drift=0.000001rad",
+    "ur17g: obstacle overlap rejected with STOP",
+    "ur17g: stale obstacle rejected and recovery observed",
+    "operator command_robot.py read live ur17g description and submitted an accepted supervised candidate"
+  ],
+  "pass": true,
+  "operator_cli": {
+    "accepted": true,
+    "command_id": "sim-ur17g-3b42d941c0cc4d01a1243463831fa1be",
+    "command_kind": "joint_delta",
+    "duration_s": 2.0,
+    "execution_confirmed": false,
+    "joint_names": [
+      "ur17g_shoulder_pan_joint",
+      "ur17g_shoulder_lift_joint",
+      "ur17g_elbow_joint",
+      "ur17g_wrist_1_joint",
+      "ur17g_wrist_2_joint",
+      "ur17g_wrist_3_joint"
+    ],
+    "positions_rad": [
+      0.01083302086272524,
+      -1.5699998972805735,
+      -1.994439430544391e-07,
+      -1.5699992950562454,
+      -1.5483779836608765e-07,
+      2.8403351369170493e-05
+    ],
+    "reason": "SIMULATION_GOAL_ACCEPTED",
+    "reason_code": "SIMULATION_GOAL_ACCEPTED",
+    "robot": "ur17g",
+    "state": "ALLOW"
+  }
+}

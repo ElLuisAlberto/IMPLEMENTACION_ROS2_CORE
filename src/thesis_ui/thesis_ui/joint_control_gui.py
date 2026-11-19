@@ -3,13 +3,14 @@ import sys
 import time
 from collections import deque
 from functools import partial
-from PyQt5.QtCore import QEvent
+from PyQt5.QtCore import QEvent, QSize
 
 from PyQt5.QtCore import QSignalBlocker
 from PyQt5.QtCore import Qt
 from PyQt5.QtCore import QTimer
 from PyQt5.QtGui import QColor
 from PyQt5.QtWidgets import QHeaderView
+from PyQt5.QtWidgets import QLayout
 from PyQt5.QtWidgets import QApplication
 from PyQt5.QtWidgets import QComboBox
 from PyQt5.QtWidgets import QDoubleSpinBox
@@ -22,7 +23,6 @@ from PyQt5.QtWidgets import QMessageBox
 from PyQt5.QtWidgets import QPushButton
 from PyQt5.QtWidgets import QScrollArea
 from PyQt5.QtWidgets import QSlider
-from PyQt5.QtWidgets import QTabWidget
 from PyQt5.QtWidgets import QTableWidget
 from PyQt5.QtWidgets import QTableWidgetItem
 from PyQt5.QtWidgets import QVBoxLayout
@@ -51,40 +51,49 @@ from thesis_interfaces.msg import (
 )
 import tf2_ros
 
-from thesis_core.joint_model import (
-    CONTINUOUS_JOINT_INDEXES,
-    JOINT_NAMES,
-    JOINT_POSITION_LIMITS,
-    JOINT_VELOCITY_LIMITS,
+from thesis_ui.robot_profile import (
+    DEFAULT_GUI_ROBOT_PROFILE,
+    normalize_gui_robot_profile,
 )
 
 
-JOINT_LABELS = [
-    'J1 - Base',
-    'J2 - Hombro',
-    'J3 - Codo',
-    'J4 - Muñeca 1',
-    'J5 - Muñeca 2',
-    'J6 - Muñeca 3',
-]
+JOINT_NAMES = DEFAULT_GUI_ROBOT_PROFILE.joint_names
+JOINT_LABELS = list(DEFAULT_GUI_ROBOT_PROFILE.joint_labels)
 
 JOINT_LIMITS_DEG = tuple(
-    tuple(math.degrees(value) for value in JOINT_POSITION_LIMITS[name])
-    for name in JOINT_NAMES
+    tuple(math.degrees(value) for value in limits)
+    for limits in DEFAULT_GUI_ROBOT_PROFILE.position_limits
 )
 
-INITIAL_POSE_DEG = [0.0, 180.0, 180.0, 0.0, 0.0, 0.0]
-TEST_POSE_DEG = [math.degrees(0.20), 180.0, 180.0, 0.0, 0.0, 0.0]
-CARTESIAN_READY_POSE_DEG = [-45.0, 160.0, 200.0, 0.0, 15.0, 0.0]
+INITIAL_POSE_DEG = [
+    math.degrees(value)
+    for value in DEFAULT_GUI_ROBOT_PROFILE.initial_positions
+]
+TEST_POSE_DEG = [
+    math.degrees(value)
+    for value in DEFAULT_GUI_ROBOT_PROFILE.test_positions
+]
+CARTESIAN_READY_POSE_DEG = [
+    math.degrees(value)
+    for value in DEFAULT_GUI_ROBOT_PROFILE.cartesian_ready_positions
+]
 
 ALLOWED_SPEED_DEG = tuple(
-    math.degrees(JOINT_VELOCITY_LIMITS[name]) for name in JOINT_NAMES
+    math.degrees(value)
+    for value in DEFAULT_GUI_ROBOT_PROFILE.velocity_limits
 )
 JOG_INPUT_TIMEOUT_SEC = 0.30
 CARTESIAN_JOG_LABELS = ('X', 'Y', 'Z', 'Roll', 'Pitch', 'Yaw')
 CARTESIAN_JOG_DEFAULT_SPEEDS = (0.04, 0.04, 0.04, 10.0, 10.0, 10.0)
 CARTESIAN_JOG_MAXIMUM_SPEEDS = (0.15, 0.15, 0.15, 30.0, 30.0, 30.0)
 CARTESIAN_JOG_NOTCH_STEPS = (0.005, 0.005, 0.005, 1.0, 1.0, 1.0)
+MANUAL_BUTTON_STYLE = '''
+QPushButton { background: #e7d3bc; color: #49301f; border: 2px solid #805035;
+              border-radius: 6px; padding: 8px; font-weight: bold; }
+QPushButton:hover { background: #d9b996; }
+QPushButton:checked { background: #805035; color: white; }
+QPushButton:disabled { background: #eee9e1; color: #837b70; border-color: #d9d1c6; }
+'''
 
 
 class WheelIntention:
@@ -111,6 +120,46 @@ class WheelIntention:
         rate = sum(value for _, value in self.events)
         rate *= self.degrees_per_notch / self.window
         return max(-maximum, min(maximum, rate))
+
+
+class ResponsiveManualPanels(QWidget):
+    """Keep both manual modes visible without compressing either panel."""
+
+    STACKING_WIDTH = 1380
+
+    def __init__(self, joint_panel, cartesian_panel):
+        super().__init__()
+        self.joint_panel = joint_panel
+        self.cartesian_panel = cartesian_panel
+        self.stacked = None
+        self.grid = QGridLayout(self)
+        self.grid.setContentsMargins(0, 0, 0, 0)
+        self.grid.setSpacing(10)
+        self.grid.setSizeConstraint(QLayout.SetNoConstraint)
+        self.grid.setColumnStretch(0, 1)
+        self.grid.setColumnStretch(1, 1)
+        self._reflow(True)
+
+    def minimumSizeHint(self):
+        return QSize(520, self.grid.minimumSize().height())
+
+    def _reflow(self, stacked):
+        if self.stacked == stacked:
+            return
+        self.stacked = stacked
+        self.grid.removeWidget(self.joint_panel)
+        self.grid.removeWidget(self.cartesian_panel)
+        if stacked:
+            self.grid.addWidget(self.joint_panel, 0, 0, 1, 2)
+            self.grid.addWidget(self.cartesian_panel, 1, 0, 1, 2)
+        else:
+            self.grid.addWidget(self.joint_panel, 0, 0)
+            self.grid.addWidget(self.cartesian_panel, 0, 1)
+        self.updateGeometry()
+
+    def resizeEvent(self, event):
+        self._reflow(event.size().width() < self.STACKING_WIDTH)
+        super().resizeEvent(event)
 
 
 def limited_direct_step(
@@ -151,11 +200,36 @@ def quaternion_to_rpy(x, y, z, w):
 
 class JointGuiNode(Node):
 
-    def __init__(self):
+    def __init__(self, robot_profile=None):
+        self.robot_profile = normalize_gui_robot_profile(robot_profile)
+        self.joint_names = self.robot_profile.joint_names
         super().__init__('joint_control_gui_node')
+        self.declare_parameter('manifest_path', '')
+        self.declare_parameter('robot_name', 'jaco2')
+        manifest_path = str(self.get_parameter('manifest_path').value)
+        robot_name = str(self.get_parameter('robot_name').value)
+        if robot_profile is None and manifest_path:
+            from thesis_core.robot_profile import load_robot_profile
+
+            self.robot_profile = normalize_gui_robot_profile(
+                load_robot_profile(manifest_path, robot_name)
+            )
+            self.joint_names = self.robot_profile.joint_names
         self.declare_parameter('require_system_readiness', False)
         self.declare_parameter('operation_mode', 'simulation')
         self.declare_parameter('allow_hardware_arm_control', False)
+        self.declare_parameter('obstacle_source_mode', 'unspecified')
+        self.obstacle_source_mode = str(
+            self.get_parameter('obstacle_source_mode').value
+        ).strip().lower()
+        if self.obstacle_source_mode not in ('gazebo', 'topic', 'unspecified'):
+            raise ValueError(
+                'obstacle_source_mode must be gazebo, topic or unspecified'
+            )
+        self.declare_parameter('ui_layout', 'workspace')
+        self.ui_layout = str(self.get_parameter('ui_layout').value)
+        if self.ui_layout not in ('workspace', 'legacy'):
+            raise ValueError('ui_layout must be workspace or legacy')
         self.require_system_readiness = bool(
             self.get_parameter('require_system_readiness').value
         )
@@ -175,6 +249,10 @@ class JointGuiNode(Node):
         ):
             raise ValueError(
                 'hardware arm control is valid only in hardware mode'
+            )
+        if self.operation_mode == 'hardware' and not self.robot_profile.is_jaco2:
+            raise ValueError(
+                'hardware mode is available only for the JACO2 profile'
             )
         self.system_readiness = 'WAITING: verificación de disponibilidad'
         self.readiness_received_at = None
@@ -196,13 +274,19 @@ class JointGuiNode(Node):
 
         self.current_positions = {}
         self.current_velocities = {}
+        self.current_efforts = {}
         self.last_state_time = None
+        self.last_state_stamp = None
+        self.display_clock_ns = None
+        self.display_clock_changed_at = time.monotonic()
         self.last_command_id = None
         self.last_allowed_id = None
         self.last_supervised_duration = None
         self.last_prediction = None
         self.last_execution = None
         self.last_execution_control = None
+        self.last_sent_jog = None
+        self.sent_jog_received_at = None
         self.last_cartesian_trajectory_status = None
         self.execution_by_id = {}
         self.last_proximity = None
@@ -333,6 +417,10 @@ class JointGuiNode(Node):
             self.execution_control_callback,
             10,
         )
+        self.sent_jog_subscription = self.create_subscription(
+            JointCommand, '/thesis/applied_jog_command',
+            self.sent_jog_callback, jog_qos,
+        )
 
         self.proximity_subscription = self.create_subscription(
             ProximityStatus, '/thesis/proximity_status',
@@ -428,16 +516,43 @@ class JointGuiNode(Node):
         )
 
     def state_callback(self, msg):
+        self.current_efforts = {
+            name: float(value) for name, value in zip(msg.name, msg.effort)
+            if name in self.joint_names and math.isfinite(value)
+        } if len(msg.effort) == len(msg.name) else {}
         self.current_velocities = {
             name: float(value) for name, value in zip(msg.name, msg.velocity)
-            if name in JOINT_NAMES and math.isfinite(value)
+            if name in self.joint_names and math.isfinite(value)
         }
         for name, position in zip(msg.name, msg.position):
-            if name in JOINT_NAMES and math.isfinite(position):
+            if name in self.joint_names and math.isfinite(position):
                 self.current_positions[name] = float(position)
 
-        if all(name in self.current_positions for name in JOINT_NAMES):
+        if all(name in self.current_positions for name in self.joint_names):
             self.last_state_time = time.monotonic()
+            self.last_state_stamp = msg.header.stamp
+
+    def display_sample_is_fresh(self, received_at, stamp, maximum_age=1.0):
+        """Validate source and reception ages and reject a frozen ROS clock."""
+        now = time.monotonic()
+        clock_ns = self.get_clock().now().nanoseconds
+        previous_ns = self.display_clock_ns
+        if previous_ns is None or clock_ns != previous_ns:
+            self.display_clock_ns = clock_ns
+            self.display_clock_changed_at = now
+        if previous_ns is not None and clock_ns < previous_ns:
+            return False
+        if (received_at is None or stamp is None
+                or not 0.0 <= now - received_at <= maximum_age):
+            return False
+        if self.get_parameter('use_sim_time').value:
+            if clock_ns <= 0 or now - self.display_clock_changed_at > maximum_age:
+                return False
+        source_ns = int(stamp.sec) * 1_000_000_000 + int(stamp.nanosec)
+        if source_ns <= 0 or not 0 <= int(stamp.nanosec) < 1_000_000_000:
+            return False
+        age = (clock_ns - source_ns) / 1_000_000_000
+        return -0.05 <= age <= maximum_age
 
     def supervised_callback(self, msg):
         if msg.command_id == self.last_command_id:
@@ -472,6 +587,11 @@ class JointGuiNode(Node):
     def execution_control_callback(self, msg):
         self.last_execution_control = msg
         self.control_received_at = time.monotonic()
+
+    def sent_jog_callback(self, msg):
+        """Observe the published reference without implying tracking."""
+        self.last_sent_jog = msg
+        self.sent_jog_received_at = time.monotonic()
 
     def cartesian_trajectory_status_callback(self, msg):
         """Store the latest simulation-only Cartesian trajectory state."""
@@ -524,8 +644,8 @@ class JointGuiNode(Node):
     def update_end_effector_pose(self):
         try:
             transform = self.tf_buffer.lookup_transform(
-                'world',
-                'j2n6s300_end_effector',
+                self.robot_profile.world_frame,
+                self.robot_profile.tip_link,
                 Time(),
             )
         except tf2_ros.TransformException:
@@ -551,8 +671,12 @@ class JointGuiNode(Node):
         )
 
     def connection_status(self):
+        def publisher_available(topic):
+            resolved = self.resolve_topic_name(topic)
+            return self.count_publishers(resolved) > 0
+
         status = {
-            '/joint_states': self.count_publishers('/joint_states') > 0,
+            '/joint_states': publisher_available('/joint_states'),
             'Supervisor': (
                 self.candidate_publisher.get_subscription_count() > 0
             ),
@@ -563,27 +687,19 @@ class JointGuiNode(Node):
                 self.cartesian_jog_publisher.get_subscription_count() > 0
             ),
             'JOG supervisado': (
-                self.count_publishers(
-                    '/thesis/supervised_jog_command'
-                ) > 0
+                publisher_available('/thesis/supervised_jog_command')
             ),
             'Salida supervisada': (
-                self.count_publishers('/thesis/supervised_command') > 0
+                publisher_available('/thesis/supervised_command')
             ),
             'Predicción geométrica': (
-                self.count_publishers(
-                    '/thesis/trajectory_prediction'
-                ) > 0
+                publisher_available('/thesis/trajectory_prediction')
             ),
             'Referencia de ejecución': (
-                self.count_publishers(
-                    '/thesis/execution_trajectory'
-                ) > 0
+                publisher_available('/thesis/execution_trajectory')
             ),
             'Control preventivo': (
-                self.count_publishers(
-                    '/thesis/execution_control'
-                ) > 0
+                publisher_available('/thesis/execution_control')
             ),
             'Coherencia FK-TF': self.kinematic_tf_is_valid(),
         }
@@ -595,7 +711,7 @@ class JointGuiNode(Node):
                 **status,
             }
         return {
-            'Gazebo /clock': self.count_publishers('/clock') > 0,
+            'Gazebo /clock': publisher_available('/clock'),
             'Adaptador cartesiano': (
                 self.cartesian_candidate_publisher
                 .get_subscription_count() > 0
@@ -613,7 +729,7 @@ class JointGuiNode(Node):
 
         msg.stamp = now.to_msg()
         msg.command_id = f'gui_{now.nanoseconds}'
-        msg.joint_names = list(JOINT_NAMES)
+        msg.joint_names = list(self.joint_names)
         msg.positions = list(positions)
 
         seconds = int(duration_sec)
@@ -641,7 +757,9 @@ class JointGuiNode(Node):
         now = self.get_clock().now()
         msg.stamp = now.to_msg()
         msg.command_id = f'cartesian_gui_{now.nanoseconds}'
-        msg.frame_id = 'world'
+        msg.frame_id = getattr(
+            getattr(self, 'robot_profile', None), 'world_frame', 'world'
+        )
         (
             msg.x,
             msg.y,
@@ -673,7 +791,9 @@ class JointGuiNode(Node):
         """Publish one generic world-frame velocity intention."""
         msg = TwistStamped()
         msg.header.stamp = self.get_clock().now().to_msg()
-        msg.header.frame_id = 'world'
+        msg.header.frame_id = getattr(
+            getattr(self, 'robot_profile', None), 'world_frame', 'world'
+        )
         (
             msg.twist.linear.x,
             msg.twist.linear.y,
@@ -694,7 +814,9 @@ class JointGuiNode(Node):
         now = self.get_clock().now()
         msg.stamp = now.to_msg()
         msg.command_id = f'cartesian_path_gui_{now.nanoseconds}'
-        msg.frame_id = 'world'
+        msg.frame_id = getattr(
+            getattr(self, 'robot_profile', None), 'world_frame', 'world'
+        )
         msg.mode = str(mode)
         (
             msg.x,
@@ -722,31 +844,70 @@ class JointGuiNode(Node):
 
 class JointControlWindow(QMainWindow):
 
-    def __init__(self, ros_node):
+    def __init__(self, ros_node, robot_profile=None):
         super().__init__()
 
         self.ros_node = ros_node
+        profile_source = (
+            robot_profile
+            if robot_profile is not None
+            else getattr(ros_node, 'robot_profile', None)
+        )
+        self.robot_profile = normalize_gui_robot_profile(profile_source)
+        self.joint_names = self.robot_profile.joint_names
+        self.joint_labels = self.robot_profile.joint_labels
+        self.joint_limits_deg = tuple(
+            tuple(math.degrees(value) for value in limits)
+            for limits in self.robot_profile.position_limits
+        )
+        self.allowed_speed_deg = tuple(
+            math.degrees(value)
+            for value in self.robot_profile.velocity_limits
+        )
+        self.initial_pose_deg = tuple(
+            math.degrees(value)
+            for value in self.robot_profile.initial_positions
+        )
+        self.test_pose_deg = tuple(
+            math.degrees(value)
+            for value in self.robot_profile.test_positions
+        )
+        self.cartesian_ready_pose_deg = tuple(
+            math.degrees(value)
+            for value in self.robot_profile.cartesian_ready_positions
+        )
         self.operation_mode = getattr(
             ros_node, 'operation_mode', 'simulation'
         )
         self.is_hardware_mode = self.operation_mode == 'hardware'
+        if self.is_hardware_mode and not self.robot_profile.is_jaco2:
+            raise ValueError(
+                'hardware mode is available only for the JACO2 profile'
+            )
         self.target_inputs = []
         self.target_sliders = []
+        self.jog_sliders = []
         self.current_degree_labels = []
         self.current_radian_labels = []
+        self.current_effort_labels = []
         self.target_radian_labels = []
         self.jog_speed_inputs = []
-        self.wheel_intentions = [WheelIntention() for _ in JOINT_NAMES]
+        self.wheel_intentions = [
+            WheelIntention() for _ in self.joint_names
+        ]
         self.decrease_buttons = []
         self.increase_buttons = []
         self.jog_velocity_labels = []
-        self.jog_reference_deg = list(INITIAL_POSE_DEG)
-        self.jog_velocity_deg_s = [0.0] * len(JOINT_NAMES)
-        self.jog_last_input_time = [None] * len(JOINT_NAMES)
-        self.jog_last_motion_time = [None] * len(JOINT_NAMES)
+        self.jog_reference_deg = list(self.initial_pose_deg)
+        self.jog_velocity_deg_s = [0.0] * len(self.joint_names)
+        self.jog_last_input_time = [None] * len(self.joint_names)
+        self.jog_last_motion_time = [None] * len(self.joint_names)
         self.jog_intent_streaming = False
         self.jog_command_id = None
         self.manual_control_tabs = None
+        self.manual_joint_panel = None
+        self.manual_cartesian_panel = None
+        self.manual_panels = None
         self.cartesian_jog_mode_button = None
         self.cartesian_jog_sliders = []
         self.cartesian_jog_speed_inputs = []
@@ -780,13 +941,17 @@ class JointControlWindow(QMainWindow):
 
         mode_title = 'BRAZO FÍSICO' if self.is_hardware_mode else 'SIMULACIÓN'
         self.setWindowTitle(
-            f'Tesis 2 - JACO2 - {mode_title}'
+            f'Tesis 2 - {self.robot_profile.display_name} - {mode_title}'
         )
         self.resize(1050, 760)
         self.setMinimumSize(760, 520)
 
         self.build_ui()
-        self.apply_style()
+        if getattr(ros_node, 'ui_layout', 'workspace') == 'workspace':
+            from thesis_ui.workspace_layout import install_workspace
+            install_workspace(self)
+        else:
+            self.apply_style()
 
         self.ros_timer = QTimer(self)
         self.ros_timer.timeout.connect(self.spin_ros)
@@ -802,14 +967,17 @@ class JointControlWindow(QMainWindow):
         self.jog_timer.start(50)
 
     def build_ui(self):
+        self.workspace_groups = {}
         content_widget = QWidget()
         main_layout = QVBoxLayout(content_widget)
 
         mode_title = 'BRAZO FÍSICO' if self.is_hardware_mode else 'SIMULACIÓN'
         title = QLabel(
-            f'Control supervisado JACO2 - {mode_title}'
+            'Control supervisado '
+            f'{self.robot_profile.display_name} - {mode_title}'
         )
         title.setObjectName('titleLabel')
+        self.workspace_title = title
         main_layout.addWidget(title)
 
         if self.is_hardware_mode:
@@ -824,9 +992,26 @@ class JointControlWindow(QMainWindow):
                 'cartesianos X/Y/Z/Roll/Pitch/Yaw. Ambos se convierten en '
                 'comandos articulares y deben pasar por el mismo supervisor.'
             )
+            if self.robot_profile.profile_id.lower() == 'p3020':
+                banner_text += (
+                    ' PERFIL P3020 (5 ejes): una traslación puede relajar la '
+                    'orientación; una orientación explícita no alcanzable se '
+                    'rechaza de forma segura.'
+                )
+            obstacle_source = getattr(
+                self.ros_node, 'obstacle_source_mode', 'unspecified'
+            )
+            if obstacle_source == 'gazebo':
+                banner_text += ' Obstáculo: esfera visible de Gazebo.'
+            elif obstacle_source == 'topic':
+                banner_text += (
+                    ' Obstáculo: estimación recibida por tópico '
+                    '(puede ser virtual).'
+                )
         safety_banner = QLabel(banner_text)
         safety_banner.setObjectName('safetyBanner')
         safety_banner.setWordWrap(True)
+        self.workspace_banner = safety_banner
         main_layout.addWidget(safety_banner)
 
         state_group = QGroupBox('Estado y objetivos articulares')
@@ -839,6 +1024,7 @@ class JointControlWindow(QMainWindow):
             'Objetivo (°)',
             'Ajuste',
             'Objetivo (rad)',
+            'Esfuerzo reportado (N·m)',
         ]
 
         for column, header in enumerate(headers):
@@ -846,11 +1032,16 @@ class JointControlWindow(QMainWindow):
             label.setObjectName('headerLabel')
             state_layout.addWidget(label, 0, column)
 
-        for index, joint_label in enumerate(JOINT_LABELS):
+        for index, joint_label in enumerate(self.joint_labels):
             row = index + 1
             name_label = QLabel(joint_label)
             current_degrees = QLabel('--')
             current_radians = QLabel('--')
+            current_effort = QLabel('--')
+            current_effort.setToolTip(
+                'Dato de JointState; en simulación requiere validación y no '
+                'interviene en la decisión del supervisor.'
+            )
             target_radians = QLabel('0.0000')
             target_input = QDoubleSpinBox()
             target_slider = QSlider(Qt.Horizontal)
@@ -864,12 +1055,12 @@ class JointControlWindow(QMainWindow):
             decrease_button = QPushButton('−1°')
             increase_button = QPushButton('+1°')
 
-            lower, upper = JOINT_LIMITS_DEG[index]
+            lower, upper = self.joint_limits_deg[index]
             target_input.setRange(lower, upper)
             target_input.setDecimals(2)
             target_input.setSingleStep(1.0)
             target_input.setSuffix(' °')
-            target_input.setValue(INITIAL_POSE_DEG[index])
+            target_input.setValue(self.initial_pose_deg[index])
             target_input.valueChanged.connect(
                 lambda value, item=index: self.target_spin_changed(
                     item,
@@ -884,7 +1075,7 @@ class JointControlWindow(QMainWindow):
             target_slider.setSingleStep(10)
             target_slider.setPageStep(50)
             target_slider.setValue(
-                int(round(INITIAL_POSE_DEG[index] * 10.0))
+                int(round(self.initial_pose_deg[index] * 10.0))
             )
             target_slider.valueChanged.connect(
                 lambda value, item=index: self.target_slider_changed(
@@ -919,6 +1110,7 @@ class JointControlWindow(QMainWindow):
 
             self.current_degree_labels.append(current_degrees)
             self.current_radian_labels.append(current_radians)
+            self.current_effort_labels.append(current_effort)
             self.target_inputs.append(target_input)
             self.target_sliders.append(target_slider)
             self.target_radian_labels.append(target_radians)
@@ -931,17 +1123,21 @@ class JointControlWindow(QMainWindow):
             state_layout.addWidget(target_input, row, 3)
             state_layout.addWidget(adjustment_widget, row, 4)
             state_layout.addWidget(target_radians, row, 5)
+            state_layout.addWidget(current_effort, row, 6)
 
         main_layout.addWidget(state_group)
+        self.workspace_groups['state'] = state_group
 
-        jog_group = QGroupBox('Control manual articular continuo')
+        jog_group = QGroupBox('Manual articular · Joints')
         jog_layout = QGridLayout(jog_group)
         self.jog_mode_button = QPushButton(
-            'ACTIVAR CONTROL MANUAL CONTINUO'
+            'ACTIVAR CONTROL ARTICULAR CONTINUO'
         )
+        self.jog_mode_button.setObjectName('manualModeButton')
+        self.jog_mode_button.setStyleSheet(MANUAL_BUTTON_STYLE)
         self.jog_mode_button.setCheckable(True)
         self.jog_mode_button.toggled.connect(self.toggle_jog_mode)
-        jog_layout.addWidget(self.jog_mode_button, 0, 0, 1, 4)
+        jog_layout.addWidget(self.jog_mode_button, 0, 0, 1, 5)
         jog_note = QLabel(
             'Gire la rueda sobre la barra del joint. La barra muestra el '
             'ángulo medido. Más pulsos = mayor velocidad, limitada por Vmáx '
@@ -949,41 +1145,51 @@ class JointControlWindow(QMainWindow):
             'Sensibilidad: 1° por paso estándar de rueda; ventana: 0.25 s.'
         )
         jog_note.setWordWrap(True)
-        jog_layout.addWidget(jog_note, 1, 0, 1, 4)
-        for index, joint_label in enumerate(JOINT_LABELS):
+        jog_layout.addWidget(jog_note, 1, 0, 1, 5)
+        for index, joint_label in enumerate(self.joint_labels):
             row = index + 2
             jog_layout.addWidget(QLabel(joint_label), row, 0)
-            jog_layout.addWidget(QLabel('Vmáx:'), row, 1)
+            slider = QSlider(Qt.Horizontal)
+            lower, upper = self.joint_limits_deg[index]
+            slider.setRange(int(lower * 10), int(upper * 10))
+            slider.installEventFilter(self)
+            self.jog_sliders.append(slider)
+            jog_layout.addWidget(slider, row, 1)
+            jog_layout.setColumnStretch(1, 1)
+            jog_layout.addWidget(QLabel('Vmáx:'), row, 2)
             speed_input = QDoubleSpinBox()
-            speed_input.setRange(1.0, ALLOWED_SPEED_DEG[index])
+            maximum_speed = self.allowed_speed_deg[index]
+            speed_input.setRange(min(1.0, maximum_speed), maximum_speed)
             speed_input.setDecimals(1)
             speed_input.setSingleStep(1.0)
-            speed_input.setValue(ALLOWED_SPEED_DEG[index])
+            speed_input.setValue(maximum_speed)
             speed_input.setSuffix(' °/s')
             self.jog_speed_inputs.append(speed_input)
-            jog_layout.addWidget(speed_input, row, 2)
+            jog_layout.addWidget(speed_input, row, 3)
             velocity_label = QLabel('v mouse: 0.0 °/s')
             velocity_label.setStyleSheet('font-weight: bold; color: #166534;')
             self.jog_velocity_labels.append(velocity_label)
-            jog_layout.addWidget(velocity_label, row, 3)
+            jog_layout.addWidget(velocity_label, row, 4)
+        # All extra height belongs below the controls, not between grid rows.
+        jog_layout.setRowStretch(len(self.joint_labels) + 2, 1)
         if getattr(self.ros_node, 'cartesian_jog_publisher', None) is None:
             main_layout.addWidget(jog_group)
+            self.workspace_groups['manual'] = jog_group
         else:
             manual_group = QGroupBox('Control manual continuo supervisado')
             manual_layout = QVBoxLayout(manual_group)
-            self.manual_control_tabs = QTabWidget()
+            self.manual_joint_panel = jog_group
 
-            joint_tab = QWidget()
-            joint_tab_layout = QVBoxLayout(joint_tab)
-            joint_tab_layout.setContentsMargins(4, 4, 4, 4)
-            joint_tab_layout.addWidget(jog_group)
-            self.manual_control_tabs.addTab(joint_tab, 'Joints')
-
-            cartesian_tab = QWidget()
-            cartesian_layout = QGridLayout(cartesian_tab)
+            cartesian_panel = QGroupBox(
+                'Manual cartesiano · XYZ + orientación'
+            )
+            self.manual_cartesian_panel = cartesian_panel
+            cartesian_layout = QGridLayout(cartesian_panel)
             self.cartesian_jog_mode_button = QPushButton(
                 'ACTIVAR CONTROL CARTESIANO CONTINUO'
             )
+            self.cartesian_jog_mode_button.setObjectName('manualModeButton')
+            self.cartesian_jog_mode_button.setStyleSheet(MANUAL_BUTTON_STYLE)
             self.cartesian_jog_mode_button.setCheckable(True)
             self.cartesian_jog_mode_button.toggled.connect(
                 self.toggle_cartesian_jog_mode
@@ -993,11 +1199,13 @@ class JointControlWindow(QMainWindow):
             )
             cartesian_note = QLabel(
                 'Gire la rueda sobre una barra. X/Y/Z se expresan respecto '
-                'a world; Roll/Pitch/Yaw giran alrededor de sus ejes. Más '
+                f'a {self.robot_profile.world_frame}; Roll/Pitch/Yaw giran '
+                'alrededor de sus ejes. Más '
                 'pulsos = mayor velocidad hasta Vmáx. Sin pulsos durante '
                 '0.25 s: intención cero. El adaptador IK y el supervisor '
                 'deciden la velocidad finalmente ejecutada. La postura '
-                'vertical inicial puede ser singular para algunos ejes.'
+                'inicial puede ser singular; si XYZ no responde, cargue y '
+                'ejecute la postura cartesiana recomendada antes de probar.'
             )
             cartesian_note.setWordWrap(True)
             cartesian_layout.addWidget(cartesian_note, 1, 0, 1, 5)
@@ -1052,19 +1260,23 @@ class JointControlWindow(QMainWindow):
                 'CARGAR POSTURA CARTESIANA RECOMENDADA EN JOINTS'
             )
             recommended_pose.clicked.connect(
-                lambda: self.load_pose(CARTESIAN_READY_POSE_DEG)
+                lambda: self.load_pose(self.cartesian_ready_pose_deg)
             )
             recommended_pose.setToolTip(
                 'Carga el objetivo articular; después envíelo antes de '
                 'activar el control cartesiano continuo.'
             )
             cartesian_layout.addWidget(recommended_pose, 9, 0, 1, 5)
+            cartesian_layout.setRowStretch(10, 1)
+            cartesian_layout.setColumnStretch(2, 1)
 
-            self.manual_control_tabs.addTab(
-                cartesian_tab, 'X/Y/Z + orientación'
+            self.manual_panels = ResponsiveManualPanels(
+                self.manual_joint_panel,
+                self.manual_cartesian_panel,
             )
-            manual_layout.addWidget(self.manual_control_tabs)
+            manual_layout.addWidget(self.manual_panels)
             main_layout.addWidget(manual_group)
+            self.workspace_groups['manual'] = manual_group
 
         connection_group = QGroupBox(
             'Conexiones del brazo físico'
@@ -1106,6 +1318,7 @@ class JointControlWindow(QMainWindow):
             connection_layout.addWidget(indicator, index // 3, index % 3)
 
         main_layout.addWidget(connection_group)
+        self.workspace_groups['connections'] = connection_group
 
         if self.is_hardware_mode:
             hardware_group = QGroupBox('Habilitación del JACO2 físico')
@@ -1132,13 +1345,15 @@ class JointControlWindow(QMainWindow):
             hardware_layout.addWidget(self.arm_hardware_button, 1, 0)
             hardware_layout.addWidget(self.disarm_hardware_button, 1, 1)
             main_layout.addWidget(hardware_group)
+            self.workspace_groups['hardware'] = hardware_group
         else:
             self.hardware_state_label = None
             self.arm_hardware_button = None
             self.disarm_hardware_button = None
 
         pose_group = QGroupBox(
-            'Pose actual del efector final respecto a world'
+            'Pose actual del efector final respecto a '
+            f'{self.robot_profile.world_frame}'
         )
         pose_layout = QGridLayout(pose_group)
         pose_names = ['X (m)', 'Y (m)', 'Z (m)', 'Roll', 'Pitch', 'Yaw']
@@ -1152,6 +1367,7 @@ class JointControlWindow(QMainWindow):
             pose_layout.addWidget(value_label, 1, index)
 
         main_layout.addWidget(pose_group)
+        self.workspace_groups['pose'] = pose_group
 
         if not self.is_hardware_mode:
             cartesian_group = QGroupBox(
@@ -1159,7 +1375,8 @@ class JointControlWindow(QMainWindow):
             )
             cartesian_layout = QGridLayout(cartesian_group)
             cartesian_note = QLabel(
-                'Objetivo respecto a world. Pasos máximos por comando: '
+                f'Objetivo respecto a {self.robot_profile.world_frame}. '
+                'Pasos máximos por comando: '
                 '10 cm y 20°. La cinemática inversa se ejecuta en un nodo '
                 'separado y el resultado pasa por el supervisor existente.'
             )
@@ -1202,7 +1419,7 @@ class JointControlWindow(QMainWindow):
                 'Cargar postura articular recomendada'
             )
             ready_pose.clicked.connect(
-                lambda: self.load_pose(CARTESIAN_READY_POSE_DEG)
+                lambda: self.load_pose(self.cartesian_ready_pose_deg)
             )
             self.cartesian_send_button = QPushButton(
                 'ENVIAR OBJETIVO CARTESIANO SIMULADO'
@@ -1218,6 +1435,7 @@ class JointControlWindow(QMainWindow):
                 self.cartesian_send_button, 8, 0, 1, 4
             )
             main_layout.addWidget(cartesian_group)
+            self.workspace_groups['cartesian'] = cartesian_group
 
             trajectory_group = QGroupBox(
                 'Trayectoria cartesiana larga simulada'
@@ -1238,7 +1456,9 @@ class JointControlWindow(QMainWindow):
                 'Relativo a la pose medida', 'RELATIVE'
             )
             self.cartesian_trajectory_mode.addItem(
-                'Absoluto respecto a world', 'ABSOLUTE'
+                'Absoluto respecto a '
+                f'{self.robot_profile.world_frame}',
+                'ABSOLUTE',
             )
             self.cartesian_trajectory_mode.currentIndexChanged.connect(
                 self.configure_cartesian_trajectory_mode
@@ -1289,7 +1509,7 @@ class JointControlWindow(QMainWindow):
                 'Cargar postura articular recomendada'
             )
             trajectory_ready_pose.clicked.connect(
-                lambda: self.load_pose(CARTESIAN_READY_POSE_DEG)
+                lambda: self.load_pose(self.cartesian_ready_pose_deg)
             )
             trajectory_layout.addWidget(
                 trajectory_ready_pose, 4, 2, 1, 2
@@ -1323,6 +1543,7 @@ class JointControlWindow(QMainWindow):
             )
             self.configure_cartesian_trajectory_mode()
             main_layout.addWidget(trajectory_group)
+            self.workspace_groups['trajectory'] = trajectory_group
 
         command_group = QGroupBox('Configuración del comando')
         command_layout = QHBoxLayout(command_group)
@@ -1342,17 +1563,18 @@ class JointControlWindow(QMainWindow):
 
         initial_button = QPushButton('Objetivo inicial')
         initial_button.clicked.connect(
-            lambda: self.load_pose(INITIAL_POSE_DEG)
+            lambda: self.load_pose(self.initial_pose_deg)
         )
         command_layout.addWidget(initial_button)
 
         test_button = QPushButton('Objetivo de prueba')
         test_button.clicked.connect(
-            lambda: self.load_pose(TEST_POSE_DEG)
+            lambda: self.load_pose(self.test_pose_deg)
         )
         command_layout.addWidget(test_button)
 
         main_layout.addWidget(command_group)
+        self.workspace_groups['command'] = command_group
 
         preview_group = QGroupBox(
             'Previsualización cinemática de velocidad'
@@ -1366,7 +1588,7 @@ class JointControlWindow(QMainWindow):
         preview_note.setWordWrap(True)
         preview_layout.addWidget(preview_note)
 
-        self.velocity_table = QTableWidget(6, 5)
+        self.velocity_table = QTableWidget(len(self.joint_names), 5)
         self.velocity_table.setHorizontalHeaderLabels([
             'Joint',
             'Desplazamiento',
@@ -1399,6 +1621,7 @@ class JointControlWindow(QMainWindow):
         preview_layout.addLayout(preview_footer)
 
         main_layout.addWidget(preview_group)
+        self.workspace_groups['preview'] = preview_group
 
         prediction_group = QGroupBox(
             'Evaluación geométrica preventiva del supervisor'
@@ -1418,6 +1641,7 @@ class JointControlWindow(QMainWindow):
         self.execution_status_label.setWordWrap(True)
         prediction_layout.addWidget(self.execution_status_label)
         main_layout.addWidget(prediction_group)
+        self.workspace_groups['prediction'] = prediction_group
 
         metrics_group = QGroupBox('Distancias y horizonte durante la ejecución')
         metrics_layout = QGridLayout(metrics_group)
@@ -1439,7 +1663,14 @@ class JointControlWindow(QMainWindow):
         )
         note.setWordWrap(True)
         metrics_layout.addWidget(note, 2, 0, 1, 4)
+        self.proximity_state_label = QLabel('Proximidad actual: SIN DATOS')
+        self.proximity_state_label.setWordWrap(True)
+        metrics_layout.addWidget(self.proximity_state_label, 3, 0, 1, 4)
+        self.motion_observation_label = QLabel('Referencia enviada: sin dato reciente')
+        self.motion_observation_label.setWordWrap(True)
+        metrics_layout.addWidget(self.motion_observation_label, 4, 0, 1, 4)
         main_layout.insertWidget(2, metrics_group)
+        self.workspace_groups['metrics'] = metrics_group
 
         self.preview_button = QPushButton(
             'PREVISUALIZAR VOLUMEN NOMINAL'
@@ -1511,13 +1742,14 @@ class JointControlWindow(QMainWindow):
         self.history_table.setMinimumHeight(150)
         history_layout.addWidget(self.history_table)
         main_layout.addWidget(history_group)
+        self.workspace_groups['history'] = history_group
 
         scroll_area = QScrollArea()
         scroll_area.setWidgetResizable(True)
         scroll_area.setWidget(content_widget)
         self.setCentralWidget(scroll_area)
 
-        for index, value in enumerate(INITIAL_POSE_DEG):
+        for index, value in enumerate(self.initial_pose_deg):
             self.update_target_radians(index, value)
 
     def apply_style(self):
@@ -1601,11 +1833,14 @@ class JointControlWindow(QMainWindow):
             return False
         return (
             proximity.state == 'STOP'
-            and proximity.reference_frame == 'world'
-            and proximity.limiting_segment != 'TF_UNAVAILABLE'
+            and proximity.reference_frame == self.robot_profile.world_frame
+            and getattr(proximity, 'geometry_valid', True)
+            and proximity.limiting_segment not in (
+                'TF_UNAVAILABLE', 'OBSTACLE_UNAVAILABLE',
+            )
             and math.isfinite(float(proximity.minimum_clearance))
             and math.isfinite(float(proximity.obstacle_radius))
-            and float(proximity.obstacle_radius) >= 0.0
+            and float(proximity.obstacle_radius) > 0.0
         )
 
     def spin_ros(self):
@@ -1736,8 +1971,13 @@ class JointControlWindow(QMainWindow):
             )
             self.connection_label.setStyleSheet('color: #92400e;')
 
-        for index, joint_name in enumerate(JOINT_NAMES):
+        for index, joint_name in enumerate(self.joint_names):
             position = self.ros_node.current_positions.get(joint_name)
+            efforts = getattr(self.ros_node, 'current_efforts', {})
+            effort = efforts.get(joint_name) if state_ready else None
+            self.current_effort_labels[index].setText(
+                f'{effort:+.3f}' if effort is not None else '--'
+            )
 
             if position is None:
                 self.current_degree_labels[index].setText('--')
@@ -1750,6 +1990,7 @@ class JointControlWindow(QMainWindow):
             self.current_radian_labels[index].setText(
                 f'{position:.4f}'
             )
+            self.jog_sliders[index].setValue(int(round(math.degrees(position) * 10)))
             if jog_active:
                 actual_degrees = math.degrees(position)
                 self.jog_reference_deg[index] = actual_degrees
@@ -1774,6 +2015,21 @@ class JointControlWindow(QMainWindow):
         self.refresh_execution_status()
         self.refresh_command_status()
         self.refresh_runtime_metrics()
+        summary = '  |  '.join(
+            f'{name}: {label.text()}'
+            for name, label in self.metric_labels.items()
+        )
+        diagnostic = (
+            self.proximity_state_label.text() + '  |  '
+            + self.motion_observation_label.text()
+        )
+        if hasattr(self, 'manual_metric_summary'):
+            self.manual_metric_summary.setText(summary)
+            self.manual_diagnostic_summary.setText(diagnostic)
+            for name, mirror in self.manual_connection_indicators.items():
+                original = self.connection_indicators[name]
+                mirror.setText(original.text())
+                mirror.setStyleSheet(original.styleSheet())
 
     def shortest_delta_degrees(
         self,
@@ -1783,7 +2039,7 @@ class JointControlWindow(QMainWindow):
     ):
         delta = target_degrees - current_degrees
 
-        if joint_index in CONTINUOUS_JOINT_INDEXES:
+        if self.joint_names[joint_index] in self.robot_profile.continuous_joints:
             delta = (delta + 180.0) % 360.0 - 180.0
 
         return delta
@@ -1803,11 +2059,11 @@ class JointControlWindow(QMainWindow):
 
         duration_sec = self.duration_input.value()
         minimum_duration = 0.0
-        limiting_joint = JOINT_LABELS[0]
+        limiting_joint = self.joint_labels[0]
         maximum_ratio = -1.0
         predicted_allow = True
 
-        for index, joint_name in enumerate(JOINT_NAMES):
+        for index, joint_name in enumerate(self.joint_names):
             current_radians = self.ros_node.current_positions[joint_name]
             current_degrees = math.degrees(current_radians)
             target_degrees = self.target_inputs[index].value()
@@ -1817,7 +2073,7 @@ class JointControlWindow(QMainWindow):
                 current_degrees,
             )
             requested_speed = abs(delta_degrees) / duration_sec
-            allowed_speed = ALLOWED_SPEED_DEG[index]
+            allowed_speed = self.allowed_speed_deg[index]
             required_duration = abs(delta_degrees) / allowed_speed
             ratio = requested_speed / allowed_speed
             joint_allowed = requested_speed <= allowed_speed + 1e-9
@@ -1827,13 +2083,13 @@ class JointControlWindow(QMainWindow):
 
             if ratio > maximum_ratio:
                 maximum_ratio = ratio
-                limiting_joint = JOINT_LABELS[index]
+                limiting_joint = self.joint_labels[index]
 
             if not joint_allowed:
                 predicted_allow = False
 
             values = [
-                JOINT_LABELS[index],
+                self.joint_labels[index],
                 f'{delta_degrees:+.2f}°',
                 f'{requested_speed:.2f}°/s',
                 f'{allowed_speed:.2f}°/s',
@@ -2092,20 +2348,53 @@ class JointControlWindow(QMainWindow):
     def refresh_runtime_metrics(self):
         node = self.ros_node
         now = time.monotonic()
+        def display_fresh(received_at, stamp):
+            validator = getattr(node, 'display_sample_is_fresh', None)
+            if validator is not None:
+                return validator(received_at, stamp)
+            return received_at is not None and 0.0 <= now - received_at <= 1.0
+
         proximity = node.last_proximity
-        if proximity is not None and now - node.proximity_received_at <= 1.0:
-            actual = f'{proximity.minimum_clearance:.3f} m'
-        else:
-            actual = 'Sin dato reciente'
+        actual = 'Sin dato reciente'
+        if (
+            proximity is not None
+            and display_fresh(node.proximity_received_at, getattr(proximity, 'stamp', None))
+        ):
+            # A fail-closed TF STOP uses a zero sentinel, not a measurement.
+            # Keep that STOP intact while distinguishing it from real contact.
+            segment = str(getattr(proximity, 'limiting_segment', ''))
+            if segment.startswith('TF_'):
+                actual = 'Sin geometría válida (TF)'
+            elif (
+                not getattr(proximity, 'geometry_valid', True)
+                or not math.isfinite(proximity.minimum_clearance)
+            ):
+                actual = 'Sin geometría válida (datos)'
+            else:
+                actual = f'{proximity.minimum_clearance:.3f} m'
         self.metric_labels['Distancia actual'].setText(actual)
+        proximity_fresh = (
+            proximity is not None
+            and display_fresh(node.proximity_received_at, getattr(proximity, 'stamp', None))
+        )
+        proximity_state = (
+            str(getattr(proximity, 'state', 'SIN DATOS'))
+            if proximity_fresh else 'SIN DATOS'
+        )
+        self.proximity_state_label.setText(
+            f'Proximidad actual: {proximity_state} | {actual}'
+        )
+        self.proximity_state_label.setStyleSheet(
+            'color: #b91c1c; font-weight: bold;' if proximity_state == 'STOP'
+            else 'color: #475569; font-weight: bold;'
+        )
         control = node.last_execution_control
         active = node.execution_by_id.get(
             control.command_id if control is not None else ''
         )
         fresh = (
             control is not None
-            and node.control_received_at is not None
-            and now - node.control_received_at <= 1.0
+            and display_fresh(node.control_received_at, getattr(control, 'stamp', None))
             and (
                 (
                     active is not None
@@ -2113,15 +2402,17 @@ class JointControlWindow(QMainWindow):
                 )
                 or (
                     self.jog_mode_button.isChecked()
-                    and control.command_id == 'jog_continuous'
+                    and self.jog_command_id is not None
+                    and control.command_id == self.jog_command_id
                 )
                 or (
                     self.cartesian_jog_mode_button is not None
                     and self.cartesian_jog_mode_button.isChecked()
-                    and (
-                        control.command_id.startswith('jog-cartesian-')
-                        or control.command_id.startswith('jog:')
-                    )
+                    and getattr(self, 'cartesian_jog_intent_streaming', False)
+                    and getattr(node, 'last_sent_jog', None) is not None
+                    and control.command_id == node.last_sent_jog.command_id
+                    and getattr(node, 'sent_jog_received_at', None) is not None
+                    and 0.0 <= now - node.sent_jog_received_at <= 0.25
                 )
                 or (
                     node.cartesian_trajectory_is_active()
@@ -2131,16 +2422,37 @@ class JointControlWindow(QMainWindow):
                 )
             )
         )
-        values = ['Sin evaluación activa', '--', '--']
+        motion_active = bool(
+            node.execution_is_active()
+            or getattr(self, 'jog_intent_streaming', False)
+            or getattr(self, 'cartesian_jog_intent_streaming', False)
+            or node.cartesian_trajectory_is_active()
+        )
+        values = [
+            'Sin evaluación activa', '--',
+            'SIN DATOS' if motion_active else 'Sin orden activa',
+        ]
         color = '#475569'
         if fresh:
+            geometry_available = (
+                control.minimum_sample_count >= 2
+                and 0 <= control.minimum_sample_index
+                < control.minimum_sample_count
+                and math.isfinite(control.minimum_clearance)
+                and math.isfinite(control.minimum_time_from_now)
+                and control.minimum_time_from_now >= 0.0
+                and not str(getattr(
+                    control, 'limiting_segment', ''
+                )).startswith('TF_')
+            )
             values = [
-                f'{control.minimum_clearance:.3f} m',
+                f'{control.minimum_clearance:.3f} m'
+                if geometry_available else 'Sin evaluación geométrica',
                 (f'+{control.minimum_time_from_now:.2f} s | '
                  f'{control.minimum_sample_index + 1}/'
                  f'{control.minimum_sample_count}')
-                if control.minimum_sample_count >= 2 else 'Sin muestra válida',
-                f'{control.state} | escala {control.speed_scale:.2f}',
+                if geometry_available else 'Sin muestra válida',
+                f'{control.state} | escala decidida {control.speed_scale:.2f}',
             ]
             color = {
                 'ALLOW': '#166534', 'WARNING': '#a16207',
@@ -2153,6 +2465,54 @@ class JointControlWindow(QMainWindow):
             self.metric_labels[name].setStyleSheet(
                 f'color: {color}; font-size: 16px; font-weight: bold;'
             )
+
+        reference = getattr(node, 'last_sent_jog', None)
+        received_at = getattr(node, 'sent_jog_received_at', None)
+        is_current_reference = (
+            reference is not None
+            and display_fresh(received_at, getattr(reference, 'stamp', None))
+            and (
+                (self.jog_command_id is not None
+                 and reference.command_id == self.jog_command_id)
+                or (getattr(self, 'cartesian_jog_intent_streaming', False)
+                    and control is not None and fresh
+                    and reference.command_id == control.command_id)
+            )
+        )
+        if is_current_reference:
+            duration = reference.duration.sec + reference.duration.nanosec * 1e-9
+            targets = ', '.join(
+                f'{name}: {position:+.3f}'
+                for name, position in zip(reference.joint_names, reference.positions)
+                if name in self.joint_names and math.isfinite(position)
+            )
+            reference_text = (
+                f'Referencia enviada [rad]: {targets} en {duration:.2f} s '
+                f'({now - received_at:.1f} s)'
+            )
+        else:
+            reference_text = 'Referencia enviada: sin dato reciente para la orden activa'
+        velocities = getattr(node, 'current_velocities', {})
+        state_time = getattr(node, 'last_state_time', None)
+        if display_fresh(state_time, getattr(node, 'last_state_stamp', None)):
+            measured = ', '.join(
+                f'{name}: {velocities[name]:+.3f}'
+                for name in self.joint_names if name in velocities
+            ) or 'sin dato'
+        else:
+            measured = 'sin dato reciente'
+        requested = 'sin JOG articular'
+        if getattr(self, 'jog_intent_streaming', False):
+            requested_values = []
+            for index, name in enumerate(self.joint_names):
+                limit = self.jog_speed_inputs[index].value()
+                speed = min(max(self.active_jog_velocity(index), -limit), limit)
+                requested_values.append(f'{name}: {math.radians(speed):+.3f}')
+            requested = ', '.join(requested_values)
+        self.motion_observation_label.setText(
+            f'{reference_text} | velocidad solicitada [rad/s]: {requested}'
+            f' | velocidad medida [rad/s]: {measured}'
+        )
 
     def refresh_end_effector_pose(self):
         self.ros_node.update_end_effector_pose()
@@ -2466,7 +2826,9 @@ class JointControlWindow(QMainWindow):
     def target_slider_changed(self, index, slider_value):
         jog_button = getattr(self, 'jog_mode_button', None)
         if jog_button is not None and jog_button.isChecked():
-            position = self.ros_node.current_positions.get(JOINT_NAMES[index])
+            position = self.ros_node.current_positions.get(
+                self.joint_names[index]
+            )
             if position is not None:
                 self.set_joint_reference_display(index, math.degrees(position))
             return
@@ -2476,7 +2838,9 @@ class JointControlWindow(QMainWindow):
         jog_button = getattr(self, 'jog_mode_button', None)
         if jog_button is None or not jog_button.isChecked():
             return
-        position = self.ros_node.current_positions.get(JOINT_NAMES[index])
+        position = self.ros_node.current_positions.get(
+            self.joint_names[index]
+        )
         if position is not None:
             self.jog_reference_deg[index] = math.degrees(position)
         self.jog_velocity_deg_s[index] = 0.0
@@ -2490,7 +2854,9 @@ class JointControlWindow(QMainWindow):
         self.jog_velocity_deg_s[index] = 0.0
         self.jog_last_input_time[index] = None
         self.jog_last_motion_time[index] = None
-        position = self.ros_node.current_positions.get(JOINT_NAMES[index])
+        position = self.ros_node.current_positions.get(
+            self.joint_names[index]
+        )
         if position is not None:
             degrees = math.degrees(position)
             self.jog_reference_deg[index] = degrees
@@ -2521,7 +2887,7 @@ class JointControlWindow(QMainWindow):
 
     def reset_direct_jog_state(self):
         now = time.monotonic()
-        for index, name in enumerate(JOINT_NAMES):
+        for index, name in enumerate(self.joint_names):
             position = self.ros_node.current_positions.get(name)
             if position is None:
                 continue
@@ -2545,7 +2911,9 @@ class JointControlWindow(QMainWindow):
         )
 
     def begin_deliberate_jog_input(self):
-        """Mark one wheel event as a fresh, user-originated JOG stream."""
+        """Assign one identity to the active user-originated JOG stream."""
+        if self.jog_command_id is not None:
+            return
         if self.is_hardware_mode:
             if (
                 not self.ros_node.hardware_armed
@@ -2580,10 +2948,10 @@ class JointControlWindow(QMainWindow):
 
     def eventFilter(self, watched, event):
         button = getattr(self, 'jog_mode_button', None)
-        if button is not None and button.isChecked() and watched in self.target_sliders:
-            index = self.target_sliders.index(watched)
+        if watched in self.jog_sliders:
+            index = self.jog_sliders.index(watched)
             if event.type() == QEvent.Wheel:
-                if self.ros_node.state_is_ready():
+                if button is not None and button.isChecked() and self.ros_node.state_is_ready():
                     # Qt angleDelta: 120 units per conventional wheel notch.
                     self.wheel_intentions[index].add(
                         time.monotonic(), event.angleDelta().y() / 120.0,
@@ -2709,7 +3077,7 @@ class JointControlWindow(QMainWindow):
 
         positions = [
             self.ros_node.current_positions[name]
-            for name in JOINT_NAMES
+            for name in self.joint_names
         ]
 
         for target_input, position in zip(
@@ -2733,7 +3101,8 @@ class JointControlWindow(QMainWindow):
             QMessageBox.warning(
                 self,
                 'Pose cartesiana no disponible',
-                'No existe TF reciente de world al efector final.',
+                'No existe TF reciente de '
+                f'{self.robot_profile.world_frame} al efector final.',
             )
             return
         values = list(pose[:3]) + [
@@ -2872,7 +3241,7 @@ class JointControlWindow(QMainWindow):
             )
             self.status_label.setStyleSheet('color: #166534;')
         else:
-            for index in range(len(JOINT_NAMES)):
+            for index in range(len(self.joint_names)):
                 self.jog_velocity_deg_s[index] = 0.0
                 self.jog_last_motion_time[index] = None
             self.publish_jog_intent(force_hold=True)
@@ -2880,7 +3249,7 @@ class JointControlWindow(QMainWindow):
             if not self.manual_control_active():
                 self.set_manual_command_lock(False)
             self.jog_mode_button.setText(
-                'ACTIVAR CONTROL MANUAL CONTINUO'
+                'ACTIVAR CONTROL ARTICULAR CONTINUO'
             )
             self.status_label.setText(
                 'Control manual desactivado; se solicitó mantener la '
@@ -2999,7 +3368,7 @@ class JointControlWindow(QMainWindow):
         horizon = 1.0
         current = [
             float(self.ros_node.current_positions[name])
-            for name in JOINT_NAMES
+            for name in self.joint_names
         ]
         horizon_target = []
         has_motion = False
@@ -3014,7 +3383,7 @@ class JointControlWindow(QMainWindow):
                 maximum_speed,
             )
             has_motion = has_motion or abs(velocity_deg_s) > 1.0e-9
-            lower, upper = map(math.radians, JOINT_LIMITS_DEG[index])
+            lower, upper = map(math.radians, self.joint_limits_deg[index])
             delta = math.radians(velocity_deg_s) * horizon
             # Do not command a jump back into range if the measured joint is outside.
             if delta > 0:
@@ -3034,7 +3403,7 @@ class JointControlWindow(QMainWindow):
         msg = JointCommand()
         msg.stamp = self.ros_node.get_clock().now().to_msg()
         msg.command_id = self.jog_command_id or 'jog_hold'
-        msg.joint_names = list(JOINT_NAMES)
+        msg.joint_names = list(self.joint_names)
         msg.positions = horizon_target
         msg.duration.sec = 1
         msg.duration.nanosec = 0
@@ -3056,7 +3425,7 @@ class JointControlWindow(QMainWindow):
         msg = JointCommand()
         msg.stamp = self.ros_node.get_clock().now().to_msg()
         msg.command_id = 'continuous_preview'
-        msg.joint_names = list(JOINT_NAMES)
+        msg.joint_names = list(self.joint_names)
         msg.positions = [
             math.radians(item.value()) for item in self.target_inputs
         ]
@@ -3332,6 +3701,9 @@ class JointControlWindow(QMainWindow):
             event.accept()
             return
         self.shutdown_started = True
+        dialogs = list(getattr(self, 'workspace_detached_dialogs', {}).values())
+        for dialog in dialogs:
+            dialog.close()
         ros_available = rclpy.ok()
         if (
             ros_available
@@ -3372,12 +3744,15 @@ class JointControlWindow(QMainWindow):
         event.accept()
 
 
-def main(args=None):
+def main(args=None, robot_profile=None):
     rclpy.init(args=args)
-    ros_node = JointGuiNode()
+    ros_node = JointGuiNode(robot_profile=robot_profile)
     app = QApplication([sys.argv[0]])
-    window = JointControlWindow(ros_node)
-    window.show()
+    window = JointControlWindow(ros_node, robot_profile=robot_profile)
+    if ros_node.ui_layout == 'workspace':
+        window.showMaximized()
+    else:
+        window.show()
     return app.exec_()
 
 

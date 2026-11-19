@@ -1,32 +1,23 @@
-# Reglas del proyecto
+# Guía para trabajar en este proyecto
 
-- Trabajar inicialmente solo en simulación; se permite pasar al JACO2 físico cuando el usuario autorizado lo solicite explícitamente.
-- Preservar todos los cambios existentes.
-- No borrar ni sobrescribir archivos modificados sin autorización.
-- No usar `sudo` ni instalar paquetes sin autorización.
-- Codex puede acceder al repositorio, editar archivos, compilar y ejecutar comandos desde su terminal integrada.
-- Si una aplicación gráfica, como RViz, falla porque la terminal integrada hereda el entorno Snap de VS Code, diagnosticar primero sin modificar el sistema.
-- Si se requiere probar una aplicación fuera de ese entorno, generar un bloque exacto para que el operador lo ejecute desde una terminal nativa abierta con `Ctrl+Alt+T`; no interpretar esta limitación como falta de acceso al repositorio.
-- No solicitar una terminal nativa para tareas que puedan realizarse de forma segura desde la terminal integrada.
-- Se permite activar `hardware_output` y enviar comandos al Kinova Jaco2 físico únicamente cuando el usuario haya confirmado que es operador autorizado, el área está despejada y la parada de emergencia es accesible.
-- Antes de la primera prueba física, verificar el estado de conexión, diagnóstico, armado y disponibilidad del sistema sin enviar movimiento.
-- Para movimientos físicos, comenzar con desplazamientos mínimos y velocidad reducida; solicitar confirmación del operador antes de cada etapa que pueda mover el brazo.
-- Se permite leer, analizar, editar código nuevo, compilar y probar tanto simulación como la interfaz física autorizada.
-- Antes de cambios importantes, explicar la causa.
-- Después de modificar, compilar solo los paquetes afectados, ejecutar las pruebas aplicables y generar un informe breve.
+## Contexto y autonomía
 
-## Organización de informes
+- Antes de cambiar código, inspecciona el contexto relevante: arquitectura y documentación relacionadas, flujo completo afectado, implementaciones existentes y pruebas. Sigue las llamadas entre paquetes cuando el comportamiento cruce sus límites; no te limites al archivo señalado si la causa está en otra parte.
+- Basa el diagnóstico en el código y en evidencia reproducible. Corrige la causa raíz con los cambios necesarios y coherentes, siguiendo los patrones del proyecto. Puedes editar, compilar y probar sin pedir autorización para cada paso.
+- Amplía el alcance cuando sea necesario para que la solución quede completa y consistente; evita cambios ajenos al problema. Si hay varias interpretaciones con consecuencias importantes, pregunta antes de elegir.
+- Revisa los cambios existentes antes de editar. Consérvalos e intégralos; no descartes ni sobrescribas trabajo ajeno.
+- Trabaja primero en simulación. No actives salida ni ordenes movimiento al JACO2 físico sin confirmar que el usuario es operador autorizado, el área está despejada y la parada de emergencia es accesible.
+- Antes de la primera prueba física, verifica conexión, diagnóstico, armado y disponibilidad sin mover el brazo. Para cada etapa que pueda moverlo, comienza con desplazamientos mínimos y velocidad reducida, y solicita confirmación del operador.
+- No uses `sudo` ni instales paquetes sin autorización. Si una aplicación gráfica falla por el entorno de la terminal integrada, diagnostica primero sin modificar el sistema; pide usar una terminal nativa solo si es imprescindible.
 
-- No crear informes en la raíz del proyecto.
-- Guardar los diagnósticos técnicos en `docs/codex_reports/`.
-- Guardar los informes de pruebas y feedback en `evidence/codex_reports/`.
-- Crear esas carpetas automáticamente cuando no existan.
-- Mantener en la raíz solo `README.md`, `AGENTS.md` y archivos generales de configuración.
-- No mover, eliminar ni sobrescribir archivos existentes sin autorización explícita.
-- Usar nombres con fecha y descripción, por ejemplo `docs/codex_reports/2026-10-18_diagnostico_cartesiano.md`.
+## Validación y comunicación
 
-## Consultas ROS 2 de observación
+- Tras los cambios, compila solo los paquetes afectados y ejecuta las pruebas pertinentes. Comprueba el resultado real y comunica con claridad cualquier fallo o validación que no haya sido posible.
+- No crees informes o archivos de planificación rutinarios. Al terminar, da un resumen breve de la causa, los cambios y la validación; crea informes solo si el usuario los pide o la tarea lo requiere.
+- Si se solicita un informe, no lo guardes en la raíz: diagnósticos en `docs/codex_reports/` y resultados de pruebas en `evidence/codex_reports/`. Crea la carpeta correspondiente si hace falta y no sobrescribas informes existentes.
 
-- Toda consulta de nodos o tópicos con el CLI `ros2` debe usar `--no-daemon --spin-time 2` para evitar el daemon de `ros2cli`.
-- Ejecutar cada cliente de observación por separado y esperar a que termine antes de iniciar el siguiente.
-- `tf2_echo` se ejecuta como herramienta independiente y no acepta esas opciones; detener solo ese cliente, sin enviar señales al launch.
+## Observación de ROS 2
+
+- Para consultar nodos o tópicos con el CLI `ros2`, usa `--no-daemon --spin-time 2` para evitar el daemon de `ros2cli`.
+- Ejecuta cada cliente de observación por separado y espera a que termine antes de iniciar el siguiente.
+- `tf2_echo` no acepta esas opciones; si hay que detenerlo, detén solo ese cliente, nunca el proceso de lanzamiento.

@@ -1,0 +1,30 @@
+{
+  "robot": "all",
+  "domain": 88,
+  "runtime": "/tmp/thesis_validate_0_16jto6",
+  "checks": [
+    "all robot states fresh; all supervisors ALLOW",
+    "jaco2: controllers active; 6 joints; FK/TF error=0.000000m",
+    "jaco2: supervised +0.02rad and return reached <0.008rad error",
+    "jaco2: active goal cancelled on obstacle; hold drift=0.000001rad",
+    "jaco2: obstacle overlap rejected with STOP",
+    "jaco2: stale obstacle rejected and recovery observed",
+    "ur17g: controllers active; 6 joints; FK/TF error=0.000000m",
+    "ur17g: supervised +0.02rad and return reached <0.008rad error",
+    "ur17g: active goal cancelled on obstacle; hold drift=0.000001rad",
+    "ur17g: obstacle overlap rejected with STOP",
+    "ur17g: stale obstacle rejected and recovery observed",
+    "tm25s: controllers active; 6 joints; FK/TF error=0.000000m",
+    "tm25s: supervised +0.02rad and return reached <0.008rad error",
+    "tm25s: active goal cancelled on obstacle; hold drift=0.000001rad",
+    "tm25s: obstacle overlap rejected with STOP",
+    "tm25s: stale obstacle rejected and recovery observed",
+    "p3020: controllers active; 5 joints; FK/TF error=0.000000m",
+    "p3020: supervised +0.02rad and return reached <0.008rad error",
+    "p3020: active goal cancelled on obstacle; hold drift=0.000001rad",
+    "p3020: obstacle overlap rejected with STOP",
+    "p3020: stale obstacle rejected and recovery observed",
+    "four concurrent supervised +0.01rad goals reached <0.004rad error without runtime STOP"
+  ],
+  "pass": true
+}

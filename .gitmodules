@@ -1,0 +1,16 @@
+[submodule "third_party/robots/universal_robots/ros2_driver"]
+	path = third_party/robots/universal_robots/ros2_driver
+	url = https://github.com/UniversalRobots/Universal_Robots_ROS2_Driver.git
+	branch = humble
+[submodule "third_party/robots/universal_robots/ros2_description"]
+	path = third_party/robots/universal_robots/ros2_description
+	url = https://github.com/UniversalRobots/Universal_Robots_ROS2_Description.git
+	branch = humble
+[submodule "third_party/robots/universal_robots/ros2_gz_simulation"]
+	path = third_party/robots/universal_robots/ros2_gz_simulation
+	url = https://github.com/UniversalRobots/Universal_Robots_ROS2_GZ_Simulation.git
+	branch = ros2
+[submodule "third_party/robots/doosan/doosan_robot2"]
+	path = third_party/robots/doosan/doosan_robot2
+	url = https://github.com/DoosanRobotics/doosan-robot2.git
+	branch = humble

@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<!-- Whole CAD system: coloured GLB visual plus high-quality STL collision. -->
+<sdf version="1.9">
+  <model name="sistema_gripper_instrumentado">
+    <static>true</static>
+    <link name="sistema_gripper_base">
+      <visual name="cad_colored_visual">
+        <geometry>
+          <mesh>
+            <uri>model://sistema_gripper_instrumentado/meshes/sistema_gripper_instrumentado.glb</uri>
+            <!-- The Inventor GLB already uses metres. -->
+            <scale>1 1 1</scale>
+          </mesh>
+        </geometry>
+      </visual>
+      <collision name="cad_collision">
+        <geometry>
+          <mesh>
+            <!-- The Inventor STL is in mm. -->
+            <uri>model://sistema_gripper_instrumentado/meshes/sistema_gripper_instrumentado.stl</uri>
+            <scale>0.001 0.001 0.001</scale>
+          </mesh>
+        </geometry>
+      </collision>
+    </link>
+  </model>
+</sdf>

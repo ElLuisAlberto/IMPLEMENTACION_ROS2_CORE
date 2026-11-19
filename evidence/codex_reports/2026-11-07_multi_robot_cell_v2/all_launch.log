@@ -1,0 +1,499 @@
+[INFO] [launch]: All log files can be found below /tmp/thesis_validate_yv7l5tet/ros_logs/2026-11-07-06-17-43-185821-miNave-58110
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [ign-1]: process started with pid [58122]
+[INFO] [parameter_bridge-2]: process started with pid [58124]
+[INFO] [robot_state_publisher-3]: process started with pid [58126]
+[INFO] [create-4]: process started with pid [58128]
+[INFO] [profile_supervisor-5]: process started with pid [58130]
+[INFO] [robot_state_publisher-6]: process started with pid [58132]
+[INFO] [create-7]: process started with pid [58134]
+[INFO] [profile_supervisor-8]: process started with pid [58136]
+[INFO] [robot_state_publisher-9]: process started with pid [58138]
+[INFO] [create-10]: process started with pid [58140]
+[INFO] [profile_supervisor-11]: process started with pid [58142]
+[INFO] [robot_state_publisher-12]: process started with pid [58144]
+[INFO] [create-13]: process started with pid [58146]
+[INFO] [profile_supervisor-14]: process started with pid [58148]
+[robot_state_publisher-3] [INFO] [1794003464.123624239] [jaco2.robot_state_publisher]: got segment jaco2_j2n6s300_end_effector
+[robot_state_publisher-3] [INFO] [1794003464.124045801] [jaco2.robot_state_publisher]: got segment jaco2_j2n6s300_link_1
+[robot_state_publisher-3] [INFO] [1794003464.124100929] [jaco2.robot_state_publisher]: got segment jaco2_j2n6s300_link_2
+[robot_state_publisher-3] [INFO] [1794003464.124131683] [jaco2.robot_state_publisher]: got segment jaco2_j2n6s300_link_3
+[robot_state_publisher-3] [INFO] [1794003464.124156378] [jaco2.robot_state_publisher]: got segment jaco2_j2n6s300_link_4
+[robot_state_publisher-3] [INFO] [1794003464.124178748] [jaco2.robot_state_publisher]: got segment jaco2_j2n6s300_link_5
+[robot_state_publisher-3] [INFO] [1794003464.124207367] [jaco2.robot_state_publisher]: got segment jaco2_j2n6s300_link_6
+[robot_state_publisher-3] [INFO] [1794003464.124235395] [jaco2.robot_state_publisher]: got segment jaco2_j2n6s300_link_base
+[robot_state_publisher-3] [INFO] [1794003464.124260474] [jaco2.robot_state_publisher]: got segment jaco2_j2n6s300_link_finger_1
+[robot_state_publisher-3] [INFO] [1794003464.124283906] [jaco2.robot_state_publisher]: got segment jaco2_j2n6s300_link_finger_2
+[robot_state_publisher-3] [INFO] [1794003464.124307920] [jaco2.robot_state_publisher]: got segment jaco2_j2n6s300_link_finger_3
+[robot_state_publisher-3] [INFO] [1794003464.124333342] [jaco2.robot_state_publisher]: got segment jaco2_j2n6s300_link_finger_tip_1
+[robot_state_publisher-3] [INFO] [1794003464.124361181] [jaco2.robot_state_publisher]: got segment jaco2_j2n6s300_link_finger_tip_2
+[robot_state_publisher-3] [INFO] [1794003464.124388521] [jaco2.robot_state_publisher]: got segment jaco2_j2n6s300_link_finger_tip_3
+[robot_state_publisher-3] [INFO] [1794003464.124414452] [jaco2.robot_state_publisher]: got segment jaco2_root
+[robot_state_publisher-3] [INFO] [1794003464.124440853] [jaco2.robot_state_publisher]: got segment world
+[robot_state_publisher-6] [INFO] [1794003464.130000112] [ur17g.robot_state_publisher]: got segment ur17g_base
+[robot_state_publisher-6] [INFO] [1794003464.130960124] [ur17g.robot_state_publisher]: got segment ur17g_base_link
+[robot_state_publisher-6] [INFO] [1794003464.130974033] [ur17g.robot_state_publisher]: got segment ur17g_base_link_inertia
+[robot_state_publisher-6] [INFO] [1794003464.130981067] [ur17g.robot_state_publisher]: got segment ur17g_flange
+[robot_state_publisher-6] [INFO] [1794003464.130987126] [ur17g.robot_state_publisher]: got segment ur17g_forearm_link
+[robot_state_publisher-6] [INFO] [1794003464.130992999] [ur17g.robot_state_publisher]: got segment ur17g_ft_frame
+[robot_state_publisher-6] [INFO] [1794003464.130998940] [ur17g.robot_state_publisher]: got segment ur17g_shoulder_link
+[robot_state_publisher-6] [INFO] [1794003464.131004821] [ur17g.robot_state_publisher]: got segment ur17g_smart_panel
+[robot_state_publisher-6] [INFO] [1794003464.131010474] [ur17g.robot_state_publisher]: got segment ur17g_tool0
+[robot_state_publisher-6] [INFO] [1794003464.131016216] [ur17g.robot_state_publisher]: got segment ur17g_upper_arm_link
+[robot_state_publisher-6] [INFO] [1794003464.131022027] [ur17g.robot_state_publisher]: got segment ur17g_wrist_1_link
+[robot_state_publisher-6] [INFO] [1794003464.131027895] [ur17g.robot_state_publisher]: got segment ur17g_wrist_2_link
+[robot_state_publisher-6] [INFO] [1794003464.131033879] [ur17g.robot_state_publisher]: got segment ur17g_wrist_3_link
+[robot_state_publisher-6] [INFO] [1794003464.131039394] [ur17g.robot_state_publisher]: got segment world
+[robot_state_publisher-12] [INFO] [1794003464.137475305] [p3020.robot_state_publisher]: got segment p3020_base
+[robot_state_publisher-12] [INFO] [1794003464.137574932] [p3020.robot_state_publisher]: got segment p3020_base_link
+[robot_state_publisher-12] [INFO] [1794003464.137585564] [p3020.robot_state_publisher]: got segment p3020_link_1
+[robot_state_publisher-12] [INFO] [1794003464.137592472] [p3020.robot_state_publisher]: got segment p3020_link_2
+[robot_state_publisher-12] [INFO] [1794003464.137599389] [p3020.robot_state_publisher]: got segment p3020_link_3
+[robot_state_publisher-12] [INFO] [1794003464.137606171] [p3020.robot_state_publisher]: got segment p3020_link_4
+[robot_state_publisher-12] [INFO] [1794003464.137612489] [p3020.robot_state_publisher]: got segment p3020_link_5
+[robot_state_publisher-12] [INFO] [1794003464.137619373] [p3020.robot_state_publisher]: got segment p3020_link_6
+[robot_state_publisher-12] [INFO] [1794003464.137625653] [p3020.robot_state_publisher]: got segment world
+[robot_state_publisher-9] [INFO] [1794003464.159550993] [tm25s.robot_state_publisher]: got segment tm25s_base
+[robot_state_publisher-9] [INFO] [1794003464.159797582] [tm25s.robot_state_publisher]: got segment tm25s_flange
+[robot_state_publisher-9] [INFO] [1794003464.159845258] [tm25s.robot_state_publisher]: got segment tm25s_link_0
+[robot_state_publisher-9] [INFO] [1794003464.160889896] [tm25s.robot_state_publisher]: got segment tm25s_link_1
+[robot_state_publisher-9] [INFO] [1794003464.160931899] [tm25s.robot_state_publisher]: got segment tm25s_link_2
+[robot_state_publisher-9] [INFO] [1794003464.160960003] [tm25s.robot_state_publisher]: got segment tm25s_link_3
+[robot_state_publisher-9] [INFO] [1794003464.160985635] [tm25s.robot_state_publisher]: got segment tm25s_link_4
+[robot_state_publisher-9] [INFO] [1794003464.161701049] [tm25s.robot_state_publisher]: got segment tm25s_link_5
+[robot_state_publisher-9] [INFO] [1794003464.161744893] [tm25s.robot_state_publisher]: got segment tm25s_link_6
+[robot_state_publisher-9] [INFO] [1794003464.161770974] [tm25s.robot_state_publisher]: got segment world
+[parameter_bridge-2] [INFO] [1794003464.174456692] [cell_clock]: Creating GZ->ROS Bridge: [/clock (ignition.msgs.Clock) -> /clock (rosgraph_msgs/msg/Clock)] (Lazy 0)
+[create-10] [INFO] [1794003464.523486860] [spawn_tm25s]: Requested creation of entity.
+[create-10] [INFO] [1794003464.523628994] [spawn_tm25s]: OK creation of entity.
+[create-7] [INFO] [1794003464.623619349] [spawn_ur17g]: Requested creation of entity.
+[create-7] [INFO] [1794003464.623719040] [spawn_ur17g]: OK creation of entity.
+[INFO] [create-10]: process has finished cleanly [pid 58140]
+[INFO] [spawner-15]: process started with pid [58321]
+[create-4] [INFO] [1794003464.723748074] [spawn_jaco2]: Requested creation of entity.
+[create-4] [INFO] [1794003464.723845823] [spawn_jaco2]: OK creation of entity.
+[INFO] [create-7]: process has finished cleanly [pid 58134]
+[INFO] [spawner-16]: process started with pid [58323]
+[spawner-15] [INFO] [1794003464.810949099] [tm25s.spawner_joint_state_broadcaster]: waiting for service /tm25s/controller_manager/list_controllers to become available...
+[create-13] [INFO] [1794003464.823964817] [spawn_p3020]: Requested creation of entity.
+[create-13] [INFO] [1794003464.824069346] [spawn_p3020]: OK creation of entity.
+[INFO] [create-4]: process has finished cleanly [pid 58128]
+[INFO] [spawner-17]: process started with pid [58335]
+[spawner-16] [INFO] [1794003464.912874868] [ur17g.spawner_joint_state_broadcaster]: waiting for service /ur17g/controller_manager/list_controllers to become available...
+[INFO] [create-13]: process has finished cleanly [pid 58146]
+[INFO] [spawner-18]: process started with pid [58347]
+[spawner-17] [INFO] [1794003465.022781442] [jaco2.spawner_joint_state_broadcaster]: waiting for service /jaco2/controller_manager/list_controllers to become available...
+[spawner-18] [INFO] [1794003465.139501644] [p3020.spawner_joint_state_broadcaster]: waiting for service /p3020/controller_manager/list_controllers to become available...
+[ign-1] [INFO] [1794003466.334452376] [GazeboSimROS2ControlPlugin]: robot_param_node is robot_state_publisher
+[ign-1] [INFO] [1794003466.334476192] [GazeboSimROS2ControlPlugin]: robot_param_node is robot_description
+[ign-1] [INFO] [1794003467.362677587] [tm25s.gz_ros2_control]: connected to service!! /tm25s/robot_state_publisher asking for robot_description
+[ign-1] [INFO] [1794003467.363560019] [tm25s.gz_ros2_control]: Received URDF from param server
+[ign-1] [INFO] [1794003467.364450743] [tm25s.gz_ros2_control]: [gz_ros2_control] Fixed joint ['tm25s_world_mount'] (Entity='32') is skipped.
+[ign-1] [INFO] [1794003467.366936418] [tm25s.gz_ros2_control]: The position_proportional_gain has been set to: 0.1
+[ign-1] [INFO] [1794003467.366983591] [tm25s.gz_ros2_control]: Loading joint: tm25s_joint_1
+[ign-1] [INFO] [1794003467.366995840] [tm25s.gz_ros2_control]: 	State:
+[ign-1] [INFO] [1794003467.367002590] [tm25s.gz_ros2_control]: 		 position
+[ign-1] [INFO] [1794003467.367011652] [tm25s.gz_ros2_control]: 			 found initial value: 0.000000
+[ign-1] [INFO] [1794003467.367019918] [tm25s.gz_ros2_control]: 		 velocity
+[ign-1] [INFO] [1794003467.367025652] [tm25s.gz_ros2_control]: 	Command:
+[ign-1] [INFO] [1794003467.367031655] [tm25s.gz_ros2_control]: 		 position
+[ign-1] [INFO] [1794003467.367047684] [tm25s.gz_ros2_control]: Loading joint: tm25s_joint_2
+[ign-1] [INFO] [1794003467.367055010] [tm25s.gz_ros2_control]: 	State:
+[ign-1] [INFO] [1794003467.367060457] [tm25s.gz_ros2_control]: 		 position
+[ign-1] [INFO] [1794003467.367065430] [tm25s.gz_ros2_control]: 			 found initial value: 0.000000
+[ign-1] [INFO] [1794003467.367069632] [tm25s.gz_ros2_control]: 		 velocity
+[ign-1] [INFO] [1794003467.367073150] [tm25s.gz_ros2_control]: 	Command:
+[ign-1] [INFO] [1794003467.367076491] [tm25s.gz_ros2_control]: 		 position
+[ign-1] [INFO] [1794003467.367083944] [tm25s.gz_ros2_control]: Loading joint: tm25s_joint_3
+[ign-1] [INFO] [1794003467.367087760] [tm25s.gz_ros2_control]: 	State:
+[ign-1] [INFO] [1794003467.367091073] [tm25s.gz_ros2_control]: 		 position
+[ign-1] [INFO] [1794003467.367094664] [tm25s.gz_ros2_control]: 			 found initial value: 0.000000
+[ign-1] [INFO] [1794003467.367098447] [tm25s.gz_ros2_control]: 		 velocity
+[ign-1] [INFO] [1794003467.367101696] [tm25s.gz_ros2_control]: 	Command:
+[ign-1] [INFO] [1794003467.367104920] [tm25s.gz_ros2_control]: 		 position
+[ign-1] [INFO] [1794003467.367111663] [tm25s.gz_ros2_control]: Loading joint: tm25s_joint_4
+[ign-1] [INFO] [1794003467.367115360] [tm25s.gz_ros2_control]: 	State:
+[ign-1] [INFO] [1794003467.367118551] [tm25s.gz_ros2_control]: 		 position
+[ign-1] [INFO] [1794003467.367121640] [tm25s.gz_ros2_control]: 			 found initial value: 0.000000
+[ign-1] [INFO] [1794003467.367125255] [tm25s.gz_ros2_control]: 		 velocity
+[ign-1] [INFO] [1794003467.367128820] [tm25s.gz_ros2_control]: 	Command:
+[ign-1] [INFO] [1794003467.367131987] [tm25s.gz_ros2_control]: 		 position
+[ign-1] [INFO] [1794003467.367137825] [tm25s.gz_ros2_control]: Loading joint: tm25s_joint_5
+[ign-1] [INFO] [1794003467.367141452] [tm25s.gz_ros2_control]: 	State:
+[ign-1] [INFO] [1794003467.367144793] [tm25s.gz_ros2_control]: 		 position
+[ign-1] [INFO] [1794003467.367148216] [tm25s.gz_ros2_control]: 			 found initial value: 0.000000
+[ign-1] [INFO] [1794003467.367151991] [tm25s.gz_ros2_control]: 		 velocity
+[ign-1] [INFO] [1794003467.367155224] [tm25s.gz_ros2_control]: 	Command:
+[ign-1] [INFO] [1794003467.367158527] [tm25s.gz_ros2_control]: 		 position
+[ign-1] [INFO] [1794003467.367164390] [tm25s.gz_ros2_control]: Loading joint: tm25s_joint_6
+[ign-1] [INFO] [1794003467.367167965] [tm25s.gz_ros2_control]: 	State:
+[ign-1] [INFO] [1794003467.367171252] [tm25s.gz_ros2_control]: 		 position
+[ign-1] [INFO] [1794003467.367174335] [tm25s.gz_ros2_control]: 			 found initial value: 0.000000
+[ign-1] [INFO] [1794003467.367177948] [tm25s.gz_ros2_control]: 		 velocity
+[ign-1] [INFO] [1794003467.367181150] [tm25s.gz_ros2_control]: 	Command:
+[ign-1] [INFO] [1794003467.367184319] [tm25s.gz_ros2_control]: 		 position
+[ign-1] [INFO] [1794003467.367259957] [resource_manager]: Initialize hardware 'tm25s_system' 
+[ign-1] [INFO] [1794003467.367315346] [resource_manager]: Successful initialization of hardware 'tm25s_system'
+[ign-1] [INFO] [1794003467.367352770] [resource_manager]: 'configure' hardware 'tm25s_system' 
+[ign-1] [INFO] [1794003467.367356116] [tm25s.gz_ros2_control]: System Successfully configured!
+[ign-1] [INFO] [1794003467.367364765] [resource_manager]: Successful 'configure' of hardware 'tm25s_system'
+[ign-1] [INFO] [1794003467.367369198] [resource_manager]: 'activate' hardware 'tm25s_system' 
+[ign-1] [INFO] [1794003467.367373794] [resource_manager]: Successful 'activate' of hardware 'tm25s_system'
+[ign-1] [INFO] [1794003467.367397219] [tm25s.gz_ros2_control]: Loading controller_manager
+[ign-1] [INFO] [1794003467.424713694] [GazeboSimROS2ControlPlugin]: robot_param_node is robot_state_publisher
+[ign-1] [INFO] [1794003467.424733140] [GazeboSimROS2ControlPlugin]: robot_param_node is robot_description
+[ign-1] [INFO] [1794003467.430879403] [ur17g.gz_ros2_control]: connected to service!! /ur17g/robot_state_publisher asking for robot_description
+[ign-1] [INFO] [1794003467.431097983] [ur17g.gz_ros2_control]: Received URDF from param server
+[ign-1] [INFO] [1794003467.431474666] [ur17g.gz_ros2_control]: [gz_ros2_control] Fixed joint ['ur17g_world_mount'] (Entity='63') is skipped.
+[ign-1] [INFO] [1794003467.432353762] [ur17g.gz_ros2_control]: The position_proportional_gain has been set to: 0.1
+[ign-1] [INFO] [1794003467.432386181] [ur17g.gz_ros2_control]: Loading joint: ur17g_shoulder_pan_joint
+[ign-1] [INFO] [1794003467.432393699] [ur17g.gz_ros2_control]: 	State:
+[ign-1] [INFO] [1794003467.432400673] [ur17g.gz_ros2_control]: 		 position
+[ign-1] [INFO] [1794003467.432407434] [ur17g.gz_ros2_control]: 			 found initial value: 0.000000
+[ign-1] [INFO] [1794003467.432414244] [ur17g.gz_ros2_control]: 		 velocity
+[ign-1] [INFO] [1794003467.432420606] [ur17g.gz_ros2_control]: 	Command:
+[ign-1] [INFO] [1794003467.432426722] [ur17g.gz_ros2_control]: 		 position
+[ign-1] [INFO] [1794003467.432442858] [ur17g.gz_ros2_control]: Loading joint: ur17g_shoulder_lift_joint
+[ign-1] [INFO] [1794003467.432449805] [ur17g.gz_ros2_control]: 	State:
+[ign-1] [INFO] [1794003467.432455291] [ur17g.gz_ros2_control]: 		 position
+[ign-1] [INFO] [1794003467.432461187] [ur17g.gz_ros2_control]: 			 found initial value: -1.570000
+[ign-1] [INFO] [1794003467.432465592] [ur17g.gz_ros2_control]: 		 velocity
+[ign-1] [INFO] [1794003467.432468848] [ur17g.gz_ros2_control]: 	Command:
+[ign-1] [INFO] [1794003467.432472056] [ur17g.gz_ros2_control]: 		 position
+[ign-1] [INFO] [1794003467.432479076] [ur17g.gz_ros2_control]: Loading joint: ur17g_elbow_joint
+[ign-1] [INFO] [1794003467.432482971] [ur17g.gz_ros2_control]: 	State:
+[ign-1] [INFO] [1794003467.432486244] [ur17g.gz_ros2_control]: 		 position
+[ign-1] [INFO] [1794003467.432489605] [ur17g.gz_ros2_control]: 			 found initial value: 0.000000
+[ign-1] [INFO] [1794003467.432493301] [ur17g.gz_ros2_control]: 		 velocity
+[ign-1] [INFO] [1794003467.432496527] [ur17g.gz_ros2_control]: 	Command:
+[ign-1] [INFO] [1794003467.432499825] [ur17g.gz_ros2_control]: 		 position
+[ign-1] [INFO] [1794003467.432506094] [ur17g.gz_ros2_control]: Loading joint: ur17g_wrist_1_joint
+[ign-1] [INFO] [1794003467.432509818] [ur17g.gz_ros2_control]: 	State:
+[ign-1] [INFO] [1794003467.432513022] [ur17g.gz_ros2_control]: 		 position
+[ign-1] [INFO] [1794003467.432516305] [ur17g.gz_ros2_control]: 			 found initial value: -1.570000
+[ign-1] [INFO] [1794003467.432520044] [ur17g.gz_ros2_control]: 		 velocity
+[ign-1] [INFO] [1794003467.432523246] [ur17g.gz_ros2_control]: 	Command:
+[ign-1] [INFO] [1794003467.432527028] [ur17g.gz_ros2_control]: 		 position
+[ign-1] [INFO] [1794003467.432536478] [ur17g.gz_ros2_control]: Loading joint: ur17g_wrist_2_joint
+[ign-1] [INFO] [1794003467.432542083] [ur17g.gz_ros2_control]: 	State:
+[ign-1] [INFO] [1794003467.432547223] [ur17g.gz_ros2_control]: 		 position
+[ign-1] [INFO] [1794003467.432552921] [ur17g.gz_ros2_control]: 			 found initial value: 0.000000
+[ign-1] [INFO] [1794003467.432559786] [ur17g.gz_ros2_control]: 		 velocity
+[ign-1] [INFO] [1794003467.432563680] [ur17g.gz_ros2_control]: 	Command:
+[ign-1] [INFO] [1794003467.432567002] [ur17g.gz_ros2_control]: 		 position
+[ign-1] [INFO] [1794003467.432573716] [ur17g.gz_ros2_control]: Loading joint: ur17g_wrist_3_joint
+[ign-1] [INFO] [1794003467.432577457] [ur17g.gz_ros2_control]: 	State:
+[ign-1] [INFO] [1794003467.432580827] [ur17g.gz_ros2_control]: 		 position
+[ign-1] [INFO] [1794003467.432586548] [ur17g.gz_ros2_control]: 			 found initial value: 0.000000
+[ign-1] [INFO] [1794003467.432592064] [ur17g.gz_ros2_control]: 		 velocity
+[ign-1] [INFO] [1794003467.432595719] [ur17g.gz_ros2_control]: 	Command:
+[ign-1] [INFO] [1794003467.432599109] [ur17g.gz_ros2_control]: 		 position
+[ign-1] [INFO] [1794003467.432612588] [resource_manager]: Initialize hardware 'ur17g_system' 
+[ign-1] [INFO] [1794003467.432625375] [resource_manager]: Successful initialization of hardware 'ur17g_system'
+[ign-1] [INFO] [1794003467.432637810] [resource_manager]: 'configure' hardware 'ur17g_system' 
+[ign-1] [INFO] [1794003467.432654382] [ur17g.gz_ros2_control]: System Successfully configured!
+[ign-1] [INFO] [1794003467.432662831] [resource_manager]: Successful 'configure' of hardware 'ur17g_system'
+[ign-1] [INFO] [1794003467.432669080] [resource_manager]: 'activate' hardware 'ur17g_system' 
+[ign-1] [INFO] [1794003467.432673846] [resource_manager]: Successful 'activate' of hardware 'ur17g_system'
+[ign-1] [INFO] [1794003467.432676845] [ur17g.gz_ros2_control]: Loading controller_manager
+[ign-1] [INFO] [1794003467.494701658] [GazeboSimROS2ControlPlugin]: robot_param_node is robot_state_publisher
+[ign-1] [INFO] [1794003467.494722929] [GazeboSimROS2ControlPlugin]: robot_param_node is robot_description
+[ign-1] [INFO] [1794003467.501194410] [jaco2.gz_ros2_control]: connected to service!! /jaco2/robot_state_publisher asking for robot_description
+[ign-1] [INFO] [1794003467.501418685] [jaco2.gz_ros2_control]: Received URDF from param server
+[ign-1] [INFO] [1794003467.501868189] [jaco2.gz_ros2_control]: [gz_ros2_control] Fixed joint ['jaco2_world_mount'] (Entity='110') is skipped.
+[ign-1] [INFO] [1794003467.502777533] [jaco2.gz_ros2_control]: The position_proportional_gain has been set to: 0.1
+[ign-1] [INFO] [1794003467.502807211] [jaco2.gz_ros2_control]: Loading joint: jaco2_j2n6s300_joint_1
+[ign-1] [INFO] [1794003467.502815877] [jaco2.gz_ros2_control]: 	State:
+[ign-1] [INFO] [1794003467.502821905] [jaco2.gz_ros2_control]: 		 position
+[ign-1] [INFO] [1794003467.502828298] [jaco2.gz_ros2_control]: 			 found initial value: 0.000000
+[ign-1] [INFO] [1794003467.502835691] [jaco2.gz_ros2_control]: 		 velocity
+[ign-1] [INFO] [1794003467.502842135] [jaco2.gz_ros2_control]: 	Command:
+[ign-1] [INFO] [1794003467.502848216] [jaco2.gz_ros2_control]: 		 position
+[ign-1] [INFO] [1794003467.502867963] [jaco2.gz_ros2_control]: Loading joint: jaco2_j2n6s300_joint_2
+[ign-1] [INFO] [1794003467.502875506] [jaco2.gz_ros2_control]: 	State:
+[ign-1] [INFO] [1794003467.502881276] [jaco2.gz_ros2_control]: 		 position
+[ign-1] [INFO] [1794003467.502885892] [jaco2.gz_ros2_control]: 			 found initial value: 3.141593
+[ign-1] [INFO] [1794003467.502890048] [jaco2.gz_ros2_control]: 		 velocity
+[ign-1] [INFO] [1794003467.502893506] [jaco2.gz_ros2_control]: 	Command:
+[ign-1] [INFO] [1794003467.502896930] [jaco2.gz_ros2_control]: 		 position
+[ign-1] [INFO] [1794003467.502906267] [jaco2.gz_ros2_control]: Loading joint: jaco2_j2n6s300_joint_3
+[ign-1] [INFO] [1794003467.502910213] [jaco2.gz_ros2_control]: 	State:
+[ign-1] [INFO] [1794003467.502913483] [jaco2.gz_ros2_control]: 		 position
+[ign-1] [INFO] [1794003467.502916816] [jaco2.gz_ros2_control]: 			 found initial value: 3.141593
+[ign-1] [INFO] [1794003467.502924231] [jaco2.gz_ros2_control]: 		 velocity
+[ign-1] [INFO] [1794003467.502927671] [jaco2.gz_ros2_control]: 	Command:
+[ign-1] [INFO] [1794003467.502931113] [jaco2.gz_ros2_control]: 		 position
+[ign-1] [INFO] [1794003467.502937255] [jaco2.gz_ros2_control]: Loading joint: jaco2_j2n6s300_joint_4
+[ign-1] [INFO] [1794003467.502941417] [jaco2.gz_ros2_control]: 	State:
+[ign-1] [INFO] [1794003467.502944627] [jaco2.gz_ros2_control]: 		 position
+[ign-1] [INFO] [1794003467.502947758] [jaco2.gz_ros2_control]: 			 found initial value: 0.000000
+[ign-1] [INFO] [1794003467.502951436] [jaco2.gz_ros2_control]: 		 velocity
+[ign-1] [INFO] [1794003467.502954733] [jaco2.gz_ros2_control]: 	Command:
+[ign-1] [INFO] [1794003467.502959981] [jaco2.gz_ros2_control]: 		 position
+[ign-1] [INFO] [1794003467.502969236] [jaco2.gz_ros2_control]: Loading joint: jaco2_j2n6s300_joint_5
+[ign-1] [INFO] [1794003467.502974963] [jaco2.gz_ros2_control]: 	State:
+[ign-1] [INFO] [1794003467.502980116] [jaco2.gz_ros2_control]: 		 position
+[ign-1] [INFO] [1794003467.502986333] [jaco2.gz_ros2_control]: 			 found initial value: 0.000000
+[ign-1] [INFO] [1794003467.502992876] [jaco2.gz_ros2_control]: 		 velocity
+[ign-1] [INFO] [1794003467.502998214] [jaco2.gz_ros2_control]: 	Command:
+[ign-1] [INFO] [1794003467.503003719] [jaco2.gz_ros2_control]: 		 position
+[ign-1] [INFO] [1794003467.503014871] [jaco2.gz_ros2_control]: Loading joint: jaco2_j2n6s300_joint_6
+[ign-1] [INFO] [1794003467.503023179] [jaco2.gz_ros2_control]: 	State:
+[ign-1] [INFO] [1794003467.503026754] [jaco2.gz_ros2_control]: 		 position
+[ign-1] [INFO] [1794003467.503030082] [jaco2.gz_ros2_control]: 			 found initial value: 0.000000
+[ign-1] [INFO] [1794003467.503034175] [jaco2.gz_ros2_control]: 		 velocity
+[ign-1] [INFO] [1794003467.503037656] [jaco2.gz_ros2_control]: 	Command:
+[ign-1] [INFO] [1794003467.503053738] [jaco2.gz_ros2_control]: 		 position
+[ign-1] [INFO] [1794003467.503062304] [resource_manager]: Initialize hardware 'jaco2_system' 
+[ign-1] [INFO] [1794003467.503077703] [resource_manager]: Successful initialization of hardware 'jaco2_system'
+[ign-1] [INFO] [1794003467.503094588] [resource_manager]: 'configure' hardware 'jaco2_system' 
+[ign-1] [INFO] [1794003467.503097459] [jaco2.gz_ros2_control]: System Successfully configured!
+[ign-1] [INFO] [1794003467.503103199] [resource_manager]: Successful 'configure' of hardware 'jaco2_system'
+[ign-1] [INFO] [1794003467.503110195] [resource_manager]: 'activate' hardware 'jaco2_system' 
+[ign-1] [INFO] [1794003467.503113397] [resource_manager]: Successful 'activate' of hardware 'jaco2_system'
+[ign-1] [INFO] [1794003467.503116020] [jaco2.gz_ros2_control]: Loading controller_manager
+[ign-1] [INFO] [1794003467.565487425] [GazeboSimROS2ControlPlugin]: robot_param_node is robot_state_publisher
+[ign-1] [INFO] [1794003467.565505743] [GazeboSimROS2ControlPlugin]: robot_param_node is robot_description
+[ign-1] [INFO] [1794003467.566498918] [tm25s.controller_manager]: Loading controller 'joint_state_broadcaster'
+[ign-1] [INFO] [1794003467.578233055] [p3020.gz_ros2_control]: connected to service!! /p3020/robot_state_publisher asking for robot_description
+[ign-1] [INFO] [1794003467.578489167] [p3020.gz_ros2_control]: Received URDF from param server
+[ign-1] [INFO] [1794003467.579236101] [p3020.gz_ros2_control]: [gz_ros2_control] Fixed joint ['p3020_world_mount'] (Entity='168') is skipped.
+[spawner-15] [INFO] [1794003467.580324150] [tm25s.spawner_joint_state_broadcaster]: [94mLoaded [1mjoint_state_broadcaster[0m
+[ign-1] [INFO] [1794003467.580441310] [p3020.gz_ros2_control]: The position_proportional_gain has been set to: 0.1
+[ign-1] [INFO] [1794003467.580477036] [p3020.gz_ros2_control]: Loading joint: p3020_joint_1
+[ign-1] [INFO] [1794003467.580486285] [p3020.gz_ros2_control]: 	State:
+[ign-1] [INFO] [1794003467.580494522] [p3020.gz_ros2_control]: 		 position
+[ign-1] [INFO] [1794003467.580501192] [p3020.gz_ros2_control]: 			 found initial value: 0.000000
+[ign-1] [INFO] [1794003467.580509403] [p3020.gz_ros2_control]: 		 velocity
+[ign-1] [INFO] [1794003467.580514053] [p3020.gz_ros2_control]: 	Command:
+[ign-1] [INFO] [1794003467.580517885] [p3020.gz_ros2_control]: 		 position
+[ign-1] [INFO] [1794003467.580530129] [p3020.gz_ros2_control]: Loading joint: p3020_joint_2
+[ign-1] [INFO] [1794003467.580534502] [p3020.gz_ros2_control]: 	State:
+[ign-1] [INFO] [1794003467.580537972] [p3020.gz_ros2_control]: 		 position
+[ign-1] [INFO] [1794003467.580541536] [p3020.gz_ros2_control]: 			 found initial value: 0.000000
+[ign-1] [INFO] [1794003467.580545532] [p3020.gz_ros2_control]: 		 velocity
+[ign-1] [INFO] [1794003467.580549146] [p3020.gz_ros2_control]: 	Command:
+[ign-1] [INFO] [1794003467.580552611] [p3020.gz_ros2_control]: 		 position
+[ign-1] [INFO] [1794003467.580560776] [p3020.gz_ros2_control]: Loading joint: p3020_joint_3
+[ign-1] [INFO] [1794003467.580565139] [p3020.gz_ros2_control]: 	State:
+[ign-1] [INFO] [1794003467.580568617] [p3020.gz_ros2_control]: 		 position
+[ign-1] [INFO] [1794003467.580571860] [p3020.gz_ros2_control]: 			 found initial value: 0.000000
+[ign-1] [INFO] [1794003467.580575862] [p3020.gz_ros2_control]: 		 velocity
+[ign-1] [INFO] [1794003467.580579136] [p3020.gz_ros2_control]: 	Command:
+[ign-1] [INFO] [1794003467.580582586] [p3020.gz_ros2_control]: 		 position
+[ign-1] [INFO] [1794003467.580589648] [p3020.gz_ros2_control]: Loading joint: p3020_joint_5
+[ign-1] [INFO] [1794003467.580593719] [p3020.gz_ros2_control]: 	State:
+[ign-1] [INFO] [1794003467.580597142] [p3020.gz_ros2_control]: 		 position
+[ign-1] [INFO] [1794003467.580600371] [p3020.gz_ros2_control]: 			 found initial value: 0.000000
+[ign-1] [INFO] [1794003467.580604170] [p3020.gz_ros2_control]: 		 velocity
+[ign-1] [INFO] [1794003467.580607548] [p3020.gz_ros2_control]: 	Command:
+[ign-1] [INFO] [1794003467.580610781] [p3020.gz_ros2_control]: 		 position
+[ign-1] [INFO] [1794003467.580617584] [p3020.gz_ros2_control]: Loading joint: p3020_joint_6
+[ign-1] [INFO] [1794003467.580621936] [p3020.gz_ros2_control]: 	State:
+[ign-1] [INFO] [1794003467.580625329] [p3020.gz_ros2_control]: 		 position
+[ign-1] [INFO] [1794003467.580631895] [p3020.gz_ros2_control]: 			 found initial value: 0.000000
+[ign-1] [INFO] [1794003467.580635840] [p3020.gz_ros2_control]: 		 velocity
+[ign-1] [INFO] [1794003467.580639117] [p3020.gz_ros2_control]: 	Command:
+[ign-1] [INFO] [1794003467.580642286] [p3020.gz_ros2_control]: 		 position
+[ign-1] [INFO] [1794003467.580663017] [resource_manager]: Initialize hardware 'p3020_system' 
+[ign-1] [INFO] [1794003467.580673456] [resource_manager]: Successful initialization of hardware 'p3020_system'
+[ign-1] [INFO] [1794003467.580684860] [resource_manager]: 'configure' hardware 'p3020_system' 
+[ign-1] [INFO] [1794003467.580687284] [p3020.gz_ros2_control]: System Successfully configured!
+[ign-1] [INFO] [1794003467.580693154] [resource_manager]: Successful 'configure' of hardware 'p3020_system'
+[ign-1] [INFO] [1794003467.580697242] [resource_manager]: 'activate' hardware 'p3020_system' 
+[ign-1] [INFO] [1794003467.580701294] [resource_manager]: Successful 'activate' of hardware 'p3020_system'
+[ign-1] [INFO] [1794003467.580705221] [p3020.gz_ros2_control]: Loading controller_manager
+[ign-1] [INFO] [1794003467.581196743] [tm25s.controller_manager]: Configuring controller 'joint_state_broadcaster'
+[ign-1] [INFO] [1794003467.582856264] [tm25s.joint_state_broadcaster]: 'joints' or 'interfaces' parameter is empty. All available state interfaces will be published
+[ign-1] [INFO] [1794003467.608149412] [jaco2.controller_manager]: Loading controller 'joint_state_broadcaster'
+[spawner-17] [INFO] [1794003467.617054705] [jaco2.spawner_joint_state_broadcaster]: [94mLoaded [1mjoint_state_broadcaster[0m
+[ign-1] [INFO] [1794003467.618476780] [jaco2.controller_manager]: Configuring controller 'joint_state_broadcaster'
+[ign-1] [INFO] [1794003467.618524555] [jaco2.joint_state_broadcaster]: 'joints' or 'interfaces' parameter is empty. All available state interfaces will be published
+[ign-1] [INFO] [1794003467.644278831] [p3020.controller_manager]: Loading controller 'joint_state_broadcaster'
+[spawner-18] [INFO] [1794003467.653515050] [p3020.spawner_joint_state_broadcaster]: [94mLoaded [1mjoint_state_broadcaster[0m
+[ign-1] [INFO] [1794003467.655399950] [p3020.controller_manager]: Configuring controller 'joint_state_broadcaster'
+[ign-1] [INFO] [1794003467.655467967] [p3020.joint_state_broadcaster]: 'joints' or 'interfaces' parameter is empty. All available state interfaces will be published
+[ign-1] [INFO] [1794003467.668548383] [ur17g.controller_manager]: Loading controller 'joint_state_broadcaster'
+[spawner-16] [INFO] [1794003467.680097773] [ur17g.spawner_joint_state_broadcaster]: [94mLoaded [1mjoint_state_broadcaster[0m
+[ign-1] [INFO] [1794003467.681049470] [ur17g.controller_manager]: Configuring controller 'joint_state_broadcaster'
+[ign-1] [INFO] [1794003467.681098583] [ur17g.joint_state_broadcaster]: 'joints' or 'interfaces' parameter is empty. All available state interfaces will be published
+[ign-1] [WARN] [1794003467.972260754] [tm25s.gz_ros2_control]:  Desired controller update period (0.01 s) is slower than the gazebo simulation period (0.002 s).
+[ign-1] [WARN] [1794003467.972346336] [ur17g.gz_ros2_control]:  Desired controller update period (0.01 s) is slower than the gazebo simulation period (0.002 s).
+[ign-1] [WARN] [1794003467.972370042] [jaco2.gz_ros2_control]:  Desired controller update period (0.01 s) is slower than the gazebo simulation period (0.002 s).
+[ign-1] [WARN] [1794003467.972394426] [p3020.gz_ros2_control]:  Desired controller update period (0.01 s) is slower than the gazebo simulation period (0.002 s).
+[spawner-18] [INFO] [1794003467.991904920] [p3020.spawner_joint_state_broadcaster]: [92mConfigured and activated [1mjoint_state_broadcaster[0m
+[spawner-15] [INFO] [1794003467.992019835] [tm25s.spawner_joint_state_broadcaster]: [92mConfigured and activated [1mjoint_state_broadcaster[0m
+[spawner-17] [INFO] [1794003467.992028501] [jaco2.spawner_joint_state_broadcaster]: [92mConfigured and activated [1mjoint_state_broadcaster[0m
+[spawner-16] [INFO] [1794003467.992179777] [ur17g.spawner_joint_state_broadcaster]: [92mConfigured and activated [1mjoint_state_broadcaster[0m
+[INFO] [spawner-16]: process has finished cleanly [pid 58323]
+[INFO] [spawner-18]: process has finished cleanly [pid 58347]
+[INFO] [spawner-17]: process has finished cleanly [pid 58335]
+[INFO] [spawner-15]: process has finished cleanly [pid 58321]
+[INFO] [spawner-19]: process started with pid [58483]
+[INFO] [spawner-20]: process started with pid [58485]
+[INFO] [spawner-21]: process started with pid [58487]
+[INFO] [spawner-22]: process started with pid [58489]
+[spawner-19] [INFO] [1794003468.418079788] [ur17g.spawner_arm_controller]: [96mSetting controller param "params_file" to "['/tmp/thesis_validate_yv7l5tet/ur17g_controllers.yaml']" for [1marm_controller[0m
+[ign-1] [INFO] [1794003468.420805317] [ur17g.controller_manager]: Loading controller 'arm_controller'
+[ign-1] [WARN] [1794003468.435629505] [ur17g.arm_controller]: [Deprecated]: "allow_nonzero_velocity_at_trajectory_end" is set to true. The default behavior will change to false.
+[ign-1] [INFO] [1794003468.440098403] [ur17g.controller_manager]: Configuring controller 'arm_controller'
+[ign-1] [INFO] [1794003468.440217297] [ur17g.arm_controller]: No specific joint names are used for command interfaces. Using 'joints' parameter.
+[ign-1] [INFO] [1794003468.440231423] [ur17g.arm_controller]: Command interfaces are [position] and state interfaces are [position velocity].
+[ign-1] [INFO] [1794003468.440247872] [ur17g.arm_controller]: Using 'splines' interpolation method.
+[ign-1] [INFO] [1794003468.441954774] [ur17g.arm_controller]: Controller state will be published at 50.00 Hz.
+[ign-1] [INFO] [1794003468.443799580] [ur17g.arm_controller]: Action status changes will be monitored at 20.00 Hz.
+[spawner-19] [INFO] [1794003468.438732695] [ur17g.spawner_arm_controller]: [94mLoaded [1marm_controller[0m
+[spawner-19] [INFO] [1794003468.481287490] [ur17g.spawner_arm_controller]: [92mConfigured and activated [1marm_controller[0m
+[INFO] [spawner-19]: process has finished cleanly [pid 58483]
+[spawner-22] [INFO] [1794003468.942030728] [tm25s.spawner_arm_controller]: waiting for service /tm25s/controller_manager/list_controllers to become available...
+[spawner-20] [INFO] [1794003468.944549547] [p3020.spawner_arm_controller]: waiting for service /p3020/controller_manager/list_controllers to become available...
+[spawner-21] [INFO] [1794003468.945199257] [jaco2.spawner_arm_controller]: waiting for service /jaco2/controller_manager/list_controllers to become available...
+[spawner-21] [INFO] [1794003469.622304893] [jaco2.spawner_arm_controller]: [96mSetting controller param "params_file" to "['/tmp/thesis_validate_yv7l5tet/jaco2_controllers.yaml']" for [1marm_controller[0m
+[spawner-22] [INFO] [1794003469.623532461] [tm25s.spawner_arm_controller]: [96mSetting controller param "params_file" to "['/tmp/thesis_validate_yv7l5tet/tm25s_controllers.yaml']" for [1marm_controller[0m
+[spawner-20] [INFO] [1794003469.624345721] [p3020.spawner_arm_controller]: [96mSetting controller param "params_file" to "['/tmp/thesis_validate_yv7l5tet/p3020_controllers.yaml']" for [1marm_controller[0m
+[ign-1] [INFO] [1794003469.626796361] [jaco2.controller_manager]: Loading controller 'arm_controller'
+[ign-1] [INFO] [1794003469.627875369] [tm25s.controller_manager]: Loading controller 'arm_controller'
+[ign-1] [INFO] [1794003469.628659276] [p3020.controller_manager]: Loading controller 'arm_controller'
+[ign-1] [WARN] [1794003469.667333340] [tm25s.arm_controller]: [Deprecated]: "allow_nonzero_velocity_at_trajectory_end" is set to true. The default behavior will change to false.
+[ign-1] [WARN] [1794003469.667418916] [jaco2.arm_controller]: [Deprecated]: "allow_nonzero_velocity_at_trajectory_end" is set to true. The default behavior will change to false.
+[ign-1] [WARN] [1794003469.672384527] [p3020.arm_controller]: [Deprecated]: "allow_nonzero_velocity_at_trajectory_end" is set to true. The default behavior will change to false.
+[spawner-21] [INFO] [1794003469.675715195] [jaco2.spawner_arm_controller]: [94mLoaded [1marm_controller[0m
+[spawner-22] [INFO] [1794003469.675852204] [tm25s.spawner_arm_controller]: [94mLoaded [1marm_controller[0m
+[spawner-20] [INFO] [1794003469.676517690] [p3020.spawner_arm_controller]: [94mLoaded [1marm_controller[0m
+[ign-1] [INFO] [1794003469.678524979] [jaco2.controller_manager]: Configuring controller 'arm_controller'
+[ign-1] [INFO] [1794003469.678546802] [tm25s.controller_manager]: Configuring controller 'arm_controller'
+[ign-1] [INFO] [1794003469.678622700] [p3020.controller_manager]: Configuring controller 'arm_controller'
+[ign-1] [INFO] [1794003469.678682856] [jaco2.arm_controller]: No specific joint names are used for command interfaces. Using 'joints' parameter.
+[ign-1] [INFO] [1794003469.678691834] [tm25s.arm_controller]: No specific joint names are used for command interfaces. Using 'joints' parameter.
+[ign-1] [INFO] [1794003469.678699962] [jaco2.arm_controller]: Command interfaces are [position] and state interfaces are [position velocity].
+[ign-1] [INFO] [1794003469.678712316] [tm25s.arm_controller]: Command interfaces are [position] and state interfaces are [position velocity].
+[ign-1] [INFO] [1794003469.678722826] [p3020.arm_controller]: No specific joint names are used for command interfaces. Using 'joints' parameter.
+[ign-1] [INFO] [1794003469.678723758] [jaco2.arm_controller]: Using 'splines' interpolation method.
+[ign-1] [INFO] [1794003469.678731558] [tm25s.arm_controller]: Using 'splines' interpolation method.
+[ign-1] [INFO] [1794003469.678741371] [p3020.arm_controller]: Command interfaces are [position] and state interfaces are [position velocity].
+[ign-1] [INFO] [1794003469.678765882] [p3020.arm_controller]: Using 'splines' interpolation method.
+[ign-1] [INFO] [1794003469.679260535] [jaco2.arm_controller]: Controller state will be published at 50.00 Hz.
+[ign-1] [INFO] [1794003469.679758501] [tm25s.arm_controller]: Controller state will be published at 50.00 Hz.
+[ign-1] [INFO] [1794003469.680075889] [p3020.arm_controller]: Controller state will be published at 50.00 Hz.
+[ign-1] [INFO] [1794003469.681553645] [p3020.arm_controller]: Action status changes will be monitored at 20.00 Hz.
+[ign-1] [INFO] [1794003469.681814521] [tm25s.arm_controller]: Action status changes will be monitored at 20.00 Hz.
+[ign-1] [INFO] [1794003469.682297978] [jaco2.arm_controller]: Action status changes will be monitored at 20.00 Hz.
+[spawner-20] [INFO] [1794003469.719787026] [p3020.spawner_arm_controller]: [92mConfigured and activated [1marm_controller[0m
+[spawner-21] [INFO] [1794003469.720822207] [jaco2.spawner_arm_controller]: [92mConfigured and activated [1marm_controller[0m
+[spawner-22] [INFO] [1794003469.721332186] [tm25s.spawner_arm_controller]: [92mConfigured and activated [1marm_controller[0m
+[ign-1] [INFO] [1794003469.770925064] [jaco2.arm_controller]: Received new action goal
+[ign-1] [INFO] [1794003469.771010050] [jaco2.arm_controller]: Accepted new action goal
+[INFO] [spawner-21]: process has finished cleanly [pid 58487]
+[INFO] [spawner-20]: process has finished cleanly [pid 58485]
+[INFO] [spawner-22]: process has finished cleanly [pid 58489]
+[ign-1] [INFO] [1794003471.551765944] [jaco2.arm_controller]: Goal reached, success!
+[ign-1] [INFO] [1794003473.276115542] [jaco2.arm_controller]: Received new action goal
+[ign-1] [INFO] [1794003473.276184991] [jaco2.arm_controller]: Accepted new action goal
+[ign-1] [INFO] [1794003475.087362137] [jaco2.arm_controller]: Goal reached, success!
+[ign-1] [INFO] [1794003476.949786224] [jaco2.arm_controller]: Received new action goal
+[ign-1] [INFO] [1794003476.949832267] [jaco2.arm_controller]: Accepted new action goal
+[ign-1] [INFO] [1794003477.429091313] [jaco2.arm_controller]: Got request to cancel goal
+[ign-1] [INFO] [1794003477.429140361] [jaco2.arm_controller]: Canceling active action goal because cancel callback received.
+[ign-1] [INFO] [1794003480.241340189] [ur17g.arm_controller]: Received new action goal
+[ign-1] [INFO] [1794003480.241417353] [ur17g.arm_controller]: Accepted new action goal
+[ign-1] [INFO] [1794003482.181248782] [ur17g.arm_controller]: Goal reached, success!
+[ign-1] [INFO] [1794003484.043285192] [ur17g.arm_controller]: Received new action goal
+[ign-1] [INFO] [1794003484.043341823] [ur17g.arm_controller]: Accepted new action goal
+[ign-1] [INFO] [1794003485.903350789] [ur17g.arm_controller]: Goal reached, success!
+[ign-1] [INFO] [1794003487.794235340] [ur17g.arm_controller]: Received new action goal
+[ign-1] [INFO] [1794003487.794299241] [ur17g.arm_controller]: Accepted new action goal
+[ign-1] [INFO] [1794003488.327523229] [ur17g.arm_controller]: Got request to cancel goal
+[ign-1] [INFO] [1794003488.327566035] [ur17g.arm_controller]: Canceling active action goal because cancel callback received.
+[ign-1] [INFO] [1794003491.070393056] [tm25s.arm_controller]: Received new action goal
+[ign-1] [INFO] [1794003491.070446920] [tm25s.arm_controller]: Accepted new action goal
+[ign-1] [INFO] [1794003492.965708132] [tm25s.arm_controller]: Goal reached, success!
+[ign-1] [INFO] [1794003494.935887742] [tm25s.arm_controller]: Received new action goal
+[ign-1] [INFO] [1794003494.935947898] [tm25s.arm_controller]: Accepted new action goal
+[ign-1] [INFO] [1794003496.929349498] [tm25s.arm_controller]: Goal reached, success!
+[ign-1] [INFO] [1794003499.162212435] [tm25s.arm_controller]: Received new action goal
+[ign-1] [INFO] [1794003499.162283950] [tm25s.arm_controller]: Accepted new action goal
+[ign-1] [INFO] [1794003499.779612174] [tm25s.arm_controller]: Got request to cancel goal
+[ign-1] [INFO] [1794003499.779657079] [tm25s.arm_controller]: Canceling active action goal because cancel callback received.
+[ign-1] [INFO] [1794003502.613627119] [p3020.arm_controller]: Received new action goal
+[ign-1] [INFO] [1794003502.613685549] [p3020.arm_controller]: Accepted new action goal
+[ign-1] [INFO] [1794003504.602046568] [p3020.arm_controller]: Goal reached, success!
+[ign-1] [INFO] [1794003506.622595336] [p3020.arm_controller]: Received new action goal
+[ign-1] [INFO] [1794003506.622644151] [p3020.arm_controller]: Accepted new action goal
+[ign-1] [INFO] [1794003508.837603898] [p3020.arm_controller]: Goal reached, success!
+[ign-1] [INFO] [1794003510.868323961] [p3020.arm_controller]: Received new action goal
+[ign-1] [INFO] [1794003510.868364620] [p3020.arm_controller]: Accepted new action goal
+[ign-1] [INFO] [1794003511.401309131] [p3020.arm_controller]: Got request to cancel goal
+[ign-1] [INFO] [1794003511.401360583] [p3020.arm_controller]: Canceling active action goal because cancel callback received.
+[WARNING] [launch]: user interrupted with ctrl-c (SIGINT)
+[robot_state_publisher-9] [INFO] [1794003514.388133373] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[robot_state_publisher-3] [INFO] [1794003514.388132724] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[robot_state_publisher-6] [INFO] [1794003514.388132914] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[parameter_bridge-2] [INFO] [1794003514.388138766] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[ign-1] [INFO] [1794003514.388284734] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[ign-1] [INFO] [1794003514.388358207] [p3020.controller_manager]: Shutdown request received....
+[ign-1] [INFO] [1794003514.388409377] [p3020.controller_manager]: Shutting down all controllers in the controller manager.
+[ign-1] [INFO] [1794003514.388438673] [p3020.controller_manager]: Deactivating controller 'joint_state_broadcaster'
+[ign-1] [INFO] [1794003514.388477701] [p3020.controller_manager]: Shutting down controller 'joint_state_broadcaster'
+[ign-1] [INFO] [1794003514.388510072] [p3020.controller_manager]: Deactivating controller 'arm_controller'
+[ign-1] [INFO] [1794003514.388537286] [p3020.controller_manager]: Shutting down controller 'arm_controller'
+[ign-1] [INFO] [1794003514.388560616] [resource_manager]: 'deactivate' hardware 'p3020_system' 
+[ign-1] [INFO] [1794003514.388576011] [resource_manager]: Successful 'deactivate' of hardware 'p3020_system'
+[ign-1] [INFO] [1794003514.388580002] [resource_manager]: 'shutdown' hardware 'p3020_system' 
+[ign-1] [INFO] [1794003514.388585001] [resource_manager]: Successful 'shutdown' of hardware 'p3020_system'
+[ign-1] [INFO] [1794003514.388589234] [p3020.controller_manager]: Shutting down the controller manager.
+[ign-1] [INFO] [1794003514.388596772] [jaco2.controller_manager]: Shutdown request received....
+[ign-1] [INFO] [1794003514.388613425] [jaco2.controller_manager]: Shutting down all controllers in the controller manager.
+[ign-1] [INFO] [1794003514.388623948] [jaco2.controller_manager]: Deactivating controller 'joint_state_broadcaster'
+[ign-1] [INFO] [1794003514.388641450] [jaco2.controller_manager]: Shutting down controller 'joint_state_broadcaster'
+[ign-1] [INFO] [1794003514.388654386] [jaco2.controller_manager]: Deactivating controller 'arm_controller'
+[robot_state_publisher-12] [INFO] [1794003514.388284442] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[INFO] [profile_supervisor-14]: sending signal 'SIGINT' to process[profile_supervisor-14]
+[INFO] [robot_state_publisher-12]: sending signal 'SIGINT' to process[robot_state_publisher-12]
+[INFO] [profile_supervisor-11]: sending signal 'SIGINT' to process[profile_supervisor-11]
+[INFO] [robot_state_publisher-9]: sending signal 'SIGINT' to process[robot_state_publisher-9]
+[INFO] [profile_supervisor-8]: sending signal 'SIGINT' to process[profile_supervisor-8]
+[ERROR] [robot_state_publisher-12]: process has died [pid 58144, exit code -2, cmd '/opt/ros/humble/lib/robot_state_publisher/robot_state_publisher --ros-args -r __node:=robot_state_publisher -r __ns:=/p3020 --params-file /tmp/launch_params_vsnmz369'].
+[ERROR] [profile_supervisor-14]: process has died [pid 58148, exit code -2, cmd '/home/luis/Escritorio/TESIS_JACO2/IMPLEMENTACION_ROS2_CORE/install/thesis_multi_robot/lib/thesis_multi_robot/profile_supervisor --ros-args -r __node:=profile_supervisor -r __ns:=/p3020 --params-file /tmp/launch_params__37eq4ml'].
+[INFO] [robot_state_publisher-6]: sending signal 'SIGINT' to process[robot_state_publisher-6]
+[ERROR] [robot_state_publisher-9]: process has died [pid 58138, exit code -2, cmd '/opt/ros/humble/lib/robot_state_publisher/robot_state_publisher --ros-args -r __node:=robot_state_publisher -r __ns:=/tm25s --params-file /tmp/launch_params_z36oov43'].
+[ERROR] [profile_supervisor-11]: process has died [pid 58142, exit code -2, cmd '/home/luis/Escritorio/TESIS_JACO2/IMPLEMENTACION_ROS2_CORE/install/thesis_multi_robot/lib/thesis_multi_robot/profile_supervisor --ros-args -r __node:=profile_supervisor -r __ns:=/tm25s --params-file /tmp/launch_params_glbr1y0x'].
+[INFO] [profile_supervisor-5]: sending signal 'SIGINT' to process[profile_supervisor-5]
+[INFO] [robot_state_publisher-3]: sending signal 'SIGINT' to process[robot_state_publisher-3]
+[ERROR] [robot_state_publisher-6]: process has died [pid 58132, exit code -2, cmd '/opt/ros/humble/lib/robot_state_publisher/robot_state_publisher --ros-args -r __node:=robot_state_publisher -r __ns:=/ur17g --params-file /tmp/launch_params_el760fbx'].
+[ERROR] [profile_supervisor-8]: process has died [pid 58136, exit code -2, cmd '/home/luis/Escritorio/TESIS_JACO2/IMPLEMENTACION_ROS2_CORE/install/thesis_multi_robot/lib/thesis_multi_robot/profile_supervisor --ros-args -r __node:=profile_supervisor -r __ns:=/ur17g --params-file /tmp/launch_params_tzh0xpyr'].
+[INFO] [parameter_bridge-2]: sending signal 'SIGINT' to process[parameter_bridge-2]
+[INFO] [ign-1]: sending signal 'SIGINT' to process[ign-1]
+[ERROR] [robot_state_publisher-3]: process has died [pid 58126, exit code -2, cmd '/opt/ros/humble/lib/robot_state_publisher/robot_state_publisher --ros-args -r __node:=robot_state_publisher -r __ns:=/jaco2 --params-file /tmp/launch_params_u2wk6vz7'].
+[ign-1] [INFO] [1794003514.388673821] [jaco2.controller_manager]: Shutting down controller 'arm_controller'
+[ign-1] [INFO] [1794003514.388689050] [resource_manager]: 'deactivate' hardware 'jaco2_system' 
+[ign-1] [INFO] [1794003514.388694408] [resource_manager]: Successful 'deactivate' of hardware 'jaco2_system'
+[ign-1] [INFO] [1794003514.388698190] [resource_manager]: 'shutdown' hardware 'jaco2_system' 
+[ign-1] [INFO] [1794003514.388702701] [resource_manager]: Successful 'shutdown' of hardware 'jaco2_system'
+[ign-1] [INFO] [1794003514.388706510] [jaco2.controller_manager]: Shutting down the controller manager.
+[ign-1] [INFO] [1794003514.388713441] [ur17g.controller_manager]: Shutdown request received....
+[ign-1] [INFO] [1794003514.388729341] [ur17g.controller_manager]: Shutting down all controllers in the controller manager.
+[ign-1] [INFO] [1794003514.388738730] [ur17g.controller_manager]: Deactivating controller 'joint_state_broadcaster'
+[ign-1] [INFO] [1794003514.388755628] [ur17g.controller_manager]: Shutting down controller 'joint_state_broadcaster'
+[ign-1] [INFO] [1794003514.388769936] [ur17g.controller_manager]: Deactivating controller 'arm_controller'
+[ign-1] [INFO] [1794003514.388789458] [ur17g.controller_manager]: Shutting down controller 'arm_controller'
+[ign-1] [INFO] [1794003514.388803329] [resource_manager]: 'deactivate' hardware 'ur17g_system' 
+[ign-1] [INFO] [1794003514.388809044] [resource_manager]: Successful 'deactivate' of hardware 'ur17g_system'
+[ign-1] [INFO] [1794003514.388812918] [resource_manager]: 'shutdown' hardware 'ur17g_system' 
+[ign-1] [INFO] [1794003514.388818316] [resource_manager]: Successful 'shutdown' of hardware 'ur17g_system'
+[ign-1] [INFO] [1794003514.388822764] [ur17g.controller_manager]: Shutting down the controller manager.
+[ign-1] [INFO] [1794003514.388830405] [tm25s.controller_manager]: Shutdown request received....
+[ign-1] [INFO] [1794003514.388846282] [tm25s.controller_manager]: Shutting down all controllers in the controller manager.
+[ign-1] [INFO] [1794003514.388855703] [tm25s.controller_manager]: Deactivating controller 'joint_state_broadcaster'
+[ign-1] [INFO] [1794003514.388873433] [tm25s.controller_manager]: Shutting down controller 'joint_state_broadcaster'
+[ign-1] [INFO] [1794003514.388887227] [tm25s.controller_manager]: Deactivating controller 'arm_controller'
+[ign-1] [INFO] [1794003514.388904106] [tm25s.controller_manager]: Shutting down controller 'arm_controller'
+[ign-1] [INFO] [1794003514.388940815] [resource_manager]: 'deactivate' hardware 'tm25s_system' 
+[ign-1] [INFO] [1794003514.388946634] [resource_manager]: Successful 'deactivate' of hardware 'tm25s_system'
+[ign-1] [INFO] [1794003514.388950029] [resource_manager]: 'shutdown' hardware 'tm25s_system' 
+[ign-1] [INFO] [1794003514.388954306] [resource_manager]: Successful 'shutdown' of hardware 'tm25s_system'
+[ign-1] [INFO] [1794003514.388958490] [tm25s.controller_manager]: Shutting down the controller manager.
+[ERROR] [profile_supervisor-5]: process has died [pid 58130, exit code -2, cmd '/home/luis/Escritorio/TESIS_JACO2/IMPLEMENTACION_ROS2_CORE/install/thesis_multi_robot/lib/thesis_multi_robot/profile_supervisor --ros-args -r __node:=profile_supervisor -r __ns:=/jaco2 --params-file /tmp/launch_params_pc6_71vl'].
+[parameter_bridge-2] [INFO] [1794003514.428033896] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[ign-1] [INFO] [1794003514.430183444] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[INFO] [parameter_bridge-2]: process has finished cleanly [pid 58124]
+[INFO] [ign-1]: process has finished cleanly [pid 58122]

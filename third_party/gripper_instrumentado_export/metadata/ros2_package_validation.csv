@@ -1,0 +1,7 @@
+check,status,detail
+package_layout,pass,ROS 2 package has package.xml CMakeLists.txt URDF Xacro launch files model SDF world and mesh
+xml_well_formed,pass,package.xml URDF/Xacro model.config model.sdf and world SDF parsed successfully
+python_launch_syntax,pass,view.launch.py and gazebo_visual.launch.py compiled with Python
+mesh_identity,pass,Package mesh SHA-256 matches assembly/gripper_complete.stl exactly
+ros_environment_runtime,not_run,ROS 2 and Gazebo Sim runtime were not installed in this Windows CAD workspace
+motion_model,blocked,Static one-link model is intentional until seven Inventor DriverLost constraints are repaired and motion is measured

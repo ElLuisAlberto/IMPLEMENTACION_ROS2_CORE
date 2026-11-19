@@ -1,0 +1,91 @@
+schema_version: 1
+status: calibration_required
+units:
+  length: m
+  angle: rad
+  quaternion_order: xyzw
+
+conventions:
+  right_handed: true
+  positive_servo_direction: TBD_MEASURE
+  notes: >-
+    Definir todos los frames sobre geometria nominal y verificar su orientacion
+    en el ensamble Inventor antes de generar modelos de simulacion.
+
+frames:
+  - name: gripper_mount
+    parent: external_manipulator_flange
+    purpose: Interfaz mecanica invariable del gripper
+    xyz_m: [TBD_MEASURE, TBD_MEASURE, TBD_MEASURE]
+    quaternion_xyzw: [TBD_MEASURE, TBD_MEASURE, TBD_MEASURE, TBD_MEASURE]
+    validation: pending
+
+  - name: gripper_base
+    parent: gripper_mount
+    purpose: Referencia del cuerpo fijo del gripper
+    xyz_m: [TBD_MEASURE, TBD_MEASURE, TBD_MEASURE]
+    quaternion_xyzw: [TBD_MEASURE, TBD_MEASURE, TBD_MEASURE, TBD_MEASURE]
+    validation: pending
+
+  - name: servo_axis
+    parent: gripper_base
+    purpose: Eje de salida del Feetech STS3215
+    xyz_m: [TBD_MEASURE, TBD_MEASURE, TBD_MEASURE]
+    axis_xyz: [TBD_MEASURE, TBD_MEASURE, TBD_MEASURE]
+    validation: pending
+
+  - name: left_contact
+    parent: left_distal_shell
+    purpose: Centro nominal de la superficie de contacto izquierda
+    xyz_m: [TBD_MEASURE, TBD_MEASURE, TBD_MEASURE]
+    quaternion_xyzw: [TBD_MEASURE, TBD_MEASURE, TBD_MEASURE, TBD_MEASURE]
+    validation: pending
+
+  - name: right_contact
+    parent: right_distal_shell
+    purpose: Centro nominal de la superficie de contacto derecha
+    xyz_m: [TBD_MEASURE, TBD_MEASURE, TBD_MEASURE]
+    quaternion_xyzw: [TBD_MEASURE, TBD_MEASURE, TBD_MEASURE, TBD_MEASURE]
+    validation: pending
+
+  - name: gripper_tcp
+    parent: gripper_base
+    purpose: Punto medio entre left_contact y right_contact
+    xyz_m: [TBD_DERIVE, TBD_DERIVE, TBD_DERIVE]
+    quaternion_xyzw: [TBD_DEFINE, TBD_DEFINE, TBD_DEFINE, TBD_DEFINE]
+    validation: pending
+
+pivot_frames:
+  - name: cam_pivot
+    parent: gripper_base
+    xyz_m: [TBD_MEASURE, TBD_MEASURE, TBD_MEASURE]
+    axis_xyz: [TBD_MEASURE, TBD_MEASURE, TBD_MEASURE]
+  - name: left_proximal_pivot
+    parent: gripper_base
+    xyz_m: [TBD_MEASURE, TBD_MEASURE, TBD_MEASURE]
+    axis_xyz: [TBD_MEASURE, TBD_MEASURE, TBD_MEASURE]
+  - name: right_proximal_pivot
+    parent: gripper_base
+    xyz_m: [TBD_MEASURE, TBD_MEASURE, TBD_MEASURE]
+    axis_xyz: [TBD_MEASURE, TBD_MEASURE, TBD_MEASURE]
+  - name: left_distal_pivot
+    parent: left_proximal_link
+    xyz_m: [TBD_MEASURE, TBD_MEASURE, TBD_MEASURE]
+    axis_xyz: [TBD_MEASURE, TBD_MEASURE, TBD_MEASURE]
+  - name: right_distal_pivot
+    parent: right_proximal_link
+    xyz_m: [TBD_MEASURE, TBD_MEASURE, TBD_MEASURE]
+    axis_xyz: [TBD_MEASURE, TBD_MEASURE, TBD_MEASURE]
+
+cad_export_reference:
+  name: inventor_assembly_origin
+  source_assembly: GRIPPER_ADAPTATIVO_INSTRUMENTADO.iam
+  definition: >-
+    Origen nativo del ensamble Inventor usado por occurrence_transforms.csv.
+    La matriz se entrega como rotacion 3x3 y traslacion en metros.
+  axes: "Sistema cartesiano nativo del ensamble Inventor; no se ha declarado como superficie de montaje."
+  units:
+    inventor_native_length: cm
+    exported_length: m
+  gripper_mount_status: pending_cad_selection
+  gripper_base_status: pending_mount_frame_definition

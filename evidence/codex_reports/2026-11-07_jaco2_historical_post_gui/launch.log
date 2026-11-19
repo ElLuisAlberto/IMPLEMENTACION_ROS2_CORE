@@ -1,0 +1,297 @@
+[INFO] [launch]: All log files can be found below /home/luis/.ros/log/2026-11-07-15-10-50-500970-miNave-126236
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [robot_state_publisher-1]: process started with pid [126238]
+[INFO] [ign-2]: process started with pid [126240]
+[INFO] [parameter_bridge-3]: process started with pid [126242]
+[INFO] [parameter_bridge-4]: process started with pid [126244]
+[INFO] [capsule_visualizer-5]: process started with pid [126246]
+[INFO] [proximity_monitor-6]: process started with pid [126248]
+[INFO] [obstacle_input_bridge-7]: process started with pid [126250]
+[INFO] [safety_supervisor-8]: process started with pid [126252]
+[INFO] [simulation_command_adapter-9]: process started with pid [126254]
+[INFO] [obstacle_demo_source-10]: process started with pid [126256]
+[INFO] [horizon_preview-11]: process started with pid [126258]
+[INFO] [cartesian_command_adapter-12]: process started with pid [126260]
+[INFO] [cartesian_jog_adapter-13]: process started with pid [126262]
+[INFO] [cartesian_trajectory_adapter-14]: process started with pid [126264]
+[INFO] [system_readiness-15]: process started with pid [126266]
+[robot_state_publisher-1] [INFO] [1794035450.746846698] [robot_state_publisher]: got segment j2n6s300_end_effector
+[robot_state_publisher-1] [INFO] [1794035450.747047562] [robot_state_publisher]: got segment j2n6s300_link_1
+[robot_state_publisher-1] [INFO] [1794035450.747057980] [robot_state_publisher]: got segment j2n6s300_link_2
+[robot_state_publisher-1] [INFO] [1794035450.747064061] [robot_state_publisher]: got segment j2n6s300_link_3
+[robot_state_publisher-1] [INFO] [1794035450.747069589] [robot_state_publisher]: got segment j2n6s300_link_4
+[robot_state_publisher-1] [INFO] [1794035450.747075303] [robot_state_publisher]: got segment j2n6s300_link_5
+[robot_state_publisher-1] [INFO] [1794035450.747080676] [robot_state_publisher]: got segment j2n6s300_link_6
+[robot_state_publisher-1] [INFO] [1794035450.747086026] [robot_state_publisher]: got segment j2n6s300_link_base
+[robot_state_publisher-1] [INFO] [1794035450.747091300] [robot_state_publisher]: got segment j2n6s300_link_finger_1
+[robot_state_publisher-1] [INFO] [1794035450.747097089] [robot_state_publisher]: got segment j2n6s300_link_finger_2
+[robot_state_publisher-1] [INFO] [1794035450.747102214] [robot_state_publisher]: got segment j2n6s300_link_finger_3
+[robot_state_publisher-1] [INFO] [1794035450.747107618] [robot_state_publisher]: got segment j2n6s300_link_finger_tip_1
+[robot_state_publisher-1] [INFO] [1794035450.747112635] [robot_state_publisher]: got segment j2n6s300_link_finger_tip_2
+[robot_state_publisher-1] [INFO] [1794035450.747118209] [robot_state_publisher]: got segment j2n6s300_link_finger_tip_3
+[robot_state_publisher-1] [INFO] [1794035450.747123974] [robot_state_publisher]: got segment root
+[robot_state_publisher-1] [INFO] [1794035450.747129374] [robot_state_publisher]: got segment world
+[parameter_bridge-3] [INFO] [1794035450.815251945] [gazebo_clock_bridge]: Creating GZ->ROS Bridge: [/clock (ignition.msgs.Clock) -> /clock (rosgraph_msgs/msg/Clock)] (Lazy 0)
+[parameter_bridge-4] [INFO] [1794035450.824030366] [gazebo_pose_bridge]: Creating GZ->ROS Bridge: [/world/jaco_world/pose/info (ignition.msgs.Pose_V) -> /world/jaco_world/pose/info (tf2_msgs/msg/TFMessage)] (Lazy 0)
+[obstacle_input_bridge-7] [INFO] [1794035451.088398352] [obstacle_input_bridge]: Obstacle bridge: /thesis/obstacle_input -> /thesis/obstacle_in_model_frame, target_frame=world
+[cartesian_trajectory_adapter-14] [INFO] [1794035451.132117104] [cartesian_trajectory_adapter]: Cartesian trajectory adapter ready: simulation only, maximum displacement=0.60 m, horizon=1.00 s
+[cartesian_command_adapter-12] [INFO] [1794035451.144428043] [cartesian_command_adapter]: Simulation Cartesian adapter ready: maximum step=0.100 m, 20.0 deg, IK tolerance=0.001 m
+[proximity_monitor-6] [INFO] [1794035451.168975378] [proximity_monitor]: Proximity monitor ready: 6 capsules
+[proximity_monitor-6] [INFO] [1794035451.170152290] [proximity_monitor]: Dynamic obstacle pose topic: /world/jaco_world/pose/info; frame=safety_obstacle
+[obstacle_demo_source-10] [INFO] [1794035451.233257015] [obstacle_demo_source]: Publishing test obstacle in world on /thesis/obstacle_input
+[safety_supervisor-8] [INFO] [1794035451.256990326] [safety_supervisor_node]: Safety supervisor started in validation/pass-through mode
+[safety_supervisor-8] [INFO] [1794035451.257575114] [safety_supervisor_node]: State topic configured: /joint_states
+[safety_supervisor-8] [INFO] [1794035451.257933736] [safety_supervisor_node]: Proximity policy enabled on /thesis/proximity_status
+[safety_supervisor-8] [INFO] [1794035451.258356258] [safety_supervisor_node]: Preventive trajectory prediction enabled
+[safety_supervisor-8] [INFO] [1794035451.258766537] [safety_supervisor_node]: Runtime execution monitor enabled at 10.0 Hz
+[cartesian_jog_adapter-13] [INFO] [1794035451.268218178] [cartesian_jog_adapter]: Cartesian JOG adapter ready: horizon=1.00 s, linear limit=0.150 m/s, angular limit=30.0 deg/s
+[capsule_visualizer-5] [INFO] [1794035451.268363471] [capsule_visualizer]: Capsule visualizer ready: 6 segments on /thesis/robot_capsules
+[horizon_preview-11] [INFO] [1794035451.278901144] [horizon_preview]: Horizon preview started: source=auto, horizon=1.00s, rate=10.0Hz
+[simulation_command_adapter-9] [INFO] [1794035451.289262891] [simulation_command_adapter]: Adaptador Gazebo preparado; salida simulada habilitada
+[system_readiness-15] [INFO] [1794035451.318826758] [system_readiness]: System readiness monitor started; waiting for the full stack
+[system_readiness-15] [WARN] [1794035452.302415865] [system_readiness]: WAITING: nodo ausente: /joint_state_broadcaster; sin dato reciente: reloj de simulación; sin dato reciente: estado articular; sin dato reciente: cálculo de proximidad; sin dato reciente: fuente de obstáculo; esperando controller_manager; acción /arm_controller/follow_joint_trajectory no disponible
+[INFO] [create-16]: process started with pid [126432]
+[ign-2] [1;32m[Msg] [0m[1;32mIgnition Gazebo Server v[0m[1;32m6.18.0[0m[1;32m[0m
+[ign-2] [1;32m[Msg] [0m[1;32mLoading SDF world file[[0m[1;32m/home/luis/Escritorio/TESIS_JACO2/IMPLEMENTACION_ROS2_CORE/install/thesis_simulation/share/thesis_simulation/worlds/jaco_empty.sdf[0m[1;32m].[0m
+[ign-2] [1;32m[Msg] [0m[1;32mServing entity system service on [[0m[1;32m/[0m[1;32mentity/system/add[0m[1;32m][0m[1;32m[0m
+[ign-2] [1;32m[Msg] [0m[1;32mCreate service on [[0m[1;32m/world/jaco_world/create[0m[1;32m][0m[1;32m[0m
+[ign-2] [1;32m[Msg] [0m[1;32mRemove service on [[0m[1;32m/world/jaco_world/remove[0m[1;32m][0m[1;32m[0m
+[ign-2] [1;32m[Msg] [0m[1;32mPose service on [[0m[1;32m/world/jaco_world/set_pose[0m[1;32m][0m[1;32m[0m
+[ign-2] [1;32m[Msg] [0m[1;32mPose service on [[0m[1;32m/world/jaco_world/set_pose_vector[0m[1;32m][0m[1;32m[0m
+[ign-2] [1;32m[Msg] [0m[1;32mLight configuration service on [[0m[1;32m/world/jaco_world/light_config[0m[1;32m][0m[1;32m[0m
+[ign-2] [1;32m[Msg] [0m[1;32mPhysics service on [[0m[1;32m/world/jaco_world/set_physics[0m[1;32m][0m[1;32m[0m
+[ign-2] [1;32m[Msg] [0m[1;32mSphericalCoordinates service on [[0m[1;32m/world/jaco_world/set_spherical_coordinates[0m[1;32m][0m[1;32m[0m
+[ign-2] [1;32m[Msg] [0m[1;32mEnable collision service on [[0m[1;32m/world/jaco_world/enable_collision[0m[1;32m][0m[1;32m[0m
+[ign-2] [1;32m[Msg] [0m[1;32mDisable collision service on [[0m[1;32m/world/jaco_world/disable_collision[0m[1;32m][0m[1;32m[0m
+[ign-2] [1;32m[Msg] [0m[1;32mMaterial service on [[0m[1;32m/world/jaco_world/visual_config[0m[1;32m][0m[1;32m[0m
+[ign-2] [1;32m[Msg] [0m[1;32mMaterial service on [[0m[1;32m/world/jaco_world/wheel_slip[0m[1;32m][0m[1;32m[0m
+[ign-2] [1;32m[Msg] [0m[1;32mLoaded level [[0m[1;32m3[0m[1;32m][0m[1;32m[0m
+[ign-2] [1;32m[Msg] [0m[1;32mServing world controls on [[0m[1;32m/world/jaco_world[0m[1;32m/control], [[0m[1;32m/world/jaco_world[0m[1;32m/control/state] and [[0m[1;32m/world/jaco_world[0m[1;32m/playback/control][0m[1;32m[0m
+[ign-2] [1;32m[Msg] [0m[1;32mServing GUI information on [[0m[1;32m/world/jaco_world[0m[1;32m/[0m[1;32mgui/info[0m[1;32m][0m[1;32m[0m
+[ign-2] [1;32m[Msg] [0m[1;32mWorld [[0m[1;32mjaco_world[0m[1;32m] initialized with [[0m[1;32m1ms[0m[1;32m] physics profile.[0m[1;32m[0m
+[ign-2] [1;32m[Msg] [0m[1;32mServing world SDF generation service on [[0m[1;32m/world/jaco_world[0m[1;32m/[0m[1;32mgenerate_world_sdf[0m[1;32m][0m[1;32m[0m
+[ign-2] [1;32m[Msg] [0m[1;32mServing world names on [[0m[1;32m/gazebo/worlds[0m[1;32m][0m[1;32m[0m
+[ign-2] [1;32m[Msg] [0m[1;32mResource path add service on [[0m[1;32m/gazebo/resource_paths/add[0m[1;32m].[0m[1;32m[0m
+[ign-2] [1;32m[Msg] [0m[1;32mResource path get service on [[0m[1;32m/gazebo/resource_paths/get[0m[1;32m].[0m[1;32m[0m
+[ign-2] [1;32m[Msg] [0m[1;32mResource path resolve service on [[0m[1;32m/gazebo/resource_paths/resolve[0m[1;32m].[0m[1;32m[0m
+[ign-2] [1;32m[Msg] [0m[1;32mResource paths published on [[0m[1;32m/gazebo/resource_paths[0m[1;32m].[0m[1;32m[0m
+[ign-2] [1;32m[Msg] [0m[1;32mServer control service on [[0m[1;32m/server_control[0m[1;32m].[0m[1;32m[0m
+[ign-2] [1;32m[Msg] [0m[1;32mFound no publishers on /stats, adding root stats topic[0m[1;32m[0m
+[ign-2] [1;32m[Msg] [0m[1;32mFound no publishers on /clock, adding root clock topic[0m[1;32m[0m
+[ign-2] [1;32m[Msg] [0m[1;32mServing scene information on [[0m[1;32m/world/jaco_world[0m[1;32m/[0m[1;32mscene/info[0m[1;32m][0m[1;32m[0m
+[ign-2] [1;32m[Msg] [0m[1;32mServing graph information on [[0m[1;32m/world/jaco_world[0m[1;32m/[0m[1;32mscene/graph[0m[1;32m][0m[1;32m[0m
+[ign-2] [1;32m[Msg] [0m[1;32mServing full state on [[0m[1;32m/world/jaco_world[0m[1;32m/[0m[1;32mstate[0m[1;32m][0m[1;32m[0m
+[ign-2] [1;32m[Msg] [0m[1;32mServing full state (async) on [[0m[1;32m/world/jaco_world[0m[1;32m/[0m[1;32mstate_async[0m[1;32m][0m[1;32m[0m
+[ign-2] [1;32m[Msg] [0m[1;32mPublishing scene information on [[0m[1;32m/world/jaco_world/scene/info[0m[1;32m][0m[1;32m[0m
+[create-16] [INFO] [1794035453.070526967] [spawn_jaco]: Requesting list of world names.
+[capsule_visualizer-5] [WARN] [1794035453.096160246] [capsule_visualizer]: Waiting for TF frames: j2n6s300_end_effector, j2n6s300_link_1, j2n6s300_link_2, j2n6s300_link_3, j2n6s300_link_4, j2n6s300_link_5, j2n6s300_link_base
+[obstacle_demo_source-10] [INFO] [1794035453.145283046] [obstacle_demo_source]: Obstacle scenario=FIXED, inserted=False, center=(2.0, 0.0, 0.65)
+[safety_supervisor-8] [ERROR] [1794035453.145544080] [safety_supervisor_node]: No existe estado articular completo para validar FK-TF.
+[INFO] [create-17]: process started with pid [126451]
+[create-17] [INFO] [1794035453.244424289] [spawn_safety_obstacle]: Requesting list of world names.
+[create-16] [INFO] [1794035453.272531018] [spawn_jaco]: Waiting messages on topic [robot_description].
+[create-16] [INFO] [1794035453.285033400] [spawn_jaco]: Requested creation of entity.
+[create-16] [INFO] [1794035453.285067870] [spawn_jaco]: OK creation of entity.
+[system_readiness-15] [WARN] [1794035453.302279651] [system_readiness]: WAITING: nodo ausente: /joint_state_broadcaster; sin dato reciente: estado articular; sin dato reciente: cálculo de proximidad; esperando controller_manager; acción /arm_controller/follow_joint_trajectory no disponible
+[ign-2] [INFO] [1794035453.367077735] [GazeboSimROS2ControlPlugin]: robot_param_node is robot_state_publisher
+[ign-2] [INFO] [1794035453.367104642] [GazeboSimROS2ControlPlugin]: robot_param_node is robot_description
+[INFO] [create-16]: process has finished cleanly [pid 126432]
+[ign-2] [INFO] [1794035453.409419949] [gz_ros2_control]: connected to service!! robot_state_publisher asking for robot_description
+[ign-2] [INFO] [1794035453.409936063] [gz_ros2_control]: Received URDF from param server
+[ign-2] [INFO] [1794035453.411045745] [gz_ros2_control]: [gz_ros2_control] Fixed joint ['connect_root_and_world'] (Entity='56') is skipped.
+[ign-2] [INFO] [1794035453.413843778] [gz_ros2_control]: The position_proportional_gain has been set to: 0.1
+[ign-2] [INFO] [1794035453.413906907] [gz_ros2_control]: Loading joint: j2n6s300_joint_1
+[ign-2] [INFO] [1794035453.413919302] [gz_ros2_control]: 	State:
+[ign-2] [INFO] [1794035453.413926286] [gz_ros2_control]: 		 position
+[ign-2] [INFO] [1794035453.413934386] [gz_ros2_control]: 			 found initial value: 0.000000
+[ign-2] [INFO] [1794035453.413943307] [gz_ros2_control]: 		 velocity
+[ign-2] [INFO] [1794035453.413949300] [gz_ros2_control]: 	Command:
+[ign-2] [INFO] [1794035453.413955022] [gz_ros2_control]: 		 position
+[ign-2] [INFO] [1794035453.413979842] [gz_ros2_control]: Loading joint: j2n6s300_joint_2
+[ign-2] [INFO] [1794035453.413986708] [gz_ros2_control]: 	State:
+[ign-2] [INFO] [1794035453.413992279] [gz_ros2_control]: 		 position
+[ign-2] [INFO] [1794035453.413999864] [gz_ros2_control]: 			 found initial value: 2.617994
+[ign-2] [INFO] [1794035453.414006600] [gz_ros2_control]: 		 velocity
+[ign-2] [INFO] [1794035453.414012427] [gz_ros2_control]: 	Command:
+[ign-2] [INFO] [1794035453.414018035] [gz_ros2_control]: 		 position
+[ign-2] [INFO] [1794035453.414037342] [gz_ros2_control]: Loading joint: j2n6s300_joint_3
+[ign-2] [INFO] [1794035453.414043507] [gz_ros2_control]: 	State:
+[ign-2] [INFO] [1794035453.414048817] [gz_ros2_control]: 		 position
+[ign-2] [INFO] [1794035453.414054419] [gz_ros2_control]: 			 found initial value: 3.665191
+[ign-2] [INFO] [1794035453.414060076] [gz_ros2_control]: 		 velocity
+[ign-2] [INFO] [1794035453.414065097] [gz_ros2_control]: 	Command:
+[ign-2] [INFO] [1794035453.414070205] [gz_ros2_control]: 		 position
+[ign-2] [INFO] [1794035453.414086476] [gz_ros2_control]: Loading joint: j2n6s300_joint_4
+[ign-2] [INFO] [1794035453.414092608] [gz_ros2_control]: 	State:
+[ign-2] [INFO] [1794035453.414097854] [gz_ros2_control]: 		 position
+[ign-2] [INFO] [1794035453.414102784] [gz_ros2_control]: 			 found initial value: 0.000000
+[ign-2] [INFO] [1794035453.414108601] [gz_ros2_control]: 		 velocity
+[ign-2] [INFO] [1794035453.414114000] [gz_ros2_control]: 	Command:
+[ign-2] [INFO] [1794035453.414119362] [gz_ros2_control]: 		 position
+[ign-2] [INFO] [1794035453.414137596] [gz_ros2_control]: Loading joint: j2n6s300_joint_5
+[ign-2] [INFO] [1794035453.414145145] [gz_ros2_control]: 	State:
+[ign-2] [INFO] [1794035453.414150844] [gz_ros2_control]: 		 position
+[ign-2] [INFO] [1794035453.414160622] [gz_ros2_control]: 			 found initial value: 0.349066
+[ign-2] [INFO] [1794035453.414167314] [gz_ros2_control]: 		 velocity
+[ign-2] [INFO] [1794035453.414172973] [gz_ros2_control]: 	Command:
+[ign-2] [INFO] [1794035453.414178782] [gz_ros2_control]: 		 position
+[ign-2] [INFO] [1794035453.414196962] [gz_ros2_control]: Loading joint: j2n6s300_joint_6
+[ign-2] [INFO] [1794035453.414203647] [gz_ros2_control]: 	State:
+[ign-2] [INFO] [1794035453.414209270] [gz_ros2_control]: 		 position
+[ign-2] [INFO] [1794035453.414214707] [gz_ros2_control]: 			 found initial value: 0.000000
+[ign-2] [INFO] [1794035453.414220904] [gz_ros2_control]: 		 velocity
+[ign-2] [INFO] [1794035453.414225495] [gz_ros2_control]: 	Command:
+[ign-2] [INFO] [1794035453.414230460] [gz_ros2_control]: 		 position
+[ign-2] [INFO] [1794035453.414323159] [resource_manager]: Initialize hardware 'GazeboSimSystem' 
+[ign-2] [INFO] [1794035453.414380798] [resource_manager]: Successful initialization of hardware 'GazeboSimSystem'
+[ign-2] [INFO] [1794035453.414415949] [resource_manager]: 'configure' hardware 'GazeboSimSystem' 
+[ign-2] [INFO] [1794035453.414420732] [gz_ros2_control]: System Successfully configured!
+[ign-2] [INFO] [1794035453.414435149] [resource_manager]: Successful 'configure' of hardware 'GazeboSimSystem'
+[ign-2] [INFO] [1794035453.414442625] [resource_manager]: 'activate' hardware 'GazeboSimSystem' 
+[ign-2] [INFO] [1794035453.414450174] [resource_manager]: Successful 'activate' of hardware 'GazeboSimSystem'
+[ign-2] [INFO] [1794035453.414456419] [gz_ros2_control]: Loading controller_manager
+[create-17] [INFO] [1794035453.445464846] [spawn_safety_obstacle]: Requested creation of entity.
+[create-17] [INFO] [1794035453.445501323] [spawn_safety_obstacle]: OK creation of entity.
+[INFO] [create-17]: process has finished cleanly [pid 126451]
+[ign-2] [WARN] [1794035453.670532762] [gz_ros2_control]:  Desired controller update period (0.01 s) is slower than the gazebo simulation period (0.001 s).
+[proximity_monitor-6] [WARN] [1794035453.823154747] [proximity_monitor]: Waiting for TF frames: j2n6s300_end_effector, j2n6s300_link_1, j2n6s300_link_2, j2n6s300_link_3, j2n6s300_link_4, j2n6s300_link_5, j2n6s300_link_base
+[proximity_monitor-6] [WARN] [1794035453.823647079] [proximity_monitor]: Proximity STOP: TF_UNAVAILABLE
+[proximity_monitor-6] [WARN] [1794035453.873058424] [proximity_monitor]: Proximity STOP: TF_UNAVAILABLE
+[proximity_monitor-6] [WARN] [1794035453.922817515] [proximity_monitor]: Proximity STOP: TF_UNAVAILABLE
+[proximity_monitor-6] [WARN] [1794035453.975404992] [proximity_monitor]: Proximity STOP: TF_UNAVAILABLE
+[proximity_monitor-6] [WARN] [1794035454.023880943] [proximity_monitor]: Proximity STOP: TF_UNAVAILABLE
+[proximity_monitor-6] [WARN] [1794035454.073863732] [proximity_monitor]: Proximity STOP: TF_UNAVAILABLE
+[proximity_monitor-6] [WARN] [1794035454.123718731] [proximity_monitor]: Proximity STOP: TF_UNAVAILABLE
+[proximity_monitor-6] [WARN] [1794035454.173089113] [proximity_monitor]: Proximity STOP: TF_UNAVAILABLE
+[proximity_monitor-6] [WARN] [1794035454.223994370] [proximity_monitor]: Proximity STOP: TF_UNAVAILABLE
+[proximity_monitor-6] [WARN] [1794035454.274115156] [proximity_monitor]: Proximity STOP: TF_UNAVAILABLE
+[system_readiness-15] [WARN] [1794035454.302396761] [system_readiness]: WAITING: nodo ausente: /joint_state_broadcaster; sin dato reciente: estado articular; esperando controller_manager; acción /arm_controller/follow_joint_trajectory no disponible
+[proximity_monitor-6] [WARN] [1794035454.324419857] [proximity_monitor]: Proximity STOP: TF_UNAVAILABLE
+[proximity_monitor-6] [WARN] [1794035454.374931280] [proximity_monitor]: Proximity STOP: TF_UNAVAILABLE
+[proximity_monitor-6] [WARN] [1794035454.426348929] [proximity_monitor]: Proximity STOP: TF_UNAVAILABLE
+[proximity_monitor-6] [WARN] [1794035454.476265567] [proximity_monitor]: Proximity STOP: TF_UNAVAILABLE
+[proximity_monitor-6] [WARN] [1794035454.529213034] [proximity_monitor]: Proximity STOP: TF_UNAVAILABLE
+[proximity_monitor-6] [WARN] [1794035454.580191702] [proximity_monitor]: Proximity STOP: TF_UNAVAILABLE
+[proximity_monitor-6] [WARN] [1794035454.629736474] [proximity_monitor]: Proximity STOP: TF_UNAVAILABLE
+[proximity_monitor-6] [WARN] [1794035454.680387496] [proximity_monitor]: Proximity STOP: TF_UNAVAILABLE
+[proximity_monitor-6] [WARN] [1794035454.733096699] [proximity_monitor]: Proximity STOP: TF_UNAVAILABLE
+[proximity_monitor-6] [WARN] [1794035454.784964888] [proximity_monitor]: Proximity STOP: TF_UNAVAILABLE
+[proximity_monitor-6] [WARN] [1794035454.833097989] [proximity_monitor]: Proximity STOP: TF_UNAVAILABLE
+[proximity_monitor-6] [WARN] [1794035454.882690086] [proximity_monitor]: Proximity STOP: TF_UNAVAILABLE
+[proximity_monitor-6] [WARN] [1794035454.932116847] [proximity_monitor]: Proximity STOP: TF_UNAVAILABLE
+[proximity_monitor-6] [WARN] [1794035454.981669501] [proximity_monitor]: Proximity STOP: TF_UNAVAILABLE
+[proximity_monitor-6] [WARN] [1794035455.035113710] [proximity_monitor]: Proximity STOP: TF_UNAVAILABLE
+[proximity_monitor-6] [WARN] [1794035455.084397899] [proximity_monitor]: Proximity STOP: TF_UNAVAILABLE
+[proximity_monitor-6] [WARN] [1794035455.135069180] [proximity_monitor]: Proximity STOP: TF_UNAVAILABLE
+[proximity_monitor-6] [WARN] [1794035455.184375945] [proximity_monitor]: Proximity STOP: TF_UNAVAILABLE
+[proximity_monitor-6] [WARN] [1794035455.232521011] [proximity_monitor]: Proximity STOP: TF_UNAVAILABLE
+[proximity_monitor-6] [WARN] [1794035455.282433600] [proximity_monitor]: Proximity STOP: TF_UNAVAILABLE
+[proximity_monitor-6] [WARN] [1794035455.332789223] [proximity_monitor]: Proximity STOP: TF_UNAVAILABLE
+[proximity_monitor-6] [WARN] [1794035455.384425877] [proximity_monitor]: Proximity STOP: TF_UNAVAILABLE
+[proximity_monitor-6] [WARN] [1794035455.434288604] [proximity_monitor]: Proximity STOP: TF_UNAVAILABLE
+[proximity_monitor-6] [WARN] [1794035455.485673699] [proximity_monitor]: Proximity STOP: TF_UNAVAILABLE
+[proximity_monitor-6] [WARN] [1794035455.539241387] [proximity_monitor]: Proximity STOP: TF_UNAVAILABLE
+[proximity_monitor-6] [WARN] [1794035455.587320228] [proximity_monitor]: Proximity STOP: TF_UNAVAILABLE
+[proximity_monitor-6] [WARN] [1794035455.635617480] [proximity_monitor]: Proximity STOP: TF_UNAVAILABLE
+[proximity_monitor-6] [WARN] [1794035455.685609906] [proximity_monitor]: Proximity STOP: TF_UNAVAILABLE
+[INFO] [spawner-18]: process started with pid [126502]
+[proximity_monitor-6] [WARN] [1794035455.735231817] [proximity_monitor]: Proximity STOP: TF_UNAVAILABLE
+[proximity_monitor-6] [WARN] [1794035455.788708765] [proximity_monitor]: Proximity STOP: TF_UNAVAILABLE
+[proximity_monitor-6] [WARN] [1794035455.836501708] [proximity_monitor]: Proximity STOP: TF_UNAVAILABLE
+[proximity_monitor-6] [WARN] [1794035455.888934090] [proximity_monitor]: Proximity STOP: TF_UNAVAILABLE
+[proximity_monitor-6] [WARN] [1794035455.938036984] [proximity_monitor]: Proximity STOP: TF_UNAVAILABLE
+[proximity_monitor-6] [WARN] [1794035455.987417752] [proximity_monitor]: Proximity STOP: TF_UNAVAILABLE
+[proximity_monitor-6] [WARN] [1794035456.043594359] [proximity_monitor]: Proximity STOP: TF_UNAVAILABLE
+[spawner-18] [INFO] [1794035456.048611760] [spawner_joint_state_broadcaster]: waiting for service /controller_manager/list_controllers to become available...
+[proximity_monitor-6] [WARN] [1794035456.094530728] [proximity_monitor]: Proximity STOP: TF_UNAVAILABLE
+[proximity_monitor-6] [WARN] [1794035456.144652695] [proximity_monitor]: Proximity STOP: TF_UNAVAILABLE
+[proximity_monitor-6] [WARN] [1794035456.193918407] [proximity_monitor]: Proximity STOP: TF_UNAVAILABLE
+[proximity_monitor-6] [WARN] [1794035456.246878590] [proximity_monitor]: Proximity STOP: TF_UNAVAILABLE
+[proximity_monitor-6] [WARN] [1794035456.297517024] [proximity_monitor]: Proximity STOP: TF_UNAVAILABLE
+[system_readiness-15] [WARN] [1794035456.303992151] [system_readiness]: WAITING: nodo ausente: /joint_state_broadcaster; sin dato reciente: estado articular; arm_controller no está active; acción /arm_controller/follow_joint_trajectory no disponible
+[proximity_monitor-6] [WARN] [1794035456.347210461] [proximity_monitor]: Proximity STOP: TF_UNAVAILABLE
+[proximity_monitor-6] [WARN] [1794035456.398602910] [proximity_monitor]: Proximity STOP: TF_UNAVAILABLE
+[proximity_monitor-6] [WARN] [1794035456.445616201] [proximity_monitor]: Proximity STOP: TF_UNAVAILABLE
+[proximity_monitor-6] [WARN] [1794035456.496312597] [proximity_monitor]: Proximity STOP: TF_UNAVAILABLE
+[proximity_monitor-6] [WARN] [1794035456.551336815] [proximity_monitor]: Proximity STOP: TF_UNAVAILABLE
+[ign-2] [INFO] [1794035456.554630975] [controller_manager]: Loading controller 'joint_state_broadcaster'
+[spawner-18] [INFO] [1794035456.582095409] [spawner_joint_state_broadcaster]: [94mLoaded [1mjoint_state_broadcaster[0m
+[ign-2] [INFO] [1794035456.583629618] [controller_manager]: Configuring controller 'joint_state_broadcaster'
+[ign-2] [INFO] [1794035456.583801644] [joint_state_broadcaster]: 'joints' or 'interfaces' parameter is empty. All available state interfaces will be published
+[proximity_monitor-6] [WARN] [1794035456.602681537] [proximity_monitor]: Proximity STOP: TF_UNAVAILABLE
+[spawner-18] [INFO] [1794035456.620998599] [spawner_joint_state_broadcaster]: [92mConfigured and activated [1mjoint_state_broadcaster[0m
+[proximity_monitor-6] [WARN] [1794035456.653259063] [proximity_monitor]: Proximity STOP: TF_UNAVAILABLE
+[safety_supervisor-8] [INFO] [1794035456.661625662] [safety_supervisor_node]: Coherencia FK-TF recuperada: error=0.000000 m.
+[capsule_visualizer-5] [INFO] [1794035456.664870129] [capsule_visualizer]: All capsule TF frames are available
+[INFO] [spawner-19]: process started with pid [126522]
+[proximity_monitor-6] [WARN] [1794035456.705121018] [proximity_monitor]: Proximity STOP: TF_UNAVAILABLE
+[proximity_monitor-6] [INFO] [1794035456.717648701] [proximity_monitor]: All proximity TF frames are available
+[proximity_monitor-6] [INFO] [1794035456.718658229] [proximity_monitor]: ALLOW: clearance=1.202 m, segment=wrist_2_to_tool
+[INFO] [spawner-18]: process has finished cleanly [pid 126502]
+[spawner-19] [INFO] [1794035457.102276948] [spawner_arm_controller]: waiting for service /controller_manager/list_controllers to become available...
+[system_readiness-15] [WARN] [1794035457.302544191] [system_readiness]: WAITING: arm_controller no está active; acción /arm_controller/follow_joint_trajectory no disponible
+[ign-2] [INFO] [1794035457.606008864] [controller_manager]: Loading controller 'arm_controller'
+[ign-2] [WARN] [1794035457.632087994] [arm_controller]: [Deprecated]: "allow_nonzero_velocity_at_trajectory_end" is set to true. The default behavior will change to false.
+[spawner-19] [INFO] [1794035457.636701548] [spawner_arm_controller]: [94mLoaded [1marm_controller[0m
+[ign-2] [INFO] [1794035457.639748090] [controller_manager]: Configuring controller 'arm_controller'
+[ign-2] [INFO] [1794035457.639920088] [arm_controller]: No specific joint names are used for command interfaces. Using 'joints' parameter.
+[ign-2] [INFO] [1794035457.639945755] [arm_controller]: Command interfaces are [position] and state interfaces are [position velocity].
+[ign-2] [INFO] [1794035457.639968844] [arm_controller]: Using 'splines' interpolation method.
+[ign-2] [INFO] [1794035457.641947883] [arm_controller]: Controller state will be published at 50.00 Hz.
+[ign-2] [INFO] [1794035457.645313507] [arm_controller]: Action status changes will be monitored at 20.00 Hz.
+[spawner-19] [INFO] [1794035457.761475470] [spawner_arm_controller]: [92mConfigured and activated [1marm_controller[0m
+[INFO] [spawner-19]: process has finished cleanly [pid 126522]
+[system_readiness-15] [WARN] [1794035458.302347795] [system_readiness]: WAITING: arm_controller no está active
+[ign-2] [1;32m[Msg] [0m[1;32mPublishing entity deletions on [[0m[1;32m/world/jaco_world/scene/deletion[0m[1;32m][0m[1;32m[0m
+[ign-2] [1;32m[Msg] [0m[1;32mPublishing state changes on [[0m[1;32m/world/jaco_world/state[0m[1;32m][0m[1;32m[0m
+[ign-2] [1;32m[Msg] [0m[1;32mPublishing pose messages on [[0m[1;32m/world/jaco_world[0m[1;32m/[0m[1;32mpose/info[0m[1;32m][0m[1;32m[0m
+[ign-2] [1;32m[Msg] [0m[1;32mPublishing dynamic pose messages on [[0m[1;32m/world/jaco_world[0m[1;32m/[0m[1;32mdynamic_pose/info[0m[1;32m][0m[1;32m[0m
+[system_readiness-15] [INFO] [1794035459.302633709] [system_readiness]: SYSTEM READY: all required links are live
+[WARNING] [launch]: user interrupted with ctrl-c (SIGINT)
+[INFO] [system_readiness-15]: sending signal 'SIGINT' to process[system_readiness-15]
+[INFO] [cartesian_trajectory_adapter-14]: sending signal 'SIGINT' to process[cartesian_trajectory_adapter-14]
+[INFO] [cartesian_jog_adapter-13]: sending signal 'SIGINT' to process[cartesian_jog_adapter-13]
+[INFO] [cartesian_command_adapter-12]: sending signal 'SIGINT' to process[cartesian_command_adapter-12]
+[INFO] [horizon_preview-11]: sending signal 'SIGINT' to process[horizon_preview-11]
+[INFO] [obstacle_demo_source-10]: sending signal 'SIGINT' to process[obstacle_demo_source-10]
+[ERROR] [cartesian_jog_adapter-13]: process has died [pid 126262, exit code -2, cmd '/home/luis/Escritorio/TESIS_JACO2/IMPLEMENTACION_ROS2_CORE/install/thesis_simulation/lib/thesis_simulation/cartesian_jog_adapter --ros-args -r __node:=cartesian_jog_adapter --params-file /tmp/launch_params_lyldecd7'].
+[ERROR] [cartesian_trajectory_adapter-14]: process has died [pid 126264, exit code -2, cmd '/home/luis/Escritorio/TESIS_JACO2/IMPLEMENTACION_ROS2_CORE/install/thesis_simulation/lib/thesis_simulation/cartesian_trajectory_adapter --ros-args -r __node:=cartesian_trajectory_adapter --params-file /tmp/launch_params_d9x6p906'].
+[ERROR] [cartesian_command_adapter-12]: process has died [pid 126260, exit code -2, cmd '/home/luis/Escritorio/TESIS_JACO2/IMPLEMENTACION_ROS2_CORE/install/thesis_simulation/lib/thesis_simulation/cartesian_command_adapter --ros-args -r __node:=cartesian_command_adapter --params-file /tmp/launch_params_m9def_56'].
+[INFO] [simulation_command_adapter-9]: sending signal 'SIGINT' to process[simulation_command_adapter-9]
+[INFO] [safety_supervisor-8]: sending signal 'SIGINT' to process[safety_supervisor-8]
+[ERROR] [horizon_preview-11]: process has died [pid 126258, exit code -2, cmd '/home/luis/Escritorio/TESIS_JACO2/IMPLEMENTACION_ROS2_CORE/install/thesis_core/lib/thesis_core/horizon_preview --ros-args -r __node:=horizon_preview --params-file /tmp/launch_params_h89z8hvm'].
+[INFO] [obstacle_input_bridge-7]: sending signal 'SIGINT' to process[obstacle_input_bridge-7]
+[ERROR] [obstacle_demo_source-10]: process has died [pid 126256, exit code -2, cmd '/home/luis/Escritorio/TESIS_JACO2/IMPLEMENTACION_ROS2_CORE/install/thesis_core/lib/thesis_core/obstacle_demo_source --ros-args -r __node:=obstacle_demo_source --params-file /tmp/launch_params_n0fnxr65'].
+[INFO] [proximity_monitor-6]: sending signal 'SIGINT' to process[proximity_monitor-6]
+[ERROR] [simulation_command_adapter-9]: process has died [pid 126254, exit code -2, cmd '/home/luis/Escritorio/TESIS_JACO2/IMPLEMENTACION_ROS2_CORE/install/thesis_simulation/lib/thesis_simulation/simulation_command_adapter --ros-args --params-file /tmp/launch_params_adh4bza_'].
+[ERROR] [safety_supervisor-8]: process has died [pid 126252, exit code -2, cmd '/home/luis/Escritorio/TESIS_JACO2/IMPLEMENTACION_ROS2_CORE/install/thesis_core/lib/thesis_core/safety_supervisor --ros-args --params-file /tmp/launch_params_bas3aoi1'].
+[INFO] [capsule_visualizer-5]: sending signal 'SIGINT' to process[capsule_visualizer-5]
+[ERROR] [obstacle_input_bridge-7]: process has died [pid 126250, exit code -2, cmd '/home/luis/Escritorio/TESIS_JACO2/IMPLEMENTACION_ROS2_CORE/install/thesis_core/lib/thesis_core/obstacle_input_bridge --ros-args -r __node:=obstacle_input_bridge --params-file /tmp/launch_params_34o44pkj'].
+[INFO] [parameter_bridge-4]: sending signal 'SIGINT' to process[parameter_bridge-4]
+[ERROR] [proximity_monitor-6]: process has died [pid 126248, exit code -2, cmd '/home/luis/Escritorio/TESIS_JACO2/IMPLEMENTACION_ROS2_CORE/install/thesis_core/lib/thesis_core/proximity_monitor --ros-args -r __node:=proximity_monitor --params-file /home/luis/Escritorio/TESIS_JACO2/IMPLEMENTACION_ROS2_CORE/install/thesis_core/share/thesis_core/config/jaco_capsules.yaml --params-file /tmp/launch_params_j_klpto0'].
+[INFO] [parameter_bridge-3]: sending signal 'SIGINT' to process[parameter_bridge-3]
+[INFO] [ign-2]: sending signal 'SIGINT' to process[ign-2]
+[ERROR] [capsule_visualizer-5]: process has died [pid 126246, exit code -2, cmd '/home/luis/Escritorio/TESIS_JACO2/IMPLEMENTACION_ROS2_CORE/install/thesis_core/lib/thesis_core/capsule_visualizer --ros-args -r __node:=capsule_visualizer --params-file /home/luis/Escritorio/TESIS_JACO2/IMPLEMENTACION_ROS2_CORE/install/thesis_core/share/thesis_core/config/jaco_capsules.yaml --params-file /tmp/launch_params_9whggxmi'].
+[INFO] [robot_state_publisher-1]: sending signal 'SIGINT' to process[robot_state_publisher-1]
+[parameter_bridge-3] [INFO] [1794035481.174941983] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[robot_state_publisher-1] [INFO] [1794035481.174938414] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[ign-2] [INFO] [1794035481.175232395] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[ign-2] [INFO] [1794035481.175333205] [controller_manager]: Shutdown request received....
+[ign-2] [INFO] [1794035481.175402367] [controller_manager]: Shutting down all controllers in the controller manager.
+[ign-2] [INFO] [1794035481.175432787] [controller_manager]: Deactivating controller 'joint_state_broadcaster'
+[ign-2] [INFO] [1794035481.175479369] [controller_manager]: Shutting down controller 'joint_state_broadcaster'
+[ign-2] [INFO] [1794035481.175514237] [controller_manager]: Deactivating controller 'arm_controller'
+[ign-2] [INFO] [1794035481.175549611] [controller_manager]: Shutting down controller 'arm_controller'
+[ign-2] [INFO] [1794035481.175578359] [resource_manager]: 'deactivate' hardware 'GazeboSimSystem' 
+[ign-2] [INFO] [1794035481.175602764] [resource_manager]: Successful 'deactivate' of hardware 'GazeboSimSystem'
+[ign-2] [INFO] [1794035481.175609124] [resource_manager]: 'shutdown' hardware 'GazeboSimSystem' 
+[ign-2] [INFO] [1794035481.175616399] [resource_manager]: Successful 'shutdown' of hardware 'GazeboSimSystem'
+[ign-2] [INFO] [1794035481.175621985] [controller_manager]: Shutting down the controller manager.
+[parameter_bridge-4] [INFO] [1794035481.175504477] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[ERROR] [robot_state_publisher-1]: process has died [pid 126238, exit code -2, cmd '/opt/ros/humble/lib/robot_state_publisher/robot_state_publisher --ros-args --params-file /tmp/launch_params_c56ji7m_ --params-file /tmp/launch_params_13n_3uf3'].
+[parameter_bridge-4] [INFO] [1794035481.251482869] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[parameter_bridge-3] [INFO] [1794035481.254871047] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[INFO] [parameter_bridge-3]: process has finished cleanly [pid 126242]
+[INFO] [parameter_bridge-4]: process has finished cleanly [pid 126244]
+[INFO] [ign-2]: process has finished cleanly [pid 126240]
+[INFO] [system_readiness-15]: process has finished cleanly [pid 126266]

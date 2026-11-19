@@ -1,6 +1,7 @@
+from thesis_core.work_table import JACO2_SIM_TABLE_SIZE, MOUNT_HEIGHT
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument
-from launch.substitutions import LaunchConfiguration
+from launch.substitutions import LaunchConfiguration, PythonExpression
 from launch_ros.actions import Node
 from launch_ros.parameter_descriptions import ParameterValue
 
@@ -14,7 +15,9 @@ def generate_launch_description():
     )
     use_sim_time = LaunchConfiguration('use_sim_time')
 
+    mounted = LaunchConfiguration('mounted_table')
     return LaunchDescription([
+        DeclareLaunchArgument('mounted_table', default_value='false'),
         DeclareLaunchArgument(
             'simulation_output_enabled',
             default_value='false',
@@ -50,6 +53,12 @@ def generate_launch_description():
                     require_proximity_status,
                     value_type=bool,
                 ),
+                'table_enabled': ParameterValue(mounted, value_type=bool),
+                'table_size': list(JACO2_SIM_TABLE_SIZE),
+                'table_with_legs': ParameterValue(mounted, value_type=bool),
+                'mount_height': ParameterValue(PythonExpression([
+                    str(MOUNT_HEIGHT), " if '", mounted, "'.lower() == 'true' else 0.0",
+                ]), value_type=float),
                 'runtime_recovery_required_samples': 5,
                 'runtime_max_scale_increment': 0.10,
                 'runtime_recovery_sample_period_sec': 0.10,

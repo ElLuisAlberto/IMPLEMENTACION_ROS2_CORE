@@ -1,0 +1,15 @@
+{
+  "robot": "p3020",
+  "domain": 88,
+  "runtime": "/tmp/thesis_validate_7_2xy_i4",
+  "checks": [
+    "all robot states fresh; all supervisors ALLOW",
+    "p3020: controllers active; 5 joints; FK/TF error=0.000000m",
+    "p3020: supervised +0.02rad and return reached <0.008rad error",
+    "p3020: active goal cancelled on obstacle; hold drift=0.000001rad",
+    "p3020: obstacle overlap rejected with STOP",
+    "p3020: stale obstacle rejected and recovery observed"
+  ],
+  "pass": false,
+  "error": "AssertionError: Operator tool failed:  Traceback (most recent call last):\n  File \"/home/luis/Escritorio/TESIS_JACO2/IMPLEMENTACION_ROS2_CORE/tools/simulation/command_robot.py\", line 201, in <module>\n    raise SystemExit(main())\n  File \"/home/luis/Escritorio/TESIS_JACO2/IMPLEMENTACION_ROS2_CORE/tools/simulation/command_robot.py\", line 195, in main\n    return execute(args)\n  File \"/home/luis/Escritorio/TESIS_JACO2/IMPLEMENTACION_ROS2_CORE/tools/simulation/command_robot.py\", line 141, in execute\n    wait_until(\n  File \"/home/luis/Escritorio/TESIS_JACO2/IMPLEMENTACION_ROS2_CORE/tools/simulation/command_robot.py\", line 114, in wait_until\n    while rclpy.ok() and not predicate():\n  File \"/home/luis/Escritorio/TESIS_JACO2/IMPLEMENTACION_ROS2_CORE/tools/simulation/command_robot.py\", line 142, in <lambda>\n    lambda: fresh_state() and publisher.get_subscription_count() > 0 and decision_sub.get_publisher_count() > 0,\nAttributeError: 'Subscription' object has no attribute 'get_publisher_count'\n"
+}

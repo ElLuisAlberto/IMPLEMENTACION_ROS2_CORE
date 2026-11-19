@@ -1,0 +1,5 @@
+component,material_name,density_kg_m3,elastic_modulus_pa,poisson_ratio,friction_static,friction_dynamic,restitution,source,status,notes
+printed_rigid_parts,TBD_SELECT,TBD_MEASURE,TBD_MEASURE,TBD_MEASURE,TBD_CALIBRATE,TBD_CALIBRATE,TBD_CALIBRATE,material_datasheet+test,pending,Record PLA PETG or actual filament and batch
+flexible_tip,TBD_SELECT,TBD_MEASURE,TBD_MEASURE,TBD_MEASURE,TBD_CALIBRATE,TBD_CALIBRATE,TBD_CALIBRATE,material_datasheet+test,pending,Record TPU grade or grip layer
+metal_fasteners,TBD_IDENTIFY,TBD_LOOKUP,TBD_LOOKUP,TBD_LOOKUP,TBD_CALIBRATE,TBD_CALIBRATE,TBD_CALIBRATE,supplier_datasheet,pending,
+servo_sts3215,manufacturer_assembly,TBD_MEASURE,TBD_NOT_APPLICABLE,TBD_NOT_APPLICABLE,TBD_NOT_APPLICABLE,TBD_NOT_APPLICABLE,TBD_NOT_APPLICABLE,manufacturer+scale,pending,Use measured total mass and inertia from CAD or approximation

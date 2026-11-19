@@ -58,6 +58,26 @@
 
     </light>
 
+    <!-- 1.20 x 0.80 m laboratory table; its top is at z=0.75 m. -->
+    <model name="jaco_work_table">
+      <static>true</static>
+      <link name="table_link">
+        <collision name="tabletop_collision">
+          <pose>0 0 0.73 0 0 0</pose>
+          <geometry><box><size>1.20 0.80 0.04</size></box></geometry>
+        </collision>
+        <visual name="tabletop_visual">
+          <pose>0 0 0.73 0 0 0</pose>
+          <geometry><box><size>1.20 0.80 0.04</size></box></geometry>
+          <material><diffuse>0.34 0.20 0.10 1</diffuse></material>
+        </visual>
+        <collision name="left_leg_collision"><pose>-0.52 -0.32 0.355 0 0 0</pose><geometry><box><size>0.06 0.06 0.71</size></box></geometry></collision>
+        <collision name="right_leg_collision"><pose>0.52 0.32 0.355 0 0 0</pose><geometry><box><size>0.06 0.06 0.71</size></box></geometry></collision>
+        <visual name="left_leg_visual"><pose>-0.52 -0.32 0.355 0 0 0</pose><geometry><box><size>0.06 0.06 0.71</size></box></geometry></visual>
+        <visual name="right_leg_visual"><pose>0.52 0.32 0.355 0 0 0</pose><geometry><box><size>0.06 0.06 0.71</size></box></geometry></visual>
+      </link>
+    </model>
+
 
     <!-- =======================================================
          Ground
