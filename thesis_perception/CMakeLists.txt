@@ -65,6 +65,11 @@ target_compile_definitions(obstacle_extractor_node PRIVATE ${PCL_DEFINITIONS})
 add_executable(perception_health_node
   src/perception_health_node.cpp
 )
+
+add_executable(visualization_overlay_node
+  src/visualization_overlay_node.cpp
+)
+ament_target_dependencies(visualization_overlay_node rclcpp sensor_msgs)
 ament_target_dependencies(perception_health_node
   diagnostic_msgs
   rclcpp
@@ -76,6 +81,7 @@ install(TARGETS
   pointcloud_cluster_probe
   obstacle_extractor_node
   perception_health_node
+  visualization_overlay_node
   DESTINATION lib/${PROJECT_NAME}
 )
 

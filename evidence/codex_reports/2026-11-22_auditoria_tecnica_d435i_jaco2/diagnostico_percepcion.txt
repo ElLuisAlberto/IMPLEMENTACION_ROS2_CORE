@@ -1,0 +1,36 @@
+header:
+  stamp:
+    sec: 1795318796
+    nanosec: 422545953
+  frame_id: ''
+status:
+- level: "\0"
+  name: D435i perception pipeline
+  message: OK
+  hardware_id: Intel RealSense D435i
+  values:
+  - key: cloud_topic
+    value: /thesis/perception/points_filtered
+  - key: imu_topic
+    value: /camera/d435i/imu
+  - key: cloud_hz
+    value: '25.00'
+  - key: imu_hz
+    value: '0.00'
+  - key: cloud_age_s
+    value: '0.03'
+  - key: imu_age_s
+    value: '-1.00'
+  - key: cloud_stamp_age_s
+    value: '0.09'
+  - key: cloud_frame
+    value: d435i_depth_optical_frame
+  - key: expected_frame
+    value: ''
+  - key: frame_valid
+    value: 'true'
+  - key: cloud_points
+    value: '30399'
+  - key: imu_required
+    value: 'false'
+---

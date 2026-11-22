@@ -1,0 +1,17 @@
+# Session-specific visual fit, not a calibrated or safety-rated transform.
+# Revalidate after moving the camera, robot base or mounting structure.
+visualization_overlay:
+  ros__parameters:
+    visualization_transform:
+      - 0.99678283379185739
+      - -0.030613137601291703
+      - 0.074073058962612362
+      - -0.049989844477949082
+      - -0.063846257727633193
+      - 0.25541372412541591
+      - 0.9647214545673598
+      - -0.65888731019659497
+      - -0.04845242648259121
+      - -0.96634707291665667
+      - 0.25263748144992021
+      - 0.24566380982590308

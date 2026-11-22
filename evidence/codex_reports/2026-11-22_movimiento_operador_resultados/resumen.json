@@ -1,0 +1,38 @@
+{
+  "joint_names": [
+    "j2n6s300_joint_1",
+    "j2n6s300_joint_2",
+    "j2n6s300_joint_3",
+    "j2n6s300_joint_4",
+    "j2n6s300_joint_5",
+    "j2n6s300_joint_6"
+  ],
+  "samples": 1593,
+  "ranges_deg": [
+    33.502,
+    16.201,
+    20.6,
+    0.15,
+    21.15,
+    0.0
+  ],
+  "max_abs_finite_difference_deg_s": [
+    18.01,
+    18.0,
+    18.35,
+    3.0,
+    24.0,
+    0.0
+  ],
+  "time_gap_ms_p50_p95_max": [
+    50.0,
+    50.11,
+    61.01
+  ],
+  "proximity_states": {
+    "ALLOW": 1580
+  },
+  "invalid_geometry_messages": 0,
+  "diagnostic_fault_samples": 0,
+  "armed_diagnostic_samples": 160
+}

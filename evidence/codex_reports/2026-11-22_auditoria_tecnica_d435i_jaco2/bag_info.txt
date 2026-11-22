@@ -1,0 +1,19 @@
+
+Files:             2026-11-22_segmentacion_brazo_10s_0.db3
+Bag size:          1.7 GiB
+Storage id:        sqlite3
+Duration:          10.666459287s
+Start:             Nov 22 2026 11:27:26.520245001 (1795318046.520245001)
+End:               Nov 22 2026 11:27:37.186704288 (1795318057.186704288)
+Messages:          1961
+Topic information: Topic: /camera/d435i/depth/color/points | Type: sensor_msgs/msg/PointCloud2 | Count: 231 | Serialization Format: cdr
+                   Topic: /camera/d435i/color/camera_info | Type: sensor_msgs/msg/CameraInfo | Count: 289 | Serialization Format: cdr
+                   Topic: /codex/segmentacion/resto_candidato | Type: sensor_msgs/msg/PointCloud2 | Count: 254 | Serialization Format: cdr
+                   Topic: /codex/segmentacion/margen_incierto | Type: sensor_msgs/msg/PointCloud2 | Count: 253 | Serialization Format: cdr
+                   Topic: /codex/segmentacion/brazo_candidato | Type: sensor_msgs/msg/PointCloud2 | Count: 225 | Serialization Format: cdr
+                   Topic: /joint_states | Type: sensor_msgs/msg/JointState | Count: 212 | Serialization Format: cdr
+                   Topic: /robot_description | Type: std_msgs/msg/String | Count: 1 | Serialization Format: cdr
+                   Topic: /tf_static | Type: tf2_msgs/msg/TFMessage | Count: 2 | Serialization Format: cdr
+                   Topic: /camera/d435i/color/image_raw | Type: sensor_msgs/msg/Image | Count: 280 | Serialization Format: cdr
+                   Topic: /tf | Type: tf2_msgs/msg/TFMessage | Count: 214 | Serialization Format: cdr
+

@@ -1,0 +1,600 @@
+{
+  "joint_names": [
+    "j2n6s300_joint_1",
+    "j2n6s300_joint_2",
+    "j2n6s300_joint_3",
+    "j2n6s300_joint_4",
+    "j2n6s300_joint_5",
+    "j2n6s300_joint_6"
+  ],
+  "samples": 888,
+  "range_rad": [
+    0.17454357784379315,
+    0.0,
+    0.0,
+    0.0026178873515476653,
+    0.0,
+    0.0
+  ],
+  "all_common_frames": 40,
+  "topics": {
+    "/camera/d435i/depth/color/points": {
+      "mensajes": 1054,
+      "puntos_min_med_max": [
+        185981,
+        187355.5,
+        188475
+      ],
+      "hz_recepcion": 24.88119332441499,
+      "gap_ms_p50_p95_max": [
+        34.33,
+        68.5,
+        370.67
+      ]
+    },
+    "/codex/segmentacion/brazo_candidato": {
+      "mensajes": 996,
+      "puntos_min_med_max": [
+        27908,
+        29441.0,
+        29839
+      ],
+      "hz_recepcion": 23.215326217290563,
+      "gap_ms_p50_p95_max": [
+        33.33,
+        97.32,
+        408.29
+      ]
+    },
+    "/codex/segmentacion/margen_incierto": {
+      "mensajes": 1095,
+      "puntos_min_med_max": [
+        423,
+        830.0,
+        1184
+      ],
+      "hz_recepcion": 25.505193142741895,
+      "gap_ms_p50_p95_max": [
+        32.49,
+        69.79,
+        359.15
+      ]
+    },
+    "/codex/segmentacion/resto_candidato": {
+      "mensajes": 1095,
+      "puntos_min_med_max": [
+        0,
+        0.0,
+        118
+      ],
+      "hz_recepcion": 25.505175591339317,
+      "gap_ms_p50_p95_max": [
+        32.49,
+        69.76,
+        359.13
+      ]
+    }
+  },
+  "comparison": [
+    {
+      "stamp_ns": 1795320246583058594,
+      "input_valid": 30343,
+      "class_counts": [
+        29472,
+        871,
+        0
+      ],
+      "count_partition_ok": true,
+      "byte_multiset_equal": true,
+      "cpu_gpu_differences": 0,
+      "distance_mm_of_differences": []
+    },
+    {
+      "stamp_ns": 1795320246683133057,
+      "input_valid": 30449,
+      "class_counts": [
+        29580,
+        869,
+        0
+      ],
+      "count_partition_ok": true,
+      "byte_multiset_equal": true,
+      "cpu_gpu_differences": 0,
+      "distance_mm_of_differences": []
+    },
+    {
+      "stamp_ns": 1795320246716491211,
+      "input_valid": 30341,
+      "class_counts": [
+        29488,
+        853,
+        0
+      ],
+      "count_partition_ok": true,
+      "byte_multiset_equal": true,
+      "cpu_gpu_differences": 0,
+      "distance_mm_of_differences": []
+    },
+    {
+      "stamp_ns": 1795320246749849365,
+      "input_valid": 30261,
+      "class_counts": [
+        29544,
+        717,
+        0
+      ],
+      "count_partition_ok": true,
+      "byte_multiset_equal": true,
+      "cpu_gpu_differences": 0,
+      "distance_mm_of_differences": []
+    },
+    {
+      "stamp_ns": 1795320246783207764,
+      "input_valid": 30562,
+      "class_counts": [
+        29821,
+        741,
+        0
+      ],
+      "count_partition_ok": true,
+      "byte_multiset_equal": true,
+      "cpu_gpu_differences": 0,
+      "distance_mm_of_differences": []
+    },
+    {
+      "stamp_ns": 1795320246849924072,
+      "input_valid": 30420,
+      "class_counts": [
+        29607,
+        813,
+        0
+      ],
+      "count_partition_ok": true,
+      "byte_multiset_equal": true,
+      "cpu_gpu_differences": 0,
+      "distance_mm_of_differences": []
+    },
+    {
+      "stamp_ns": 1795320246949998779,
+      "input_valid": 30093,
+      "class_counts": [
+        29400,
+        693,
+        0
+      ],
+      "count_partition_ok": true,
+      "byte_multiset_equal": true,
+      "cpu_gpu_differences": 0,
+      "distance_mm_of_differences": []
+    },
+    {
+      "stamp_ns": 1795320246983356934,
+      "input_valid": 30411,
+      "class_counts": [
+        29456,
+        955,
+        0
+      ],
+      "count_partition_ok": true,
+      "byte_multiset_equal": true,
+      "cpu_gpu_differences": 0,
+      "distance_mm_of_differences": []
+    },
+    {
+      "stamp_ns": 1795320247050073486,
+      "input_valid": 30389,
+      "class_counts": [
+        29511,
+        878,
+        0
+      ],
+      "count_partition_ok": true,
+      "byte_multiset_equal": true,
+      "cpu_gpu_differences": 0,
+      "distance_mm_of_differences": []
+    },
+    {
+      "stamp_ns": 1795320247083431641,
+      "input_valid": 30181,
+      "class_counts": [
+        29332,
+        847,
+        2
+      ],
+      "count_partition_ok": true,
+      "byte_multiset_equal": true,
+      "cpu_gpu_differences": 0,
+      "distance_mm_of_differences": []
+    },
+    {
+      "stamp_ns": 1795320247116790039,
+      "input_valid": 30210,
+      "class_counts": [
+        29407,
+        803,
+        0
+      ],
+      "count_partition_ok": true,
+      "byte_multiset_equal": true,
+      "cpu_gpu_differences": 0,
+      "distance_mm_of_differences": []
+    },
+    {
+      "stamp_ns": 1795320247183506592,
+      "input_valid": 30238,
+      "class_counts": [
+        29265,
+        973,
+        0
+      ],
+      "count_partition_ok": true,
+      "byte_multiset_equal": true,
+      "cpu_gpu_differences": 0,
+      "distance_mm_of_differences": []
+    },
+    {
+      "stamp_ns": 1795320247216864746,
+      "input_valid": 29951,
+      "class_counts": [
+        29100,
+        851,
+        0
+      ],
+      "count_partition_ok": true,
+      "byte_multiset_equal": true,
+      "cpu_gpu_differences": 0,
+      "distance_mm_of_differences": []
+    },
+    {
+      "stamp_ns": 1795320247250221924,
+      "input_valid": 30000,
+      "class_counts": [
+        29110,
+        890,
+        0
+      ],
+      "count_partition_ok": true,
+      "byte_multiset_equal": true,
+      "cpu_gpu_differences": 0,
+      "distance_mm_of_differences": []
+    },
+    {
+      "stamp_ns": 1795320247283579102,
+      "input_valid": 30234,
+      "class_counts": [
+        29465,
+        769,
+        0
+      ],
+      "count_partition_ok": true,
+      "byte_multiset_equal": true,
+      "cpu_gpu_differences": 0,
+      "distance_mm_of_differences": []
+    },
+    {
+      "stamp_ns": 1795320247316936279,
+      "input_valid": 30164,
+      "class_counts": [
+        29231,
+        933,
+        0
+      ],
+      "count_partition_ok": true,
+      "byte_multiset_equal": true,
+      "cpu_gpu_differences": 0,
+      "distance_mm_of_differences": []
+    },
+    {
+      "stamp_ns": 1795320247383650879,
+      "input_valid": 30172,
+      "class_counts": [
+        29237,
+        935,
+        0
+      ],
+      "count_partition_ok": true,
+      "byte_multiset_equal": true,
+      "cpu_gpu_differences": 0,
+      "distance_mm_of_differences": []
+    },
+    {
+      "stamp_ns": 1795320247483722412,
+      "input_valid": 29389,
+      "class_counts": [
+        28759,
+        630,
+        0
+      ],
+      "count_partition_ok": true,
+      "byte_multiset_equal": true,
+      "cpu_gpu_differences": 0,
+      "distance_mm_of_differences": []
+    },
+    {
+      "stamp_ns": 1795320247517079590,
+      "input_valid": 29425,
+      "class_counts": [
+        28958,
+        467,
+        0
+      ],
+      "count_partition_ok": true,
+      "byte_multiset_equal": true,
+      "cpu_gpu_differences": 0,
+      "distance_mm_of_differences": []
+    },
+    {
+      "stamp_ns": 1795320247550436768,
+      "input_valid": 29674,
+      "class_counts": [
+        28786,
+        888,
+        0
+      ],
+      "count_partition_ok": true,
+      "byte_multiset_equal": true,
+      "cpu_gpu_differences": 0,
+      "distance_mm_of_differences": []
+    },
+    {
+      "stamp_ns": 1795320247583793945,
+      "input_valid": 29507,
+      "class_counts": [
+        28984,
+        523,
+        0
+      ],
+      "count_partition_ok": true,
+      "byte_multiset_equal": true,
+      "cpu_gpu_differences": 0,
+      "distance_mm_of_differences": []
+    },
+    {
+      "stamp_ns": 1795320247617151123,
+      "input_valid": 29474,
+      "class_counts": [
+        28790,
+        684,
+        0
+      ],
+      "count_partition_ok": true,
+      "byte_multiset_equal": true,
+      "cpu_gpu_differences": 0,
+      "distance_mm_of_differences": []
+    },
+    {
+      "stamp_ns": 1795320248017437256,
+      "input_valid": 29395,
+      "class_counts": [
+        28922,
+        473,
+        0
+      ],
+      "count_partition_ok": true,
+      "byte_multiset_equal": true,
+      "cpu_gpu_differences": 0,
+      "distance_mm_of_differences": []
+    },
+    {
+      "stamp_ns": 1795320248050794434,
+      "input_valid": 29218,
+      "class_counts": [
+        28627,
+        591,
+        0
+      ],
+      "count_partition_ok": true,
+      "byte_multiset_equal": true,
+      "cpu_gpu_differences": 0,
+      "distance_mm_of_differences": []
+    },
+    {
+      "stamp_ns": 1795320248084151611,
+      "input_valid": 29405,
+      "class_counts": [
+        28618,
+        787,
+        0
+      ],
+      "count_partition_ok": true,
+      "byte_multiset_equal": true,
+      "cpu_gpu_differences": 0,
+      "distance_mm_of_differences": []
+    },
+    {
+      "stamp_ns": 1795320248117508789,
+      "input_valid": 29491,
+      "class_counts": [
+        28956,
+        535,
+        0
+      ],
+      "count_partition_ok": true,
+      "byte_multiset_equal": true,
+      "cpu_gpu_differences": 0,
+      "distance_mm_of_differences": []
+    },
+    {
+      "stamp_ns": 1795320248150865967,
+      "input_valid": 29481,
+      "class_counts": [
+        28788,
+        693,
+        0
+      ],
+      "count_partition_ok": true,
+      "byte_multiset_equal": true,
+      "cpu_gpu_differences": 0,
+      "distance_mm_of_differences": []
+    },
+    {
+      "stamp_ns": 1795320248217580322,
+      "input_valid": 29724,
+      "class_counts": [
+        29226,
+        498,
+        0
+      ],
+      "count_partition_ok": true,
+      "byte_multiset_equal": true,
+      "cpu_gpu_differences": 0,
+      "distance_mm_of_differences": []
+    },
+    {
+      "stamp_ns": 1795320248250937500,
+      "input_valid": 29473,
+      "class_counts": [
+        28873,
+        600,
+        0
+      ],
+      "count_partition_ok": true,
+      "byte_multiset_equal": true,
+      "cpu_gpu_differences": 0,
+      "distance_mm_of_differences": []
+    },
+    {
+      "stamp_ns": 1795320248284294922,
+      "input_valid": 29398,
+      "class_counts": [
+        28811,
+        587,
+        0
+      ],
+      "count_partition_ok": true,
+      "byte_multiset_equal": true,
+      "cpu_gpu_differences": 0,
+      "distance_mm_of_differences": []
+    },
+    {
+      "stamp_ns": 1795320248317652100,
+      "input_valid": 29288,
+      "class_counts": [
+        28711,
+        577,
+        0
+      ],
+      "count_partition_ok": true,
+      "byte_multiset_equal": true,
+      "cpu_gpu_differences": 0,
+      "distance_mm_of_differences": []
+    },
+    {
+      "stamp_ns": 1795320248351009277,
+      "input_valid": 29039,
+      "class_counts": [
+        28544,
+        495,
+        0
+      ],
+      "count_partition_ok": true,
+      "byte_multiset_equal": true,
+      "cpu_gpu_differences": 0,
+      "distance_mm_of_differences": []
+    },
+    {
+      "stamp_ns": 1795320248417723877,
+      "input_valid": 29249,
+      "class_counts": [
+        28662,
+        587,
+        0
+      ],
+      "count_partition_ok": true,
+      "byte_multiset_equal": true,
+      "cpu_gpu_differences": 0,
+      "distance_mm_of_differences": []
+    },
+    {
+      "stamp_ns": 1795320248451081055,
+      "input_valid": 29178,
+      "class_counts": [
+        28575,
+        603,
+        0
+      ],
+      "count_partition_ok": true,
+      "byte_multiset_equal": true,
+      "cpu_gpu_differences": 0,
+      "distance_mm_of_differences": []
+    },
+    {
+      "stamp_ns": 1795320248484438232,
+      "input_valid": 29145,
+      "class_counts": [
+        28417,
+        728,
+        0
+      ],
+      "count_partition_ok": true,
+      "byte_multiset_equal": true,
+      "cpu_gpu_differences": 0,
+      "distance_mm_of_differences": []
+    },
+    {
+      "stamp_ns": 1795320248584510010,
+      "input_valid": 29014,
+      "class_counts": [
+        28508,
+        506,
+        0
+      ],
+      "count_partition_ok": true,
+      "byte_multiset_equal": true,
+      "cpu_gpu_differences": 0,
+      "distance_mm_of_differences": []
+    },
+    {
+      "stamp_ns": 1795320248617867188,
+      "input_valid": 29262,
+      "class_counts": [
+        28501,
+        761,
+        0
+      ],
+      "count_partition_ok": true,
+      "byte_multiset_equal": true,
+      "cpu_gpu_differences": 0,
+      "distance_mm_of_differences": []
+    },
+    {
+      "stamp_ns": 1795320248651224365,
+      "input_valid": 29156,
+      "class_counts": [
+        28568,
+        588,
+        0
+      ],
+      "count_partition_ok": true,
+      "byte_multiset_equal": true,
+      "cpu_gpu_differences": 0,
+      "distance_mm_of_differences": []
+    },
+    {
+      "stamp_ns": 1795320248684581787,
+      "input_valid": 29273,
+      "class_counts": [
+        28524,
+        749,
+        0
+      ],
+      "count_partition_ok": true,
+      "byte_multiset_equal": true,
+      "cpu_gpu_differences": 0,
+      "distance_mm_of_differences": []
+    },
+    {
+      "stamp_ns": 1795320248751296143,
+      "input_valid": 29226,
+      "class_counts": [
+        28633,
+        593,
+        0
+      ],
+      "count_partition_ok": true,
+      "byte_multiset_equal": true,
+      "cpu_gpu_differences": 0,
+      "distance_mm_of_differences": []
+    }
+  ]
+}

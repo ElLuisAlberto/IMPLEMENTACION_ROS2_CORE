@@ -1,0 +1,7 @@
+ROS_DISTRO=humble
+ROS_DOMAIN_ID=no especificado
+RMW_IMPLEMENTATION=predeterminado
+python=3.10.12 (main, Aug 31 2026, 10:18:17) [GCC 11.4.0]
+numpy=1.21.5
+scipy=1.8.0
+opencv=4.5.4

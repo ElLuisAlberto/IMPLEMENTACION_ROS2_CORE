@@ -19,8 +19,9 @@ from launch.actions import (
     DeclareLaunchArgument,
     GroupAction,
     IncludeLaunchDescription,
+    SetEnvironmentVariable,
 )
-from launch.conditions import IfCondition
+from launch.conditions import IfCondition, UnlessCondition
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 from launch_ros.actions import Node, SetParameter
@@ -44,6 +45,16 @@ def generate_launch_description():
         "rviz",
         "d435i_perception.rviz",
     ])
+    overlay_rviz_config = PathJoinSubstitution([
+        FindPackageShare("thesis_perception"),
+        "rviz",
+        "d435i_jaco_experimental.rviz",
+    ])
+    overlay_parameters = PathJoinSubstitution([
+        FindPackageShare("thesis_perception"),
+        "config",
+        "d435i_overlay_experimental.yaml",
+    ])
 
     camera = GroupAction(
         actions=[
@@ -51,6 +62,10 @@ def generate_launch_description():
                 name="pointcloud.pointcloud_qos",
                 value="SENSOR_DATA",
             ),
+            # The upstream launch does not expose these sensor options as
+            # arguments. Pass them through the launch ROS parameter scope.
+            SetParameter(name="depth_module.visual_preset", value=4),
+            SetParameter(name="depth_module.laser_power", value=150.0),
             IncludeLaunchDescription(
                 PythonLaunchDescriptionSource(camera_launch),
                 condition=IfCondition(LaunchConfiguration("start_camera")),
@@ -68,6 +83,8 @@ def generate_launch_description():
                     "pointcloud.enable": "true",
                     "pointcloud.stream_filter": "2",
                     "align_depth.enable": "true",
+                    "depth_module.enable_auto_exposure": "false",
+                    "depth_module.exposure": "10000",
                     "decimation_filter.enable": LaunchConfiguration(
                         "enable_decimation_filter"
                     ),
@@ -80,8 +97,8 @@ def generate_launch_description():
                     "temporal_filter.enable": LaunchConfiguration(
                         "enable_temporal_filter"
                     ),
-                    "depth_module.depth_profile": "640,480,30",
-                    "rgb_camera.color_profile": "640,480,30",
+                    "depth_module.depth_profile": "848,480,30",
+                    "rgb_camera.color_profile": "1280,720,30",
                 }.items(),
             ),
         ],
@@ -127,18 +144,46 @@ def generate_launch_description():
         }.items(),
     )
 
-    rviz = Node(
-        package="rviz2",
-        executable="rviz2",
-        name="d435i_perception_rviz",
+    overlay = Node(
+        package="thesis_perception",
+        executable="visualization_overlay_node",
+        name="visualization_overlay",
+        parameters=[overlay_parameters],
+        condition=IfCondition(LaunchConfiguration("show_robot_overlay")),
         output="screen",
+    )
+
+    rviz = GroupAction(
         condition=IfCondition(LaunchConfiguration("start_rviz")),
-        arguments=["-d", rviz_config],
+        actions=[
+            SetEnvironmentVariable(
+                "__NV_PRIME_RENDER_OFFLOAD", "1",
+                condition=IfCondition(LaunchConfiguration("rviz_use_nvidia")),
+            ),
+            SetEnvironmentVariable(
+                "__GLX_VENDOR_LIBRARY_NAME", "nvidia",
+                condition=IfCondition(LaunchConfiguration("rviz_use_nvidia")),
+            ),
+            Node(
+                package="rviz2", executable="rviz2",
+                name="d435i_perception_rviz", output="screen",
+                condition=UnlessCondition(LaunchConfiguration("show_robot_overlay")),
+                arguments=["-d", rviz_config],
+            ),
+            Node(
+                package="rviz2", executable="rviz2",
+                name="d435i_experimental_overlay_rviz", output="screen",
+                condition=IfCondition(LaunchConfiguration("show_robot_overlay")),
+                arguments=["-d", overlay_rviz_config],
+            ),
+        ],
     )
 
     declarations = [
         DeclareLaunchArgument("start_camera", default_value="true"),
         DeclareLaunchArgument("start_rviz", default_value="false"),
+        DeclareLaunchArgument("rviz_use_nvidia", default_value="true"),
+        DeclareLaunchArgument("show_robot_overlay", default_value="false"),
         DeclareLaunchArgument(
             "enable_imu",
             default_value="false",
@@ -149,7 +194,7 @@ def generate_launch_description():
         ),
         DeclareLaunchArgument(
             "enable_decimation_filter",
-            default_value="true",
+            default_value="false",
             description="Reduce depth workload before creating PointCloud2.",
         ),
         DeclareLaunchArgument(
@@ -159,12 +204,12 @@ def generate_launch_description():
         ),
         DeclareLaunchArgument(
             "enable_spatial_filter",
-            default_value="true",
+            default_value="false",
             description="Stabilize local depth surfaces before pointcloud.",
         ),
         DeclareLaunchArgument(
             "enable_temporal_filter",
-            default_value="true",
+            default_value="false",
             description="Reduce frame-to-frame depth flicker for fixed camera.",
         ),
         DeclareLaunchArgument("use_sim_time", default_value="false"),
@@ -175,7 +220,7 @@ def generate_launch_description():
         ),
         DeclareLaunchArgument("restamp_output", default_value="false"),
         DeclareLaunchArgument("enable_crop", default_value="false"),
-        DeclareLaunchArgument("enable_voxel", default_value="true"),
+        DeclareLaunchArgument("enable_voxel", default_value="false"),
         DeclareLaunchArgument("voxel_leaf_size", default_value="0.01"),
         DeclareLaunchArgument("min_valid_range_m", default_value="0.10"),
         DeclareLaunchArgument("max_valid_range_m", default_value="1.5"),
@@ -206,4 +251,4 @@ def generate_launch_description():
         DeclareLaunchArgument("extrinsic_yaw", default_value="0.0"),
     ]
 
-    return LaunchDescription(declarations + [camera, processing, rviz])
+    return LaunchDescription(declarations + [camera, processing, overlay, rviz])

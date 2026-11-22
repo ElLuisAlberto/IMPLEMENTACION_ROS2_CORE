@@ -1,0 +1,194 @@
+transforms:
+- header:
+    stamp:
+      sec: 1795318790
+      nanosec: 973602237
+    frame_id: j2n6s300_link_base
+  child_frame_id: j2n6s300_link_1
+  transform:
+    translation:
+      x: 0.0
+      y: 0.0
+      z: 0.15675
+    rotation:
+      x: 0.9945895538387974
+      y: 0.10388271942311603
+      z: 6.090104567870387e-17
+      w: 6.360981991412081e-18
+- header:
+    stamp:
+      sec: 1795318790
+      nanosec: 973602237
+    frame_id: j2n6s300_link_1
+  child_frame_id: j2n6s300_link_2
+  transform:
+    translation:
+      x: 0.0
+      y: 0.0016
+      z: -0.11875
+    rotation:
+      x: 0.6782055379411915
+      y: 0.20009309909614295
+      z: -0.2000930990961431
+      w: 0.6782055379411916
+- header:
+    stamp:
+      sec: 1795318790
+      nanosec: 973602237
+    frame_id: j2n6s300_link_2
+  child_frame_id: j2n6s300_link_3
+  transform:
+    translation:
+      x: 0.0
+      y: -0.41
+      z: 0.0
+    rotation:
+      x: 0.47204854792492307
+      y: 0.8815725542472223
+      z: 2.890463716292065e-17
+      w: 5.3980750338750855e-17
+- header:
+    stamp:
+      sec: 1795318790
+      nanosec: 973602237
+    frame_id: j2n6s300_link_3
+  child_frame_id: j2n6s300_link_4
+  transform:
+    translation:
+      x: 0.0
+      y: 0.2073
+      z: -0.0114
+    rotation:
+      x: 0.23397647007819944
+      y: -0.6672743149932757
+      z: 0.6672743149932758
+      w: 0.23397647007819958
+- header:
+    stamp:
+      sec: 1795318790
+      nanosec: 973602237
+    frame_id: j2n6s300_link_4
+  child_frame_id: j2n6s300_link_5
+  transform:
+    translation:
+      x: 0.0
+      y: -0.03703
+      z: -0.06414
+    rotation:
+      x: 0.028692768087337346
+      y: 0.4991760461595551
+      z: 0.8645982738696966
+      w: -0.04969733213705907
+- header:
+    stamp:
+      sec: 1795318790
+      nanosec: 973602237
+    frame_id: j2n6s300_link_5
+  child_frame_id: j2n6s300_link_6
+  transform:
+    translation:
+      x: 0.0
+      y: -0.03703
+      z: -0.06414
+    rotation:
+      x: -0.30644328925504466
+      y: -0.3950854470498111
+      z: -0.6843080676213364
+      w: 0.530775346628263
+- header:
+    stamp:
+      sec: 1795318790
+      nanosec: 973602237
+    frame_id: j2n6s300_link_6
+  child_frame_id: j2n6s300_link_finger_1
+  transform:
+    translation:
+      x: 0.00279
+      y: 0.03126
+      z: -0.11467
+    rotation:
+      x: 0.6336659599902154
+      y: 0.3895360342483902
+      z: -0.6237105492944888
+      w: -0.24023796508978945
+- header:
+    stamp:
+      sec: 1795318790
+      nanosec: 973602237
+    frame_id: j2n6s300_link_6
+  child_frame_id: j2n6s300_link_finger_2
+  transform:
+    translation:
+      x: 0.02226
+      y: -0.02707
+      z: -0.11482
+    rotation:
+      x: -0.3714595607374612
+      y: 0.6016791460724046
+      z: -0.2546713192789357
+      w: 0.6596533324823282
+- header:
+    stamp:
+      sec: 1795318790
+      nanosec: 973602237
+    frame_id: j2n6s300_link_6
+  child_frame_id: j2n6s300_link_finger_3
+  transform:
+    translation:
+      x: -0.02226
+      y: -0.02707
+      z: -0.11482
+    rotation:
+      x: -0.25467131926704506
+      y: 0.6596533326107497
+      z: -0.3714595607255705
+      w: 0.601679145943983
+- header:
+    stamp:
+      sec: 1795318790
+      nanosec: 973602237
+    frame_id: j2n6s300_link_finger_1
+  child_frame_id: j2n6s300_link_finger_tip_1
+  transform:
+    translation:
+      x: 0.044
+      y: -0.003
+      z: 0.0
+    rotation:
+      x: 0.0
+      y: 0.0
+      z: 0.0
+      w: 1.0
+- header:
+    stamp:
+      sec: 1795318790
+      nanosec: 973602237
+    frame_id: j2n6s300_link_finger_2
+  child_frame_id: j2n6s300_link_finger_tip_2
+  transform:
+    translation:
+      x: 0.044
+      y: -0.003
+      z: 0.0
+    rotation:
+      x: 0.0
+      y: 0.0
+      z: 0.0
+      w: 1.0
+- header:
+    stamp:
+      sec: 1795318790
+      nanosec: 973602237
+    frame_id: j2n6s300_link_finger_3
+  child_frame_id: j2n6s300_link_finger_tip_3
+  transform:
+    translation:
+      x: 0.044
+      y: -0.003
+      z: 0.0
+    rotation:
+      x: 0.0
+      y: 0.0
+      z: 0.0
+      w: 1.0
+---

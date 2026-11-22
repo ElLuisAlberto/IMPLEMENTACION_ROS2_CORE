@@ -1,0 +1,345 @@
+diff --git a/src/thesis_core/config/jaco_capsules.yaml b/src/thesis_core/config/jaco_capsules.yaml
+index 9e80f57..3d52ed0 100644
+--- a/src/thesis_core/config/jaco_capsules.yaml
++++ b/src/thesis_core/config/jaco_capsules.yaml
+@@ -4,9 +4,12 @@ capsule_visualizer:
+     publish_rate_hz: 20.0
+     marker_topic: /thesis/robot_capsules
+ 
+-    # Each row describes one capsule between two TF frame origins.
++    # Each row describes one capsule between two TF frame origins. All six
++    # remain in the kinematic and visualization envelope.
+     # Radii are initial conservative approximations and can be calibrated
+     # later against measurements of the physical JACO2.
++    # Historical preventive clearance selects upper_arm_to_forearm through
++    # wrist_2_to_tool by name; the two base capsules remain visualized.
+     segment_names:
+       - base_to_shoulder
+       - shoulder_to_upper_arm
+diff --git a/src/thesis_jaco_perception/test/test_charuco_observational_offline.py b/src/thesis_jaco_perception/test/test_charuco_observational_offline.py
+index bcec072..f503bcc 100644
+--- a/src/thesis_jaco_perception/test/test_charuco_observational_offline.py
++++ b/src/thesis_jaco_perception/test/test_charuco_observational_offline.py
+@@ -27,7 +27,8 @@ def pose(translation, euler):
+ 
+ def synthetic():
+     board = calibration.board_factory()
+-    camera_board = pose([0.03, -0.02, 0.6], [0.2, -0.1, 0.1])
++    # The legacy OpenCV board frame has Y up and Z out of the printed face.
++    camera_board = pose([0.03, -0.02, 0.6], [0.2, math.pi - 0.1, 0.1])
+     world_board = pose([0.2, 0.1, 0.3], [0.02, 0.1, -0.2])
+     link_color = pose([0.015, 0, 0], [-1.57, 0, 1.57])
+     k = np.array([[800, 0, 320], [0, 800, 240], [0, 0, 1]], dtype=float)
+@@ -36,7 +37,9 @@ def synthetic():
+     corners, _ = cv2.projectPoints(board.chessboardCorners, rvec,
+                                     camera_board[:3, 3], k, d)
+     ids = np.arange(len(board.chessboardCorners), dtype=np.int32)
+-    expected = world_board @ np.linalg.inv(camera_board) @ np.linalg.inv(link_color)
++    legacy_to_contract = pose([0, 0.15, 0], [math.pi, 0, 0])
++    camera_contract = camera_board @ legacy_to_contract
++    expected = world_board @ np.linalg.inv(camera_contract) @ np.linalg.inv(link_color)
+     return corners.reshape(-1, 2), ids, k, d, world_board, link_color, expected, camera_board
+ 
+ 
+@@ -46,11 +49,18 @@ def test_generated_board_detects_at_least_twelve_interpolated_corners():
+     corners, ids = calibration.detect(gray, [2000, 0, 1050, 0, 2000, 750, 0, 0, 1], [0]*5)
+     assert len(ids) >= 12
+     assert len(corners) == len(ids)
++    # The OpenCV legacy origin is at the lower left of the printed pattern.
++    corners_by_id = dict(zip(ids.ravel(), corners.reshape(-1, 2)))
++    assert corners_by_id[0][1] > corners_by_id[18][1]
++    assert corners_by_id[0][0] < corners_by_id[5][0]
+ 
+ 
+ def test_synthetic_pose_recovers_correct_composition_and_rejects_inverse_order():
+     corners, ids, k, d, world_board, link_color, expected, camera_board = synthetic()
+     result = calibration.estimate_from_corners(corners, ids, k, d, world_board, link_color)
++    legacy_to_contract = pose([0, 0.15, 0], [math.pi, 0, 0])
++    np.testing.assert_allclose(result["camera_board"], camera_board @ legacy_to_contract,
++                               atol=1e-5)
+     np.testing.assert_allclose(result["world_link"], expected, atol=1e-5)
+     np.testing.assert_allclose(result["world_color"], expected @ link_color, atol=1e-5)
+     assert result["rms_px"] < 1e-3
+diff --git a/thesis_perception/CMakeLists.txt b/thesis_perception/CMakeLists.txt
+index 7a01046..8399d2f 100644
+--- a/thesis_perception/CMakeLists.txt
++++ b/thesis_perception/CMakeLists.txt
+@@ -65,6 +65,11 @@ target_compile_definitions(obstacle_extractor_node PRIVATE ${PCL_DEFINITIONS})
+ add_executable(perception_health_node
+   src/perception_health_node.cpp
+ )
++
++add_executable(visualization_overlay_node
++  src/visualization_overlay_node.cpp
++)
++ament_target_dependencies(visualization_overlay_node rclcpp sensor_msgs)
+ ament_target_dependencies(perception_health_node
+   diagnostic_msgs
+   rclcpp
+@@ -76,6 +81,7 @@ install(TARGETS
+   pointcloud_cluster_probe
+   obstacle_extractor_node
+   perception_health_node
++  visualization_overlay_node
+   DESTINATION lib/${PROJECT_NAME}
+ )
+ 
+diff --git a/thesis_perception/README.md b/thesis_perception/README.md
+index 02af606..6955b0a 100644
+--- a/thesis_perception/README.md
++++ b/thesis_perception/README.md
+@@ -53,6 +53,34 @@ ros2 launch thesis_perception d435i_standalone.launch.py \
+   start_rviz:=true
+ ```
+ 
++RViz requests NVIDIA PRIME render offload by default. Use
++`rviz_use_nvidia:=false` on hosts without a working NVIDIA OpenGL setup. This
++only selects the GPU for RViz rendering; camera acquisition, preprocessing
++and cloud transformation run on the CPU.
++
++To reproduce the experimental robot/cloud overlay from the current session,
++with an already-running robot state publisher and physical or simulated
++`/joint_states`, use:
++
++```bash
++ros2 launch thesis_perception d435i_standalone.launch.py \
++  start_rviz:=true show_robot_overlay:=true start_extractor:=false
++```
++
++This does not start a robot adapter or issue motion commands. The saved
++visualization-only fit is specific to the observed mounting, is not a camera
++calibration, publishes no TF and is not connected to the supervisor. Recheck
++it after the camera, robot base or mounting moves. It remains disabled unless
++`show_robot_overlay:=true` is explicitly requested.
++
++The standalone launch selects the D435i High Density preset, infrared
++emitter power 150, manual depth exposure of 10,000 microseconds, depth at
++848x480x30 and RGB at 1280x720x30. It displays the RGB image and the cloud
++filtered to a radial range of 0.10-1.50 m in the camera frame. Decimation,
++spatial and temporal depth filters and voxel downsampling are disabled by
++default. These are experimental observation settings selected for the
++current scene; they are not a validated safety configuration.
++
+ While that launch is running, a terminal-only report can be generated with:
+ 
+ ```bash
+@@ -72,11 +100,10 @@ explicitly with `enable_imu:=true` only after validating host IIO permissions.
+ The standalone launch also exposes `enable_crop`, `min_x`, `max_x`, `min_y`,
+ `max_y`, `min_z`, `max_z`, `enable_voxel` and `voxel_leaf_size` so the final
+ workspace can be tuned from the terminal without modifying source files.
+-For a fixed D435i, spatial and temporal depth filters are enabled by default to
+-reduce wall flicker. Depth decimation with magnitude 2 reduces the upstream
+-PointCloud2 workload before PCL processing. The camera PointCloud2 publisher
+-uses the `SENSOR_DATA` QoS profile, while downstream consumers retain only the
+-newest sample so stale geometry is not accumulated.
++Spatial and temporal filters and decimation can be enabled explicitly for
++experiments. The camera PointCloud2 publisher uses the `SENSOR_DATA` QoS
++profile, while downstream consumers retain only the newest sample so stale
++geometry is not accumulated.
+ 
+ ## Extrinsic calibration
+ 
+diff --git a/thesis_perception/launch/d435i_standalone.launch.py b/thesis_perception/launch/d435i_standalone.launch.py
+index 9da4891..bafa166 100644
+--- a/thesis_perception/launch/d435i_standalone.launch.py
++++ b/thesis_perception/launch/d435i_standalone.launch.py
+@@ -19,8 +19,9 @@ from launch.actions import (
+     DeclareLaunchArgument,
+     GroupAction,
+     IncludeLaunchDescription,
++    SetEnvironmentVariable,
+ )
+-from launch.conditions import IfCondition
++from launch.conditions import IfCondition, UnlessCondition
+ from launch.launch_description_sources import PythonLaunchDescriptionSource
+ from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
+ from launch_ros.actions import Node, SetParameter
+@@ -44,6 +45,16 @@ def generate_launch_description():
+         "rviz",
+         "d435i_perception.rviz",
+     ])
++    overlay_rviz_config = PathJoinSubstitution([
++        FindPackageShare("thesis_perception"),
++        "rviz",
++        "d435i_jaco_experimental.rviz",
++    ])
++    overlay_parameters = PathJoinSubstitution([
++        FindPackageShare("thesis_perception"),
++        "config",
++        "d435i_overlay_experimental.yaml",
++    ])
+ 
+     camera = GroupAction(
+         actions=[
+@@ -51,6 +62,10 @@ def generate_launch_description():
+                 name="pointcloud.pointcloud_qos",
+                 value="SENSOR_DATA",
+             ),
++            # The upstream launch does not expose these sensor options as
++            # arguments. Pass them through the launch ROS parameter scope.
++            SetParameter(name="depth_module.visual_preset", value=4),
++            SetParameter(name="depth_module.laser_power", value=150.0),
+             IncludeLaunchDescription(
+                 PythonLaunchDescriptionSource(camera_launch),
+                 condition=IfCondition(LaunchConfiguration("start_camera")),
+@@ -68,6 +83,8 @@ def generate_launch_description():
+                     "pointcloud.enable": "true",
+                     "pointcloud.stream_filter": "2",
+                     "align_depth.enable": "true",
++                    "depth_module.enable_auto_exposure": "false",
++                    "depth_module.exposure": "10000",
+                     "decimation_filter.enable": LaunchConfiguration(
+                         "enable_decimation_filter"
+                     ),
+@@ -80,8 +97,8 @@ def generate_launch_description():
+                     "temporal_filter.enable": LaunchConfiguration(
+                         "enable_temporal_filter"
+                     ),
+-                    "depth_module.depth_profile": "640,480,30",
+-                    "rgb_camera.color_profile": "640,480,30",
++                    "depth_module.depth_profile": "848,480,30",
++                    "rgb_camera.color_profile": "1280,720,30",
+                 }.items(),
+             ),
+         ],
+@@ -127,18 +144,46 @@ def generate_launch_description():
+         }.items(),
+     )
+ 
+-    rviz = Node(
+-        package="rviz2",
+-        executable="rviz2",
+-        name="d435i_perception_rviz",
++    overlay = Node(
++        package="thesis_perception",
++        executable="visualization_overlay_node",
++        name="visualization_overlay",
++        parameters=[overlay_parameters],
++        condition=IfCondition(LaunchConfiguration("show_robot_overlay")),
+         output="screen",
++    )
++
++    rviz = GroupAction(
+         condition=IfCondition(LaunchConfiguration("start_rviz")),
+-        arguments=["-d", rviz_config],
++        actions=[
++            SetEnvironmentVariable(
++                "__NV_PRIME_RENDER_OFFLOAD", "1",
++                condition=IfCondition(LaunchConfiguration("rviz_use_nvidia")),
++            ),
++            SetEnvironmentVariable(
++                "__GLX_VENDOR_LIBRARY_NAME", "nvidia",
++                condition=IfCondition(LaunchConfiguration("rviz_use_nvidia")),
++            ),
++            Node(
++                package="rviz2", executable="rviz2",
++                name="d435i_perception_rviz", output="screen",
++                condition=UnlessCondition(LaunchConfiguration("show_robot_overlay")),
++                arguments=["-d", rviz_config],
++            ),
++            Node(
++                package="rviz2", executable="rviz2",
++                name="d435i_experimental_overlay_rviz", output="screen",
++                condition=IfCondition(LaunchConfiguration("show_robot_overlay")),
++                arguments=["-d", overlay_rviz_config],
++            ),
++        ],
+     )
+ 
+     declarations = [
+         DeclareLaunchArgument("start_camera", default_value="true"),
+         DeclareLaunchArgument("start_rviz", default_value="false"),
++        DeclareLaunchArgument("rviz_use_nvidia", default_value="true"),
++        DeclareLaunchArgument("show_robot_overlay", default_value="false"),
+         DeclareLaunchArgument(
+             "enable_imu",
+             default_value="false",
+@@ -149,7 +194,7 @@ def generate_launch_description():
+         ),
+         DeclareLaunchArgument(
+             "enable_decimation_filter",
+-            default_value="true",
++            default_value="false",
+             description="Reduce depth workload before creating PointCloud2.",
+         ),
+         DeclareLaunchArgument(
+@@ -159,12 +204,12 @@ def generate_launch_description():
+         ),
+         DeclareLaunchArgument(
+             "enable_spatial_filter",
+-            default_value="true",
++            default_value="false",
+             description="Stabilize local depth surfaces before pointcloud.",
+         ),
+         DeclareLaunchArgument(
+             "enable_temporal_filter",
+-            default_value="true",
++            default_value="false",
+             description="Reduce frame-to-frame depth flicker for fixed camera.",
+         ),
+         DeclareLaunchArgument("use_sim_time", default_value="false"),
+@@ -175,7 +220,7 @@ def generate_launch_description():
+         ),
+         DeclareLaunchArgument("restamp_output", default_value="false"),
+         DeclareLaunchArgument("enable_crop", default_value="false"),
+-        DeclareLaunchArgument("enable_voxel", default_value="true"),
++        DeclareLaunchArgument("enable_voxel", default_value="false"),
+         DeclareLaunchArgument("voxel_leaf_size", default_value="0.01"),
+         DeclareLaunchArgument("min_valid_range_m", default_value="0.10"),
+         DeclareLaunchArgument("max_valid_range_m", default_value="1.5"),
+@@ -206,4 +251,4 @@ def generate_launch_description():
+         DeclareLaunchArgument("extrinsic_yaw", default_value="0.0"),
+     ]
+ 
+-    return LaunchDescription(declarations + [camera, processing, rviz])
++    return LaunchDescription(declarations + [camera, processing, overlay, rviz])
+diff --git a/thesis_perception/rviz/d435i_perception.rviz b/thesis_perception/rviz/d435i_perception.rviz
+index 5928976..b4938e5 100644
+--- a/thesis_perception/rviz/d435i_perception.rviz
++++ b/thesis_perception/rviz/d435i_perception.rviz
+@@ -63,6 +63,16 @@ Visualization Manager:
+         Reliability Policy: Reliable
+         Value: /thesis/perception/obstacle_marker
+       Value: true
++    - Class: rviz_default_plugins/Image
++      Enabled: true
++      Name: Imagen RGB
++      Topic:
++        Depth: 1
++        Durability Policy: Volatile
++        History Policy: Keep Last
++        Reliability Policy: Best Effort
++        Value: /camera/d435i/color/image_raw
++      Value: true
+   Enabled: true
+   Global Options:
+     Background Color: 48; 48; 48
+diff --git a/tools/perception/charuco_observational_once.py b/tools/perception/charuco_observational_once.py
+index 9ac3b99..f8378db 100644
+--- a/tools/perception/charuco_observational_once.py
++++ b/tools/perception/charuco_observational_once.py
+@@ -152,12 +152,19 @@ def estimate_from_corners(corners, ids, k, d, world_board, link_color):
+     if float(residual.max()) > 3.0:
+         raise ValueError("Maximum corner reprojection error exceeds 3 px")
+     rotation, _ = cv2.Rodrigues(rvec)
+-    camera_board = np.eye(4)
+-    camera_board[:3, :3] = rotation
+-    camera_board[:3, 3] = tvec.reshape(3)
+-    rigid(camera_board)
+     camera_points = object_points @ rotation.T + tvec.reshape(1, 3)
+-    if np.any(camera_points[:, 2] <= 0) or np.dot(rotation[:, 2], tvec.reshape(3)) <= 0:
++    # OpenCV's legacy CharucoBoard_create places its origin at the lower
++    # left, with Y up and Z out of the printed face. The measured pose
++    # contract instead uses the upper left, Y down and Z into the sheet.
++    camera_legacy = np.eye(4)
++    camera_legacy[:3, :3] = rotation
++    camera_legacy[:3, 3] = tvec.reshape(3)
++    legacy_board = np.eye(4)
++    legacy_board[:3, :3] = np.diag([1.0, -1.0, -1.0])
++    legacy_board[1, 3] = board_module.SQUARES_Y * board_module.SQUARE_M
++    camera_board = rigid(camera_legacy @ legacy_board)
++    if (np.any(camera_points[:, 2] <= 0) or
++            np.dot(camera_board[:3, 2], camera_board[:3, 3]) <= 0):
+         raise ValueError("Board is behind camera or faces away")
+     world_link, world_color = compose_world_camera_link(world_board, camera_board, link_color)
+     return {"world_link": world_link, "world_color": world_color,

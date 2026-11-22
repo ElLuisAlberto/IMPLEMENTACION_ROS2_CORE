@@ -1,0 +1,7 @@
+dpkg-query: no se ha encontrado ningún paquete que corresponda con librealsense2.
+python3-numpy	1:1.21.5-1ubuntu22.04.1
+python3-opencv:amd64	4.5.4+dfsg-9ubuntu4
+python3-scipy	1.8.0-1exp2ubuntu1
+ros-humble-rclcpp	16.0.21-1jammy.20260907.213403
+ros-humble-realsense2-camera	4.58.4-1jammy.20260908.100350
+ros-humble-tf2-ros	0.25.23-1jammy.20260907.224752

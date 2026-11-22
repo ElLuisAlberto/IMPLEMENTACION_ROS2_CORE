@@ -1,0 +1,23 @@
+/codex_segmentacion_cpp
+  Subscribers:
+    /camera/d435i/depth/color/points: sensor_msgs/msg/PointCloud2
+    /parameter_events: rcl_interfaces/msg/ParameterEvent
+  Publishers:
+    /codex/segmentacion/brazo_candidato: sensor_msgs/msg/PointCloud2
+    /codex/segmentacion/margen_incierto: sensor_msgs/msg/PointCloud2
+    /codex/segmentacion/resto_candidato: sensor_msgs/msg/PointCloud2
+    /parameter_events: rcl_interfaces/msg/ParameterEvent
+    /rosout: rcl_interfaces/msg/Log
+  Service Servers:
+    /codex_segmentacion_cpp/describe_parameters: rcl_interfaces/srv/DescribeParameters
+    /codex_segmentacion_cpp/get_parameter_types: rcl_interfaces/srv/GetParameterTypes
+    /codex_segmentacion_cpp/get_parameters: rcl_interfaces/srv/GetParameters
+    /codex_segmentacion_cpp/list_parameters: rcl_interfaces/srv/ListParameters
+    /codex_segmentacion_cpp/set_parameters: rcl_interfaces/srv/SetParameters
+    /codex_segmentacion_cpp/set_parameters_atomically: rcl_interfaces/srv/SetParametersAtomically
+  Service Clients:
+
+  Action Servers:
+
+  Action Clients:
+

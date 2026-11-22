@@ -1,0 +1,50 @@
+transforms:
+- header:
+    stamp:
+      sec: 1795306252
+      nanosec: 860582431
+    frame_id: world
+  child_frame_id: root
+  transform:
+    translation:
+      x: 0.0
+      y: 0.0
+      z: 0.0
+    rotation:
+      x: 0.0
+      y: 0.0
+      z: 0.0
+      w: 1.0
+- header:
+    stamp:
+      sec: 1795306252
+      nanosec: 860582431
+    frame_id: root
+  child_frame_id: j2n6s300_link_base
+  transform:
+    translation:
+      x: 0.0
+      y: 0.0
+      z: 0.0
+    rotation:
+      x: 0.0
+      y: 0.0
+      z: 0.0
+      w: 1.0
+- header:
+    stamp:
+      sec: 1795306252
+      nanosec: 860582431
+    frame_id: j2n6s300_link_6
+  child_frame_id: j2n6s300_end_effector
+  transform:
+    translation:
+      x: 0.0
+      y: 0.0
+      z: -0.16
+    rotation:
+      x: 0.7071067811865476
+      y: 0.7071067811865475
+      z: 4.3297802811774664e-17
+      w: 4.329780281177467e-17
+---

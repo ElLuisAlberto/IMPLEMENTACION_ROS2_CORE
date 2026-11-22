@@ -53,6 +53,34 @@ ros2 launch thesis_perception d435i_standalone.launch.py \
   start_rviz:=true
 ```
 
+RViz requests NVIDIA PRIME render offload by default. Use
+`rviz_use_nvidia:=false` on hosts without a working NVIDIA OpenGL setup. This
+only selects the GPU for RViz rendering; camera acquisition, preprocessing
+and cloud transformation run on the CPU.
+
+To reproduce the experimental robot/cloud overlay from the current session,
+with an already-running robot state publisher and physical or simulated
+`/joint_states`, use:
+
+```bash
+ros2 launch thesis_perception d435i_standalone.launch.py \
+  start_rviz:=true show_robot_overlay:=true start_extractor:=false
+```
+
+This does not start a robot adapter or issue motion commands. The saved
+visualization-only fit is specific to the observed mounting, is not a camera
+calibration, publishes no TF and is not connected to the supervisor. Recheck
+it after the camera, robot base or mounting moves. It remains disabled unless
+`show_robot_overlay:=true` is explicitly requested.
+
+The standalone launch selects the D435i High Density preset, infrared
+emitter power 150, manual depth exposure of 10,000 microseconds, depth at
+848x480x30 and RGB at 1280x720x30. It displays the RGB image and the cloud
+filtered to a radial range of 0.10-1.50 m in the camera frame. Decimation,
+spatial and temporal depth filters and voxel downsampling are disabled by
+default. These are experimental observation settings selected for the
+current scene; they are not a validated safety configuration.
+
 While that launch is running, a terminal-only report can be generated with:
 
 ```bash
@@ -72,11 +100,34 @@ explicitly with `enable_imu:=true` only after validating host IIO permissions.
 The standalone launch also exposes `enable_crop`, `min_x`, `max_x`, `min_y`,
 `max_y`, `min_z`, `max_z`, `enable_voxel` and `voxel_leaf_size` so the final
 workspace can be tuned from the terminal without modifying source files.
-For a fixed D435i, spatial and temporal depth filters are enabled by default to
-reduce wall flicker. Depth decimation with magnitude 2 reduces the upstream
-PointCloud2 workload before PCL processing. The camera PointCloud2 publisher
-uses the `SENSOR_DATA` QoS profile, while downstream consumers retain only the
-newest sample so stale geometry is not accumulated.
+Spatial and temporal filters and decimation can be enabled explicitly for
+experiments. The camera PointCloud2 publisher uses the `SENSOR_DATA` QoS
+profile, while downstream consumers retain only the newest sample so stale
+geometry is not accumulated.
+
+## Session segmentation and recorded evidence
+
+The arm-removal prototype from the November 22 session is now preserved in
+[`tools/perception/experimental_arm_segmentation/`](../tools/perception/experimental_arm_segmentation/README.md)
+with its source, fixed mesh samples, build and startup instructions. The
+standalone camera and overlay launch above **does not start this filter**.
+The prior session process can still be running from `/tmp`; stop only the
+relevant old visualization process before starting another publisher on the
+same topics. The filter requires a compatible OpenGL/X11 environment and uses
+a session-specific visual transform, not an extrinsic calibration.
+
+The [technical audit](../docs/codex_reports/2026-11-22_auditoria_tecnica_integral_d435i_jaco2.md)
+records the camera, transforms, robot state and experimental settings. The
+[static test](../evidence/codex_reports/2026-11-22_prueba_filtro_estatico_resultados/RESULTADOS.md),
+[initial motion test](../evidence/codex_reports/2026-11-22_prueba_filtro_movimiento_resultados/RESULTADOS.md)
+and [operator-motion recording](../evidence/codex_reports/2026-11-22_movimiento_operador_resultados/RESULTADOS.md)
+describe the available results and their limits. Their bags are in the
+corresponding evidence directories. The repository ignores `*.db3`, so a Git
+commit or clone alone will not preserve the recordings; keep a separate backup
+of bag directories and their metadata. Other session changes and new files may
+also remain uncommitted: check `git status` before relying on version control.
+The filter and visual alignment remain experimental and are not validated for
+supervisor or physical safety decisions.
 
 ## Extrinsic calibration
 

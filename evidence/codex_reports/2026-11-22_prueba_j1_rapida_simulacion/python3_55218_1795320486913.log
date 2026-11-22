@@ -1,0 +1,4 @@
+[INFO] [1795320487.250660726] [simulation_command_adapter]: Adaptador Gazebo preparado; salida simulada habilitada
+[INFO] [1795320500.881836841] [simulation_command_adapter]: GOAL PENDING id=codex_sim_j1_20deg, duration=2.00 s, scale=1.00
+[INFO] [1795320500.889235735] [simulation_command_adapter]: GAZEBO ACCEPTED id=codex_sim_j1_20deg, scale=1.00
+[INFO] [1795320503.034830426] [simulation_command_adapter]: GAZEBO SUCCEEDED id=codex_sim_j1_20deg: Goal successfully reached!

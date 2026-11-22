@@ -1,0 +1,197 @@
+{
+  "tf_counts": {
+    "/tf_static": 7,
+    "/tf": 2568
+  },
+  "frames": [
+    {
+      "frame": 0,
+      "stamp_ns": 1795318047161396484,
+      "total": 6,
+      "cluster_count_3_500": 1,
+      "points_in_small": 6,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [
+        {
+          "n": 6,
+          "center_m": [
+            -0.35600000619888306,
+            0.5669999718666077,
+            0.7279999852180481
+          ],
+          "extent_m": [
+            0.00800000037997961,
+            0.006000000052154064,
+            0.00800000037997961
+          ],
+          "mesh_mm_min": 589.7,
+          "mesh_mm_med": 594.7,
+          "link": "j2n6s300_link_3"
+        }
+      ],
+      "small_near": []
+    },
+    {
+      "frame": 25,
+      "stamp_ns": 1795318048128754883,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 50,
+      "stamp_ns": 1795318049296265625,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 75,
+      "stamp_ns": 1795318050130212402,
+      "total": 20,
+      "cluster_count_3_500": 1,
+      "points_in_small": 20,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [
+        {
+          "n": 20,
+          "center_m": [
+            -0.45399999618530273,
+            0.5460000038146973,
+            0.8379999995231628
+          ],
+          "extent_m": [
+            0.020999999716877937,
+            0.02500000037252903,
+            0.004000000189989805
+          ],
+          "mesh_mm_min": 615.3,
+          "mesh_mm_med": 628.9,
+          "link": "j2n6s300_link_3"
+        }
+      ],
+      "small_near": []
+    },
+    {
+      "frame": 101,
+      "stamp_ns": 1795318051164286865,
+      "total": 9,
+      "cluster_count_3_500": 1,
+      "points_in_small": 9,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [
+        {
+          "n": 9,
+          "center_m": [
+            -0.35600000619888306,
+            0.5609999895095825,
+            0.7239999771118164
+          ],
+          "extent_m": [
+            0.010999999940395355,
+            0.007000000216066837,
+            0.008999999612569809
+          ],
+          "mesh_mm_min": 585.4,
+          "mesh_mm_med": 588.6,
+          "link": "j2n6s300_link_3"
+        }
+      ],
+      "small_near": []
+    },
+    {
+      "frame": 126,
+      "stamp_ns": 1795318052064952637,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 151,
+      "stamp_ns": 1795318053099055420,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 177,
+      "stamp_ns": 1795318053999689697,
+      "total": 12,
+      "cluster_count_3_500": 1,
+      "points_in_small": 12,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [
+        {
+          "n": 12,
+          "center_m": [
+            -0.3499999940395355,
+            0.5609999895095825,
+            0.7200000286102295
+          ],
+          "extent_m": [
+            0.012000000104308128,
+            0.003000000026077032,
+            0.006000000052154064
+          ],
+          "mesh_mm_min": 583.7,
+          "mesh_mm_med": 586.9,
+          "link": "j2n6s300_link_3"
+        }
+      ],
+      "small_near": []
+    },
+    {
+      "frame": 202,
+      "stamp_ns": 1795318055167212402,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 227,
+      "stamp_ns": 1795318056134593994,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 253,
+      "stamp_ns": 1795318057101967285,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    }
+  ]
+}

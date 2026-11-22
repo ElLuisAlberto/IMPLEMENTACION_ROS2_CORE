@@ -8,6 +8,24 @@ corto horizonte, la evaluación geométrica, la decisión de seguridad y el
 adaptador de ejecución. Esto permite estudiar la misma política en simulación
 y, de forma controlada, frente al brazo físico.
 
+## Guía rápida
+
+- [Arquitectura y paquetes](#arquitectura): dónde están el supervisor, la GUI y
+  los adaptadores.
+- [Modos de trabajo](#modos-de-trabajo) y [preparación física](#preparación-física):
+  alcance y condiciones de cada modo.
+- [Comandos de ejecución](#comandos-de-ejecución): simulación, observación y
+  apertura de la interfaz física, incluido el diagnóstico de armado.
+- [Documentación técnica](docs/implementation_notes/): contratos e
+  implementación; [informes](docs/codex_reports/) y
+  [evidencias](evidence/codex_reports/) conservan el historial de pruebas.
+
+Los informes describen el estado y las condiciones de su fecha; para arrancar
+el sistema, consulta primero los comandos actuales de este README. Algunas
+notas y herramientas antiguas todavía usan la ruta
+`~/Escritorio/TESIS_2_IMPLEMENTATION`; revisa sus rutas y requisitos antes de
+ejecutarlas en este workspace.
+
 ## Estado de la tesis
 
 Estado al 22/10/2026: **simulación y movimiento articular físico J1 validados;
@@ -149,14 +167,23 @@ cota fuera de la silueta del brazo.
 | `src/thesis_ui` | Interfaz para simulación y hardware |
 | `src/thesis_telemetry` | Registro de decisiones y ejecución |
 | `src/thesis_validation` | Validadores y escenarios |
+| `src/thesis_multi_robot` | Perfiles y lanzamientos para varios robots simulados |
+| `src/thesis_description` | Modelo, descripción y configuración visual del JACO2 |
+| `src/gripper_instrumentado_description`, `src/sistema_gripper_instrumentado_description` | Descripciones del gripper instrumentado |
 | `src/thesis_jaco_perception` | Auto-filtrado diagnóstico de cápsulas y mallas, aislado del supervisor |
 | `thesis_perception` | Cámara D435i, preprocesamiento y extracción de obstáculos |
 | `tools/physical` | Preflight físico y protocolo articular |
 | `tools/perception` | Capturas diagnósticas y análisis offline de calibración |
 | `tools/realsense_d435i_test` | Pruebas independientes de la cámara |
+| `tools/simulation`, `tools/validation`, `tools/hardware`, `tools/demos` | Utilidades de simulación, validación, hardware y demostración |
+| `third_party` | Recursos y dependencias externas de robots |
+| `docs`, `evidence` | Documentación e informes; resultados y registros de pruebas |
 
 Los directorios `build/`, `install/` y `log/` son artefactos locales de
-compilación y no forman parte del repositorio.
+compilación y no forman parte del repositorio. `build_migracion/` e
+`install_migracion/`, si existen, son áreas locales de compilación separadas;
+consérvalas mientras puedan ser necesarias. El paquete ROS `thesis_perception`
+está en la raíz, mientras que los demás paquetes principales están en `src/`.
 
 ## Modos de trabajo
 
@@ -204,7 +231,7 @@ automatización de evasión.
 Ejecuta primero esta preparación en cada terminal nueva:
 
 ```bash
-cd ~/Escritorio/TESIS_2_IMPLEMENTATION
+cd ~/Escritorio/TESIS_JACO2/IMPLEMENTACION_ROS2_CORE
 source /opt/ros/humble/setup.bash
 source install/setup.bash
 ```
@@ -259,6 +286,56 @@ Habilita el botón de armado, pero el launch siempre comienza con
 la parada de emergencia accesible y proximidad `ALLOW/READY`. No abras dos
 launches físicos a la vez: el bloqueo USB admite un solo dueño.
 
+Este comando inicia también la esfera virtual `PARK`. Es un escenario de
+prueba: no detecta personas ni obstáculos reales. El operador autorizado debe
+comprobar el área y la parada de emergencia; antes de cada etapa que pueda
+mover el brazo, confirma la prueba y comienza con desplazamientos mínimos y
+velocidad reducida.
+
+#### Si el armado muestra NOT_READY o STOP/HOLD
+
+Comprueba primero que no haya una sesión física ya abierta. Si la interfaz
+existente se inició con `use_demo_obstacle:=false`, no basta con abrir otra
+GUI: el monitor sigue sin recibir una esfera virtual. Para comprobar la fuente,
+ejecuta en otra terminal, después de la preparación indicada arriba:
+
+```bash
+ros2 topic info /thesis/obstacle_input --verbose --no-daemon --spin-time 2
+```
+
+Si aparecen cero publicadores y se desea trabajar con el escenario virtual,
+inicia una sola fuente en una terminal y mantenla abierta:
+
+```bash
+ros2 run thesis_core obstacle_demo_source --ros-args \
+  --params-file install/thesis_core/share/thesis_core/config/virtual_obstacle_scenarios.yaml \
+  -p scenario:=PARK
+```
+
+No inicies esta fuente si ya hay otra publicando: revisa la fuente existente.
+Comprueba por separado la proximidad y la disponibilidad, esperando a que
+termine cada comando antes de ejecutar el siguiente:
+
+```bash
+ros2 topic echo /thesis/proximity_status --once --no-daemon --spin-time 2
+ros2 topic echo /thesis/system_readiness --once --no-daemon --spin-time 2
+ros2 topic echo /thesis/hardware/diagnostics --once --no-daemon --spin-time 2
+```
+
+Para el escenario PARK, verifica geometría válida y `ALLOW`, `READY`, conexión
+y estado de articulaciones válido. Si aparece `ARM interlock rejected: STOP or
+HOLD is active` después de recuperar esas condiciones, puede haber quedado un
+STOP del supervisor retenido. Con el brazo detenido, pulsa **DESARMAR SALIDA
+FÍSICA** para restablecerlo y vuelve a comprobar el diagnóstico: debe indicar
+`armed=false`, `safety_stop_active=false` y una tasa de salida de 0 Hz. La
+acción de desarmar detiene cualquier ejecución activa. No restablezcas ni armes
+si persiste un STOP real, hay datos inválidos o falta el supervisor; investiga la
+causa. Un mensaje de fallo anterior puede permanecer visible hasta otra acción.
+
+El control manual físico requiere además que la salida esté armada y que no
+haya una trayectoria activa. Si el armado sigue rechazándose, revisa el motivo
+actual y el diagnóstico antes de continuar.
+
 ### Reabrir solo la GUI física
 
 ```bash
@@ -282,6 +359,19 @@ Muestra el modelo medido, cápsulas, horizonte y esfera virtual sin iniciar otro
 adaptador USB.
 
 ### RealSense D435i y RViz RGB-D
+
+Para la configuración actual de la D435i, el filtro de proximidad y RViz con
+RTX, consulta [el arranque de percepción](thesis_perception/README.md#standalone-mode).
+La superposición nube-robot documentada allí es experimental y no inicia ni
+controla el brazo físico.
+
+El [registro de avances de percepción y pruebas](docs/codex_reports/2026-11-22_registro_avances_percepcion_y_pruebas.md)
+reúne la auditoría, los resultados y los rosbags de la sesión. El [filtro
+rápido experimental](tools/perception/experimental_arm_segmentation/README.md)
+se compila e inicia por separado; el arranque de percepción no lo inicia.
+Los archivos `.db3` no se guardan en Git y necesitan un respaldo separado.
+
+La siguiente es una alternativa genérica sin esos ajustes del proyecto:
 
 En una terminal inicia color, profundidad alineada, RGB-D y nube de puntos:
 

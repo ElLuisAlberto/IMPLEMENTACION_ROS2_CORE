@@ -1,0 +1,35 @@
+ M AGENTS.md
+ M README.md
+ M src/thesis_core/config/jaco_capsules.yaml
+ M src/thesis_core/test/test_horizon_clearance.py
+ M src/thesis_core/test/test_table_clearance.py
+ M src/thesis_core/thesis_core/clearance_geometry.py
+ M src/thesis_core/thesis_core/clearance_markers.py
+ M src/thesis_core/thesis_core/horizon_clearance.py
+ M src/thesis_core/thesis_core/jaco_kinematics.py
+ M src/thesis_core/thesis_core/proximity_monitor_node.py
+ M src/thesis_core/thesis_core/safety_supervisor_node.py
+ M src/thesis_core/thesis_core/work_table.py
+ M src/thesis_description/rviz/jaco.rviz
+ M src/thesis_description/urdf/kinova_common.xacro
+ M src/thesis_jaco_perception/test/test_charuco_observational_offline.py
+ M src/thesis_simulation/launch/jaco_gazebo.launch.py
+ M src/thesis_simulation/test/test_arm_geometry_alignment.py
+ M src/thesis_simulation/test/test_simulation_scene_contract.py
+ M src/thesis_simulation/worlds/jaco2_workstation.sdf
+ M thesis_perception/CMakeLists.txt
+ M thesis_perception/README.md
+ M thesis_perception/launch/d435i_standalone.launch.py
+ M thesis_perception/rviz/d435i_perception.rviz
+ M tools/perception/charuco_observational_once.py
+?? build_migracion/
+?? docs/codex_reports/2026-11-22_auditoria_historico_segmentacion_d435i_jaco2.md
+?? evidence/codex_reports/2026-11-22_auditoria_tecnica_d435i_jaco2/
+?? evidence/codex_reports/2026-11-22_segmentacion_analisis_10s/
+?? evidence/codex_reports/2026-11-22_segmentacion_brazo_10s/
+?? install_migracion/
+?? src/thesis_core/test/test_jaco_clearance_selection.py
+?? thesis_perception/config/d435i_overlay_experimental.yaml
+?? thesis_perception/rviz/d435i_jaco_experimental.rviz
+?? thesis_perception/src/visualization_overlay_node.cpp
+?? third_party/robots/elite/

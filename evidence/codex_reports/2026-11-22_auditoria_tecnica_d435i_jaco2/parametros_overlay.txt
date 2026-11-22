@@ -1,0 +1,24 @@
+/visualization_overlay:
+  ros__parameters:
+    qos_overrides:
+      /parameter_events:
+        publisher:
+          depth: 1000
+          durability: volatile
+          history: keep_last
+          reliability: reliable
+    use_sim_time: false
+    visualization_transform:
+    - 0.9967828337918574
+    - -0.030613137601291703
+    - 0.07407305896261236
+    - -0.04998984447794908
+    - -0.0638462577276332
+    - 0.2554137241254159
+    - 0.9647214545673598
+    - -0.658887310196595
+    - -0.04845242648259121
+    - -0.9663470729166567
+    - 0.2526374814499202
+    - 0.24566380982590308
+

@@ -152,12 +152,19 @@ def estimate_from_corners(corners, ids, k, d, world_board, link_color):
     if float(residual.max()) > 3.0:
         raise ValueError("Maximum corner reprojection error exceeds 3 px")
     rotation, _ = cv2.Rodrigues(rvec)
-    camera_board = np.eye(4)
-    camera_board[:3, :3] = rotation
-    camera_board[:3, 3] = tvec.reshape(3)
-    rigid(camera_board)
     camera_points = object_points @ rotation.T + tvec.reshape(1, 3)
-    if np.any(camera_points[:, 2] <= 0) or np.dot(rotation[:, 2], tvec.reshape(3)) <= 0:
+    # OpenCV's legacy CharucoBoard_create places its origin at the lower
+    # left, with Y up and Z out of the printed face. The measured pose
+    # contract instead uses the upper left, Y down and Z into the sheet.
+    camera_legacy = np.eye(4)
+    camera_legacy[:3, :3] = rotation
+    camera_legacy[:3, 3] = tvec.reshape(3)
+    legacy_board = np.eye(4)
+    legacy_board[:3, :3] = np.diag([1.0, -1.0, -1.0])
+    legacy_board[1, 3] = board_module.SQUARES_Y * board_module.SQUARE_M
+    camera_board = rigid(camera_legacy @ legacy_board)
+    if (np.any(camera_points[:, 2] <= 0) or
+            np.dot(camera_board[:3, 2], camera_board[:3, 3]) <= 0):
         raise ValueError("Board is behind camera or faces away")
     world_link, world_color = compose_world_camera_link(world_board, camera_board, link_color)
     return {"world_link": world_link, "world_color": world_color,

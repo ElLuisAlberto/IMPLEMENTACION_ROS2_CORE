@@ -1,0 +1,42 @@
+[INFO] [1795318857.164951762] [tf2_echo]: Waiting for transform j2n6s300_link_base ->  j2n6s300_end_effector: Invalid frame ID "j2n6s300_link_base" passed to canTransform argument target_frame - frame does not exist
+At time 1795318857.772851706
+- Translation: [0.273, 0.021, 0.551]
+- Rotation: in Quaternion (xyzw) [0.220, 0.706, 0.363, 0.567]
+- Rotation: in RPY (radian) [1.692, 0.696, 1.917]
+- Rotation: in RPY (degree) [96.957, 39.851, 109.837]
+- Matrix:
+ -0.261 -0.102  0.960  0.273
+  0.722  0.639  0.264  0.021
+ -0.641  0.762 -0.093  0.551
+  0.000  0.000  0.000  1.000
+At time 1795318858.772848124
+- Translation: [0.273, 0.021, 0.551]
+- Rotation: in Quaternion (xyzw) [0.220, 0.706, 0.363, 0.567]
+- Rotation: in RPY (radian) [1.692, 0.696, 1.917]
+- Rotation: in RPY (degree) [96.957, 39.851, 109.837]
+- Matrix:
+ -0.261 -0.102  0.960  0.273
+  0.722  0.639  0.264  0.021
+ -0.641  0.762 -0.093  0.551
+  0.000  0.000  0.000  1.000
+At time 1795318859.772840894
+- Translation: [0.273, 0.021, 0.551]
+- Rotation: in Quaternion (xyzw) [0.220, 0.706, 0.363, 0.567]
+- Rotation: in RPY (radian) [1.692, 0.696, 1.917]
+- Rotation: in RPY (degree) [96.957, 39.851, 109.837]
+- Matrix:
+ -0.261 -0.102  0.960  0.273
+  0.722  0.639  0.264  0.021
+ -0.641  0.762 -0.093  0.551
+  0.000  0.000  0.000  1.000
+At time 1795318860.772802393
+- Translation: [0.273, 0.021, 0.551]
+- Rotation: in Quaternion (xyzw) [0.220, 0.706, 0.363, 0.567]
+- Rotation: in RPY (radian) [1.692, 0.696, 1.917]
+- Rotation: in RPY (degree) [96.957, 39.851, 109.837]
+- Matrix:
+ -0.261 -0.102  0.960  0.273
+  0.722  0.639  0.264  0.021
+ -0.641  0.762 -0.093  0.551
+  0.000  0.000  0.000  1.000
+[INFO] [1795318861.665046294] [rclcpp]: signal_handler(SIGINT/SIGTERM)

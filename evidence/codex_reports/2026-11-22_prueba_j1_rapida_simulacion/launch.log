@@ -1,0 +1,51 @@
+1795320485.8985224 [INFO] [launch]: All log files can be found below /tmp/codex_sim_j1_rapido/2026-11-22-12-08-05-897625-miNave-55186
+1795320485.8986325 [INFO] [launch]: Default logging verbosity is set to INFO
+1795320486.1776900 [INFO] [robot_state_publisher-1]: process started with pid [55204]
+1795320486.1845734 [INFO] [ign-2]: process started with pid [55206]
+1795320486.1884809 [INFO] [parameter_bridge-3]: process started with pid [55208]
+1795320486.1916561 [INFO] [capsule_visualizer-4]: process started with pid [55210]
+1795320486.1945601 [INFO] [proximity_monitor-5]: process started with pid [55212]
+1795320486.1972468 [INFO] [obstacle_input_bridge-6]: process started with pid [55214]
+1795320486.2001004 [INFO] [safety_supervisor-7]: process started with pid [55216]
+1795320486.2064557 [INFO] [simulation_command_adapter-8]: process started with pid [55218]
+1795320486.2091217 [INFO] [obstacle_demo_source-9]: process started with pid [55220]
+1795320486.2113466 [INFO] [horizon_preview-10]: process started with pid [55222]
+1795320486.2133079 [INFO] [cartesian_command_adapter-11]: process started with pid [55224]
+1795320486.2151549 [INFO] [cartesian_jog_adapter-12]: process started with pid [55226]
+1795320486.2155871 [INFO] [cartesian_trajectory_adapter-13]: process started with pid [55228]
+1795320486.2157507 [INFO] [system_readiness-14]: process started with pid [55230]
+1795320488.1592822 [INFO] [create-15]: process started with pid [55377]
+1795320489.1960959 [INFO] [create-15]: process has finished cleanly [pid 55377]
+1795320491.1719339 [INFO] [spawner-16]: process started with pid [55455]
+1795320492.1594458 [INFO] [spawner-17]: process started with pid [55467]
+1795320492.9135787 [INFO] [spawner-16]: process has finished cleanly [pid 55455]
+1795320493.0140901 [INFO] [spawner-17]: process has finished cleanly [pid 55467]
+1795320508.0731082 [WARNING] [launch]: user interrupted with ctrl-c (SIGINT)
+1795320508.0909541 [INFO] [system_readiness-14]: sending signal 'SIGINT' to process[system_readiness-14]
+1795320508.0949426 [INFO] [cartesian_trajectory_adapter-13]: sending signal 'SIGINT' to process[cartesian_trajectory_adapter-13]
+1795320508.0983505 [INFO] [cartesian_jog_adapter-12]: sending signal 'SIGINT' to process[cartesian_jog_adapter-12]
+1795320508.1026919 [INFO] [cartesian_command_adapter-11]: sending signal 'SIGINT' to process[cartesian_command_adapter-11]
+1795320508.1076803 [INFO] [horizon_preview-10]: sending signal 'SIGINT' to process[horizon_preview-10]
+1795320508.1117556 [INFO] [obstacle_demo_source-9]: sending signal 'SIGINT' to process[obstacle_demo_source-9]
+1795320508.1204591 [INFO] [simulation_command_adapter-8]: sending signal 'SIGINT' to process[simulation_command_adapter-8]
+1795320508.1348839 [INFO] [safety_supervisor-7]: sending signal 'SIGINT' to process[safety_supervisor-7]
+1795320508.1388617 [ERROR] [horizon_preview-10]: process has died [pid 55222, exit code -2, cmd '/home/luis/Escritorio/TESIS_JACO2/IMPLEMENTACION_ROS2_CORE/install/thesis_core/lib/thesis_core/horizon_preview --ros-args -r __node:=horizon_preview --params-file /tmp/launch_params_a4hhhxo9'].
+1795320508.1429446 [INFO] [obstacle_input_bridge-6]: sending signal 'SIGINT' to process[obstacle_input_bridge-6]
+1795320508.1444864 [ERROR] [obstacle_demo_source-9]: process has died [pid 55220, exit code -2, cmd '/home/luis/Escritorio/TESIS_JACO2/IMPLEMENTACION_ROS2_CORE/install/thesis_core/lib/thesis_core/obstacle_demo_source --ros-args -r __node:=obstacle_demo_source --params-file /tmp/launch_params_fgqlmmsb'].
+1795320508.1467679 [INFO] [proximity_monitor-5]: sending signal 'SIGINT' to process[proximity_monitor-5]
+1795320508.1500845 [INFO] [capsule_visualizer-4]: sending signal 'SIGINT' to process[capsule_visualizer-4]
+1795320508.1540291 [INFO] [parameter_bridge-3]: sending signal 'SIGINT' to process[parameter_bridge-3]
+1795320508.1570916 [INFO] [ign-2]: sending signal 'SIGINT' to process[ign-2]
+1795320508.1576672 [ERROR] [obstacle_input_bridge-6]: process has died [pid 55214, exit code -2, cmd '/home/luis/Escritorio/TESIS_JACO2/IMPLEMENTACION_ROS2_CORE/install/thesis_core/lib/thesis_core/obstacle_input_bridge --ros-args -r __node:=obstacle_input_bridge --params-file /tmp/launch_params_4v7obha6'].
+1795320508.1581655 [ERROR] [simulation_command_adapter-8]: process has died [pid 55218, exit code -2, cmd '/home/luis/Escritorio/TESIS_JACO2/IMPLEMENTACION_ROS2_CORE/install/thesis_simulation/lib/thesis_simulation/simulation_command_adapter --ros-args --params-file /tmp/launch_params_tlj3xjzd'].
+1795320508.1585343 [ERROR] [proximity_monitor-5]: process has died [pid 55212, exit code -2, cmd '/home/luis/Escritorio/TESIS_JACO2/IMPLEMENTACION_ROS2_CORE/install/thesis_core/lib/thesis_core/proximity_monitor --ros-args -r __node:=proximity_monitor --params-file /home/luis/Escritorio/TESIS_JACO2/IMPLEMENTACION_ROS2_CORE/install/thesis_core/share/thesis_core/config/jaco_capsules.yaml --params-file /tmp/launch_params_o94ens3q'].
+1795320508.1607847 [INFO] [robot_state_publisher-1]: sending signal 'SIGINT' to process[robot_state_publisher-1]
+1795320508.1618557 [ERROR] [safety_supervisor-7]: process has died [pid 55216, exit code -2, cmd '/home/luis/Escritorio/TESIS_JACO2/IMPLEMENTACION_ROS2_CORE/install/thesis_core/lib/thesis_core/safety_supervisor --ros-args --params-file /tmp/launch_params__7v4i6tk'].
+1795320508.1630123 [ERROR] [capsule_visualizer-4]: process has died [pid 55210, exit code -2, cmd '/home/luis/Escritorio/TESIS_JACO2/IMPLEMENTACION_ROS2_CORE/install/thesis_core/lib/thesis_core/capsule_visualizer --ros-args -r __node:=capsule_visualizer --params-file /home/luis/Escritorio/TESIS_JACO2/IMPLEMENTACION_ROS2_CORE/install/thesis_core/share/thesis_core/config/jaco_capsules.yaml --params-file /tmp/launch_params_s4fj28cn'].
+1795320508.1657979 [ERROR] [robot_state_publisher-1]: process has died [pid 55204, exit code -2, cmd '/opt/ros/humble/lib/robot_state_publisher/robot_state_publisher --ros-args --params-file /tmp/launch_params_bd88jyor --params-file /tmp/launch_params_j42zburk'].
+1795320508.1965437 [INFO] [parameter_bridge-3]: process has finished cleanly [pid 55208]
+1795320508.3113642 [INFO] [ign-2]: process has finished cleanly [pid 55206]
+1795320508.3371029 [INFO] [system_readiness-14]: process has finished cleanly [pid 55230]
+1795320508.3420296 [INFO] [cartesian_trajectory_adapter-13]: process has finished cleanly [pid 55228]
+1795320508.3507252 [INFO] [cartesian_command_adapter-11]: process has finished cleanly [pid 55224]
+1795320508.3525748 [INFO] [cartesian_jog_adapter-12]: process has finished cleanly [pid 55226]

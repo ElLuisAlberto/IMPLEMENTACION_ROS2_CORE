@@ -1,0 +1,61 @@
+[INFO] [1795320487.274419135] [safety_supervisor_node]: Safety supervisor started in validation/pass-through mode
+[INFO] [1795320487.274933816] [safety_supervisor_node]: State topic configured: /joint_states
+[INFO] [1795320487.275268267] [safety_supervisor_node]: Proximity policy enabled on /thesis/proximity_status
+[INFO] [1795320487.275720903] [safety_supervisor_node]: Preventive trajectory prediction enabled
+[INFO] [1795320487.276148494] [safety_supervisor_node]: Runtime execution monitor enabled at 10.0 Hz
+[WARN] [1795320488.687356811] [safety_supervisor_node]: Rejected proximity with invalid geometry evidence
+[ERROR] [1795320488.736899919] [safety_supervisor_node]: No existe estado articular completo para validar FK-TF.
+[WARN] [1795320488.738358516] [safety_supervisor_node]: Rejected proximity with invalid geometry evidence
+[WARN] [1795320488.831183303] [safety_supervisor_node]: Rejected proximity with invalid geometry evidence
+[WARN] [1795320488.880886271] [safety_supervisor_node]: Rejected proximity with invalid geometry evidence
+[WARN] [1795320488.929212778] [safety_supervisor_node]: Rejected proximity with invalid geometry evidence
+[WARN] [1795320488.979644470] [safety_supervisor_node]: Rejected proximity with invalid geometry evidence
+[WARN] [1795320489.128090318] [safety_supervisor_node]: Rejected proximity with invalid geometry evidence
+[WARN] [1795320490.588915263] [safety_supervisor_node]: Rejected proximity with invalid geometry evidence
+[WARN] [1795320490.682867614] [safety_supervisor_node]: Rejected proximity with invalid geometry evidence
+[WARN] [1795320490.732880794] [safety_supervisor_node]: Rejected proximity with invalid geometry evidence
+[WARN] [1795320490.786284608] [safety_supervisor_node]: Rejected proximity with invalid geometry evidence
+[WARN] [1795320490.839921464] [safety_supervisor_node]: Rejected proximity with invalid geometry evidence
+[WARN] [1795320490.892314941] [safety_supervisor_node]: Rejected proximity with invalid geometry evidence
+[WARN] [1795320490.943084018] [safety_supervisor_node]: Rejected proximity with invalid geometry evidence
+[WARN] [1795320490.994669623] [safety_supervisor_node]: Rejected proximity with invalid geometry evidence
+[WARN] [1795320491.043916913] [safety_supervisor_node]: Rejected proximity with invalid geometry evidence
+[WARN] [1795320491.095717550] [safety_supervisor_node]: Rejected proximity with invalid geometry evidence
+[WARN] [1795320491.149064611] [safety_supervisor_node]: Rejected proximity with invalid geometry evidence
+[WARN] [1795320491.198131814] [safety_supervisor_node]: Rejected proximity with invalid geometry evidence
+[WARN] [1795320491.258143861] [safety_supervisor_node]: Rejected proximity with invalid geometry evidence
+[WARN] [1795320491.309613275] [safety_supervisor_node]: Rejected proximity with invalid geometry evidence
+[WARN] [1795320491.360931649] [safety_supervisor_node]: Rejected proximity with invalid geometry evidence
+[WARN] [1795320491.410024927] [safety_supervisor_node]: Rejected proximity with invalid geometry evidence
+[WARN] [1795320491.462129857] [safety_supervisor_node]: Rejected proximity with invalid geometry evidence
+[WARN] [1795320491.515593663] [safety_supervisor_node]: Rejected proximity with invalid geometry evidence
+[WARN] [1795320491.567295464] [safety_supervisor_node]: Rejected proximity with invalid geometry evidence
+[WARN] [1795320491.624831117] [safety_supervisor_node]: Rejected proximity with invalid geometry evidence
+[WARN] [1795320491.674275272] [safety_supervisor_node]: Rejected proximity with invalid geometry evidence
+[WARN] [1795320491.722936267] [safety_supervisor_node]: Rejected proximity with invalid geometry evidence
+[WARN] [1795320491.772868963] [safety_supervisor_node]: Rejected proximity with invalid geometry evidence
+[WARN] [1795320491.824479247] [safety_supervisor_node]: Rejected proximity with invalid geometry evidence
+[WARN] [1795320491.875260082] [safety_supervisor_node]: Rejected proximity with invalid geometry evidence
+[WARN] [1795320491.924380180] [safety_supervisor_node]: Rejected proximity with invalid geometry evidence
+[WARN] [1795320491.974428273] [safety_supervisor_node]: Rejected proximity with invalid geometry evidence
+[WARN] [1795320492.024048358] [safety_supervisor_node]: Rejected proximity with invalid geometry evidence
+[WARN] [1795320492.075205059] [safety_supervisor_node]: Rejected proximity with invalid geometry evidence
+[WARN] [1795320492.124230425] [safety_supervisor_node]: Rejected proximity with invalid geometry evidence
+[WARN] [1795320492.177266401] [safety_supervisor_node]: Rejected proximity with invalid geometry evidence
+[WARN] [1795320492.228671319] [safety_supervisor_node]: Rejected proximity with invalid geometry evidence
+[WARN] [1795320492.278495024] [safety_supervisor_node]: Rejected proximity with invalid geometry evidence
+[WARN] [1795320492.328536510] [safety_supervisor_node]: Rejected proximity with invalid geometry evidence
+[WARN] [1795320492.379773094] [safety_supervisor_node]: Rejected proximity with invalid geometry evidence
+[WARN] [1795320492.431468273] [safety_supervisor_node]: Rejected proximity with invalid geometry evidence
+[WARN] [1795320492.489397234] [safety_supervisor_node]: Rejected proximity with invalid geometry evidence
+[WARN] [1795320492.544030204] [safety_supervisor_node]: Rejected proximity with invalid geometry evidence
+[WARN] [1795320492.592406445] [safety_supervisor_node]: Rejected proximity with invalid geometry evidence
+[WARN] [1795320492.642984544] [safety_supervisor_node]: Rejected proximity with invalid geometry evidence
+[WARN] [1795320492.692562731] [safety_supervisor_node]: Rejected proximity with invalid geometry evidence
+[WARN] [1795320492.744781470] [safety_supervisor_node]: Rejected proximity with invalid geometry evidence
+[INFO] [1795320492.751911258] [safety_supervisor_node]: Coherencia FK-TF recuperada: error=0.000000 m.
+[WARN] [1795320492.801453598] [safety_supervisor_node]: Rejected proximity with invalid geometry evidence
+[INFO] [1795320500.877872034] [safety_supervisor_node]: PREDICTION codex_sim_j1_20deg: WARNING, min_clearance=0.191 m, path=0.00, segment=upper_arm_to_forearm
+[WARN] [1795320500.878545665] [safety_supervisor_node]: WARNING codex_sim_j1_20deg: clearance=0.191 m, segment=upper_arm_to_forearm
+[INFO] [1795320500.880026480] [safety_supervisor_node]: WARNING FORWARDED id=codex_sim_j1_20deg | joints=6 | proximity=WARNING | duration=2.00 s | joint_lim=j2n6s300_joint_1 | v_req=0.1745 rad/s | v_lim=0.1745 rad/s | input_latency=1.000 ms
+[WARN] [1795320500.995519868] [safety_supervisor_node]: RUNTIME codex_sim_j1_20deg: WARNING, d_min=0.191 m, scale=1.00, t_min=0.000 s, TTC_nom=-1.000 s

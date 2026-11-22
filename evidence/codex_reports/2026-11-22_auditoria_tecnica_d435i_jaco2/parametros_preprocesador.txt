@@ -1,0 +1,28 @@
+/pointcloud_preprocessor:
+  ros__parameters:
+    enable_crop: false
+    enable_voxel: false
+    input_topic: /camera/d435i/depth/color/points
+    max_valid_range_m: 1.5
+    max_x: 1.5
+    max_y: 1.5
+    max_z: 2.5
+    min_valid_range_m: 0.1
+    min_x: -1.5
+    min_y: -1.5
+    min_z: -1.0
+    output_topic: /thesis/perception/points_filtered
+    qos_overrides:
+      /parameter_events:
+        publisher:
+          depth: 1000
+          durability: volatile
+          history: keep_last
+          reliability: reliable
+    restamp_output: false
+    target_frame: ''
+    transform_timeout_s: 0.1
+    use_latest_transform: true
+    use_sim_time: false
+    voxel_leaf_size: 0.01
+

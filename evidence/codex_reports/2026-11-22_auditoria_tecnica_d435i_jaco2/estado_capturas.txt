@@ -1,0 +1,17 @@
+nodos 0
+topicos 0
+info_segmentacion 0
+info_camara 1
+parametros_camara 0
+parametros_preprocesador 0
+parametros_overlay 0
+parametros_robot_state_publisher 0
+joint_states 0
+camara_color_info 0
+camara_depth_info 0
+tf_dinamico 0
+tf_estatico 0
+diagnostico_percepcion 0
+qos_camara 0
+qos_segmentacion 0
+info_camara_reintento 0

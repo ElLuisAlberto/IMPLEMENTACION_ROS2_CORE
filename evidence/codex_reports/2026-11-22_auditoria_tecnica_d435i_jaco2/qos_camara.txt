@@ -1,0 +1,48 @@
+Type: sensor_msgs/msg/PointCloud2
+
+Publisher count: 1
+
+Node name: d435i
+Node namespace: /camera
+Topic type: sensor_msgs/msg/PointCloud2
+Endpoint type: PUBLISHER
+GID: 01.0f.7e.e7.33.a2.8c.58.00.00.00.00.00.00.12.03.00.00.00.00.00.00.00.00
+QoS profile:
+  Reliability: BEST_EFFORT
+  History (Depth): UNKNOWN
+  Durability: VOLATILE
+  Lifespan: Infinite
+  Deadline: Infinite
+  Liveliness: AUTOMATIC
+  Liveliness lease duration: Infinite
+
+Subscription count: 2
+
+Node name: pointcloud_preprocessor
+Node namespace: /
+Topic type: sensor_msgs/msg/PointCloud2
+Endpoint type: SUBSCRIPTION
+GID: 01.0f.7e.e7.35.a2.21.ea.00.00.00.00.00.00.17.04.00.00.00.00.00.00.00.00
+QoS profile:
+  Reliability: BEST_EFFORT
+  History (Depth): UNKNOWN
+  Durability: VOLATILE
+  Lifespan: Infinite
+  Deadline: Infinite
+  Liveliness: AUTOMATIC
+  Liveliness lease duration: Infinite
+
+Node name: codex_segmentacion_cpp
+Node namespace: /
+Topic type: sensor_msgs/msg/PointCloud2
+Endpoint type: SUBSCRIPTION
+GID: 01.0f.7e.e7.57.b8.39.33.00.00.00.00.00.00.16.04.00.00.00.00.00.00.00.00
+QoS profile:
+  Reliability: BEST_EFFORT
+  History (Depth): UNKNOWN
+  Durability: VOLATILE
+  Lifespan: Infinite
+  Deadline: Infinite
+  Liveliness: AUTOMATIC
+  Liveliness lease duration: Infinite
+

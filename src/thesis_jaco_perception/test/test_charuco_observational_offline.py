@@ -27,7 +27,8 @@ def pose(translation, euler):
 
 def synthetic():
     board = calibration.board_factory()
-    camera_board = pose([0.03, -0.02, 0.6], [0.2, -0.1, 0.1])
+    # The legacy OpenCV board frame has Y up and Z out of the printed face.
+    camera_board = pose([0.03, -0.02, 0.6], [0.2, math.pi - 0.1, 0.1])
     world_board = pose([0.2, 0.1, 0.3], [0.02, 0.1, -0.2])
     link_color = pose([0.015, 0, 0], [-1.57, 0, 1.57])
     k = np.array([[800, 0, 320], [0, 800, 240], [0, 0, 1]], dtype=float)
@@ -36,7 +37,9 @@ def synthetic():
     corners, _ = cv2.projectPoints(board.chessboardCorners, rvec,
                                     camera_board[:3, 3], k, d)
     ids = np.arange(len(board.chessboardCorners), dtype=np.int32)
-    expected = world_board @ np.linalg.inv(camera_board) @ np.linalg.inv(link_color)
+    legacy_to_contract = pose([0, 0.15, 0], [math.pi, 0, 0])
+    camera_contract = camera_board @ legacy_to_contract
+    expected = world_board @ np.linalg.inv(camera_contract) @ np.linalg.inv(link_color)
     return corners.reshape(-1, 2), ids, k, d, world_board, link_color, expected, camera_board
 
 
@@ -46,11 +49,18 @@ def test_generated_board_detects_at_least_twelve_interpolated_corners():
     corners, ids = calibration.detect(gray, [2000, 0, 1050, 0, 2000, 750, 0, 0, 1], [0]*5)
     assert len(ids) >= 12
     assert len(corners) == len(ids)
+    # The OpenCV legacy origin is at the lower left of the printed pattern.
+    corners_by_id = dict(zip(ids.ravel(), corners.reshape(-1, 2)))
+    assert corners_by_id[0][1] > corners_by_id[18][1]
+    assert corners_by_id[0][0] < corners_by_id[5][0]
 
 
 def test_synthetic_pose_recovers_correct_composition_and_rejects_inverse_order():
     corners, ids, k, d, world_board, link_color, expected, camera_board = synthetic()
     result = calibration.estimate_from_corners(corners, ids, k, d, world_board, link_color)
+    legacy_to_contract = pose([0, 0.15, 0], [math.pi, 0, 0])
+    np.testing.assert_allclose(result["camera_board"], camera_board @ legacy_to_contract,
+                               atol=1e-5)
     np.testing.assert_allclose(result["world_link"], expected, atol=1e-5)
     np.testing.assert_allclose(result["world_color"], expected @ link_color, atol=1e-5)
     assert result["rms_px"] < 1e-3

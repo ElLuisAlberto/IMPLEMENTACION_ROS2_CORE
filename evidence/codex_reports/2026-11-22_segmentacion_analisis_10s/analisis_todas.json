@@ -1,0 +1,3363 @@
+{
+  "tf_counts": {
+    "/tf_static": 7,
+    "/tf": 2568
+  },
+  "frames": [
+    {
+      "frame": 0,
+      "stamp_ns": 1795318047161396484,
+      "total": 6,
+      "cluster_count_3_500": 1,
+      "points_in_small": 6,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [
+        {
+          "n": 6,
+          "center_m": [
+            -0.35600000619888306,
+            0.5669999718666077,
+            0.7279999852180481
+          ],
+          "extent_m": [
+            0.00800000037997961,
+            0.006000000052154064,
+            0.00800000037997961
+          ],
+          "mesh_mm_min": 589.7,
+          "mesh_mm_med": 594.7,
+          "link": "j2n6s300_link_3"
+        }
+      ],
+      "small_near": []
+    },
+    {
+      "frame": 1,
+      "stamp_ns": 1795318047194753662,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 2,
+      "stamp_ns": 1795318047228110840,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 3,
+      "stamp_ns": 1795318047261468018,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 4,
+      "stamp_ns": 1795318047294825195,
+      "total": 21,
+      "cluster_count_3_500": 1,
+      "points_in_small": 21,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [
+        {
+          "n": 21,
+          "center_m": [
+            -0.3580000102519989,
+            0.5659999847412109,
+            0.7250000238418579
+          ],
+          "extent_m": [
+            0.01899999938905239,
+            0.01600000075995922,
+            0.017999999225139618
+          ],
+          "mesh_mm_min": 586.5,
+          "mesh_mm_med": 593.2,
+          "link": "j2n6s300_link_3"
+        }
+      ],
+      "small_near": []
+    },
+    {
+      "frame": 5,
+      "stamp_ns": 1795318047361539551,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 6,
+      "stamp_ns": 1795318047394896729,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 7,
+      "stamp_ns": 1795318047428253906,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 8,
+      "stamp_ns": 1795318047461611084,
+      "total": 7,
+      "cluster_count_3_500": 1,
+      "points_in_small": 7,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [
+        {
+          "n": 7,
+          "center_m": [
+            -0.3490000069141388,
+            0.5580000281333923,
+            0.718999981880188
+          ],
+          "extent_m": [
+            0.008999999612569809,
+            0.003000000026077032,
+            0.004000000189989805
+          ],
+          "mesh_mm_min": 582.4,
+          "mesh_mm_med": 583.6,
+          "link": "j2n6s300_link_3"
+        }
+      ],
+      "small_near": []
+    },
+    {
+      "frame": 9,
+      "stamp_ns": 1795318047494968262,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 10,
+      "stamp_ns": 1795318047561682617,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 11,
+      "stamp_ns": 1795318047595039795,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 12,
+      "stamp_ns": 1795318047628396973,
+      "total": 2,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 13,
+      "stamp_ns": 1795318047661754150,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 14,
+      "stamp_ns": 1795318047695111328,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 15,
+      "stamp_ns": 1795318047761825684,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 16,
+      "stamp_ns": 1795318047795182861,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 17,
+      "stamp_ns": 1795318047828539795,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 18,
+      "stamp_ns": 1795318047861896973,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 19,
+      "stamp_ns": 1795318047895254150,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 20,
+      "stamp_ns": 1795318047961968506,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 21,
+      "stamp_ns": 1795318047995325684,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 22,
+      "stamp_ns": 1795318048028682861,
+      "total": 37,
+      "cluster_count_3_500": 1,
+      "points_in_small": 37,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [
+        {
+          "n": 37,
+          "center_m": [
+            -0.35899999737739563,
+            0.5630000233650208,
+            0.7269999980926514
+          ],
+          "extent_m": [
+            0.02199999988079071,
+            0.01600000075995922,
+            0.023000000044703484
+          ],
+          "mesh_mm_min": 584.6,
+          "mesh_mm_med": 590.7,
+          "link": "j2n6s300_link_3"
+        }
+      ],
+      "small_near": []
+    },
+    {
+      "frame": 23,
+      "stamp_ns": 1795318048062040283,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 24,
+      "stamp_ns": 1795318048095397705,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 25,
+      "stamp_ns": 1795318048128754883,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 26,
+      "stamp_ns": 1795318048162112305,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 27,
+      "stamp_ns": 1795318048195469727,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 28,
+      "stamp_ns": 1795318048228826904,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 29,
+      "stamp_ns": 1795318048262184326,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 30,
+      "stamp_ns": 1795318048295541748,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 31,
+      "stamp_ns": 1795318048328898926,
+      "total": 2,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 32,
+      "stamp_ns": 1795318048362256348,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 33,
+      "stamp_ns": 1795318048395613525,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 34,
+      "stamp_ns": 1795318048428970947,
+      "total": 21,
+      "cluster_count_3_500": 1,
+      "points_in_small": 21,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [
+        {
+          "n": 21,
+          "center_m": [
+            -0.3569999933242798,
+            0.5669999718666077,
+            0.7239999771118164
+          ],
+          "extent_m": [
+            0.017999999225139618,
+            0.012000000104308128,
+            0.014999999664723873
+          ],
+          "mesh_mm_min": 586.2,
+          "mesh_mm_med": 594.9,
+          "link": "j2n6s300_link_3"
+        }
+      ],
+      "small_near": []
+    },
+    {
+      "frame": 35,
+      "stamp_ns": 1795318048462328125,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 36,
+      "stamp_ns": 1795318048495685547,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 37,
+      "stamp_ns": 1795318048529042725,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 38,
+      "stamp_ns": 1795318048562400146,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 39,
+      "stamp_ns": 1795318048595757324,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 40,
+      "stamp_ns": 1795318048662471924,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 41,
+      "stamp_ns": 1795318048695829102,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 42,
+      "stamp_ns": 1795318048729186523,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 43,
+      "stamp_ns": 1795318048762543701,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 44,
+      "stamp_ns": 1795318048795900879,
+      "total": 10,
+      "cluster_count_3_500": 1,
+      "points_in_small": 10,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [
+        {
+          "n": 10,
+          "center_m": [
+            -0.3569999933242798,
+            0.5600000023841858,
+            0.7269999980926514
+          ],
+          "extent_m": [
+            0.008999999612569809,
+            0.003000000026077032,
+            0.007000000216066837
+          ],
+          "mesh_mm_min": 585.4,
+          "mesh_mm_med": 588.4,
+          "link": "j2n6s300_link_3"
+        }
+      ],
+      "small_near": []
+    },
+    {
+      "frame": 45,
+      "stamp_ns": 1795318048829258301,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 46,
+      "stamp_ns": 1795318049096118164,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 47,
+      "stamp_ns": 1795318049129476074,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 48,
+      "stamp_ns": 1795318049229549805,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 49,
+      "stamp_ns": 1795318049262907715,
+      "total": 3,
+      "cluster_count_3_500": 1,
+      "points_in_small": 3,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [
+        {
+          "n": 3,
+          "center_m": [
+            -0.3610000014305115,
+            0.5680000185966492,
+            0.7300000190734863
+          ],
+          "extent_m": [
+            0.00800000037997961,
+            0.006000000052154064,
+            0.006000000052154064
+          ],
+          "mesh_mm_min": 593.4,
+          "mesh_mm_med": 597.4,
+          "link": "j2n6s300_link_3"
+        }
+      ],
+      "small_near": []
+    },
+    {
+      "frame": 50,
+      "stamp_ns": 1795318049296265625,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 51,
+      "stamp_ns": 1795318049329623779,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 52,
+      "stamp_ns": 1795318049362981689,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 53,
+      "stamp_ns": 1795318049396339600,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 54,
+      "stamp_ns": 1795318049429697510,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 55,
+      "stamp_ns": 1795318049463055420,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 56,
+      "stamp_ns": 1795318049496413330,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 57,
+      "stamp_ns": 1795318049529771484,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 58,
+      "stamp_ns": 1795318049563129395,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 59,
+      "stamp_ns": 1795318049596487305,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 60,
+      "stamp_ns": 1795318049629845215,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 61,
+      "stamp_ns": 1795318049663203369,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 62,
+      "stamp_ns": 1795318049696561279,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 63,
+      "stamp_ns": 1795318049729919189,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 64,
+      "stamp_ns": 1795318049763277344,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 65,
+      "stamp_ns": 1795318049796635254,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 66,
+      "stamp_ns": 1795318049829993408,
+      "total": 3,
+      "cluster_count_3_500": 1,
+      "points_in_small": 3,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [
+        {
+          "n": 3,
+          "center_m": [
+            -0.36000001430511475,
+            0.5649999976158142,
+            0.7260000109672546
+          ],
+          "extent_m": [
+            0.003000000026077032,
+            0.0020000000949949026,
+            0.004000000189989805
+          ],
+          "mesh_mm_min": 591.7,
+          "mesh_mm_med": 594.3,
+          "link": "j2n6s300_link_3"
+        }
+      ],
+      "small_near": []
+    },
+    {
+      "frame": 67,
+      "stamp_ns": 1795318049863351318,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 68,
+      "stamp_ns": 1795318049896709229,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 69,
+      "stamp_ns": 1795318049930067383,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 70,
+      "stamp_ns": 1795318049963425293,
+      "total": 37,
+      "cluster_count_3_500": 1,
+      "points_in_small": 37,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [
+        {
+          "n": 37,
+          "center_m": [
+            -0.3569999933242798,
+            0.5669999718666077,
+            0.7260000109672546
+          ],
+          "extent_m": [
+            0.023000000044703484,
+            0.012000000104308128,
+            0.020999999716877937
+          ],
+          "mesh_mm_min": 587.2,
+          "mesh_mm_med": 594.4,
+          "link": "j2n6s300_link_3"
+        }
+      ],
+      "small_near": []
+    },
+    {
+      "frame": 71,
+      "stamp_ns": 1795318049996783447,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 72,
+      "stamp_ns": 1795318050030140625,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 73,
+      "stamp_ns": 1795318050063497803,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 74,
+      "stamp_ns": 1795318050096854980,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 75,
+      "stamp_ns": 1795318050130212402,
+      "total": 20,
+      "cluster_count_3_500": 1,
+      "points_in_small": 20,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [
+        {
+          "n": 20,
+          "center_m": [
+            -0.45399999618530273,
+            0.5460000038146973,
+            0.8379999995231628
+          ],
+          "extent_m": [
+            0.020999999716877937,
+            0.02500000037252903,
+            0.004000000189989805
+          ],
+          "mesh_mm_min": 615.3,
+          "mesh_mm_med": 628.9,
+          "link": "j2n6s300_link_3"
+        }
+      ],
+      "small_near": []
+    },
+    {
+      "frame": 76,
+      "stamp_ns": 1795318050163569580,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 77,
+      "stamp_ns": 1795318050196926758,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 78,
+      "stamp_ns": 1795318050230283936,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 79,
+      "stamp_ns": 1795318050263641113,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 80,
+      "stamp_ns": 1795318050296998291,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 81,
+      "stamp_ns": 1795318050330355469,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 82,
+      "stamp_ns": 1795318050363712646,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 83,
+      "stamp_ns": 1795318050430427002,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 84,
+      "stamp_ns": 1795318050463784180,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 85,
+      "stamp_ns": 1795318050497141357,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 86,
+      "stamp_ns": 1795318050530498291,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 87,
+      "stamp_ns": 1795318050563855469,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 88,
+      "stamp_ns": 1795318050597212646,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 89,
+      "stamp_ns": 1795318050663927002,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 90,
+      "stamp_ns": 1795318050697283936,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 91,
+      "stamp_ns": 1795318050730641113,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 92,
+      "stamp_ns": 1795318050763998291,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 93,
+      "stamp_ns": 1795318050797355225,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 94,
+      "stamp_ns": 1795318050830712402,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 95,
+      "stamp_ns": 1795318050864069336,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 96,
+      "stamp_ns": 1795318050930783447,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 97,
+      "stamp_ns": 1795318050964140625,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 98,
+      "stamp_ns": 1795318050997497559,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 99,
+      "stamp_ns": 1795318051030855469,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 100,
+      "stamp_ns": 1795318051064213379,
+      "total": 2,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 101,
+      "stamp_ns": 1795318051164286865,
+      "total": 9,
+      "cluster_count_3_500": 1,
+      "points_in_small": 9,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [
+        {
+          "n": 9,
+          "center_m": [
+            -0.35600000619888306,
+            0.5609999895095825,
+            0.7239999771118164
+          ],
+          "extent_m": [
+            0.010999999940395355,
+            0.007000000216066837,
+            0.008999999612569809
+          ],
+          "mesh_mm_min": 585.4,
+          "mesh_mm_med": 588.6,
+          "link": "j2n6s300_link_3"
+        }
+      ],
+      "small_near": []
+    },
+    {
+      "frame": 102,
+      "stamp_ns": 1795318051231002686,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 103,
+      "stamp_ns": 1795318051264360596,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 104,
+      "stamp_ns": 1795318051297718506,
+      "total": 7,
+      "cluster_count_3_500": 1,
+      "points_in_small": 7,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [
+        {
+          "n": 7,
+          "center_m": [
+            -0.3490000069141388,
+            0.5590000152587891,
+            0.722000002861023
+          ],
+          "extent_m": [
+            0.008999999612569809,
+            0.003000000026077032,
+            0.003000000026077032
+          ],
+          "mesh_mm_min": 583.7,
+          "mesh_mm_med": 584.9,
+          "link": "j2n6s300_link_3"
+        }
+      ],
+      "small_near": []
+    },
+    {
+      "frame": 105,
+      "stamp_ns": 1795318051331076416,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 106,
+      "stamp_ns": 1795318051397792236,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 107,
+      "stamp_ns": 1795318051431150391,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 108,
+      "stamp_ns": 1795318051464508301,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 109,
+      "stamp_ns": 1795318051497866211,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 110,
+      "stamp_ns": 1795318051531224121,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 111,
+      "stamp_ns": 1795318051564582031,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 112,
+      "stamp_ns": 1795318051597940186,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 113,
+      "stamp_ns": 1795318051631298096,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 114,
+      "stamp_ns": 1795318051664656006,
+      "total": 29,
+      "cluster_count_3_500": 1,
+      "points_in_small": 29,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [
+        {
+          "n": 29,
+          "center_m": [
+            -0.3540000021457672,
+            0.5640000104904175,
+            0.7250000238418579
+          ],
+          "extent_m": [
+            0.017000000923871994,
+            0.00800000037997961,
+            0.017000000923871994
+          ],
+          "mesh_mm_min": 585.8,
+          "mesh_mm_med": 592.0,
+          "link": "j2n6s300_link_3"
+        }
+      ],
+      "small_near": []
+    },
+    {
+      "frame": 115,
+      "stamp_ns": 1795318051698013916,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 116,
+      "stamp_ns": 1795318051731372070,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 117,
+      "stamp_ns": 1795318051764729980,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 118,
+      "stamp_ns": 1795318051798088135,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 119,
+      "stamp_ns": 1795318051831446045,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 120,
+      "stamp_ns": 1795318051864804199,
+      "total": 6,
+      "cluster_count_3_500": 1,
+      "points_in_small": 6,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [
+        {
+          "n": 6,
+          "center_m": [
+            -0.35499998927116394,
+            0.5640000104904175,
+            0.7250000238418579
+          ],
+          "extent_m": [
+            0.003000000026077032,
+            0.0020000000949949026,
+            0.007000000216066837
+          ],
+          "mesh_mm_min": 590.5,
+          "mesh_mm_med": 591.4,
+          "link": "j2n6s300_link_3"
+        }
+      ],
+      "small_near": []
+    },
+    {
+      "frame": 121,
+      "stamp_ns": 1795318051898162109,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 122,
+      "stamp_ns": 1795318051931520264,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 123,
+      "stamp_ns": 1795318051964878174,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 124,
+      "stamp_ns": 1795318051998236328,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 125,
+      "stamp_ns": 1795318052031594482,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 126,
+      "stamp_ns": 1795318052064952637,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 127,
+      "stamp_ns": 1795318052098310791,
+      "total": 7,
+      "cluster_count_3_500": 1,
+      "points_in_small": 7,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [
+        {
+          "n": 7,
+          "center_m": [
+            -0.3529999852180481,
+            0.5600000023841858,
+            0.7260000109672546
+          ],
+          "extent_m": [
+            0.009999999776482582,
+            0.004999999888241291,
+            0.004999999888241291
+          ],
+          "mesh_mm_min": 584.6,
+          "mesh_mm_med": 587.4,
+          "link": "j2n6s300_link_3"
+        }
+      ],
+      "small_near": []
+    },
+    {
+      "frame": 128,
+      "stamp_ns": 1795318052131668945,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 129,
+      "stamp_ns": 1795318052165027344,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 130,
+      "stamp_ns": 1795318052198385498,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 131,
+      "stamp_ns": 1795318052231743652,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 132,
+      "stamp_ns": 1795318052298460205,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 133,
+      "stamp_ns": 1795318052331818359,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 134,
+      "stamp_ns": 1795318052365176758,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 135,
+      "stamp_ns": 1795318052465251465,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 136,
+      "stamp_ns": 1795318052565326416,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 137,
+      "stamp_ns": 1795318052598684570,
+      "total": 35,
+      "cluster_count_3_500": 1,
+      "points_in_small": 35,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [
+        {
+          "n": 35,
+          "center_m": [
+            -0.35199999809265137,
+            0.5600000023841858,
+            0.7229999899864197
+          ],
+          "extent_m": [
+            0.019999999552965164,
+            0.009999999776482582,
+            0.019999999552965164
+          ],
+          "mesh_mm_min": 577.9,
+          "mesh_mm_med": 585.7,
+          "link": "j2n6s300_link_3"
+        }
+      ],
+      "small_near": []
+    },
+    {
+      "frame": 138,
+      "stamp_ns": 1795318052665401367,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 139,
+      "stamp_ns": 1795318052698759521,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 140,
+      "stamp_ns": 1795318052732117920,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 141,
+      "stamp_ns": 1795318052765476318,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 142,
+      "stamp_ns": 1795318052798834473,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 143,
+      "stamp_ns": 1795318052832192871,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 144,
+      "stamp_ns": 1795318052865551270,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 145,
+      "stamp_ns": 1795318052898909668,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 146,
+      "stamp_ns": 1795318052932267822,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 147,
+      "stamp_ns": 1795318052965626221,
+      "total": 17,
+      "cluster_count_3_500": 1,
+      "points_in_small": 17,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [
+        {
+          "n": 17,
+          "center_m": [
+            -0.3540000021457672,
+            0.5659999847412109,
+            0.7250000238418579
+          ],
+          "extent_m": [
+            0.01600000075995922,
+            0.007000000216066837,
+            0.008999999612569809
+          ],
+          "mesh_mm_min": 586.2,
+          "mesh_mm_med": 593.4,
+          "link": "j2n6s300_link_3"
+        }
+      ],
+      "small_near": []
+    },
+    {
+      "frame": 148,
+      "stamp_ns": 1795318052998984619,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 149,
+      "stamp_ns": 1795318053032341553,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 150,
+      "stamp_ns": 1795318053065698486,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 151,
+      "stamp_ns": 1795318053099055420,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 152,
+      "stamp_ns": 1795318053132412354,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 153,
+      "stamp_ns": 1795318053165769043,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 154,
+      "stamp_ns": 1795318053199125977,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 155,
+      "stamp_ns": 1795318053232482910,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 156,
+      "stamp_ns": 1795318053265839844,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 157,
+      "stamp_ns": 1795318053299196777,
+      "total": 6,
+      "cluster_count_3_500": 1,
+      "points_in_small": 6,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [
+        {
+          "n": 6,
+          "center_m": [
+            -0.35499998927116394,
+            0.5580000281333923,
+            0.7279999852180481
+          ],
+          "extent_m": [
+            0.006000000052154064,
+            0.0020000000949949026,
+            0.004000000189989805
+          ],
+          "mesh_mm_min": 585.1,
+          "mesh_mm_med": 586.6,
+          "link": "j2n6s300_link_3"
+        }
+      ],
+      "small_near": []
+    },
+    {
+      "frame": 158,
+      "stamp_ns": 1795318053332553467,
+      "total": 23,
+      "cluster_count_3_500": 1,
+      "points_in_small": 23,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [
+        {
+          "n": 23,
+          "center_m": [
+            -0.35600000619888306,
+            0.5600000023841858,
+            0.7260000109672546
+          ],
+          "extent_m": [
+            0.014000000432133675,
+            0.007000000216066837,
+            0.017999999225139618
+          ],
+          "mesh_mm_min": 582.9,
+          "mesh_mm_med": 588.3,
+          "link": "j2n6s300_link_3"
+        }
+      ],
+      "small_near": []
+    },
+    {
+      "frame": 159,
+      "stamp_ns": 1795318053365910400,
+      "total": 7,
+      "cluster_count_3_500": 1,
+      "points_in_small": 7,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [
+        {
+          "n": 7,
+          "center_m": [
+            -0.3479999899864197,
+            0.5550000071525574,
+            0.7179999947547913
+          ],
+          "extent_m": [
+            0.008999999612569809,
+            0.0010000000474974513,
+            0.003000000026077032
+          ],
+          "mesh_mm_min": 579.3,
+          "mesh_mm_med": 580.5,
+          "link": "j2n6s300_link_3"
+        }
+      ],
+      "small_near": []
+    },
+    {
+      "frame": 160,
+      "stamp_ns": 1795318053399267334,
+      "total": 22,
+      "cluster_count_3_500": 1,
+      "points_in_small": 22,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [
+        {
+          "n": 22,
+          "center_m": [
+            -0.4480000138282776,
+            0.5339999794960022,
+            0.8339999914169312
+          ],
+          "extent_m": [
+            0.019999999552965164,
+            0.008999999612569809,
+            0.009999999776482582
+          ],
+          "mesh_mm_min": 606.6,
+          "mesh_mm_med": 613.9,
+          "link": "j2n6s300_link_3"
+        }
+      ],
+      "small_near": []
+    },
+    {
+      "frame": 161,
+      "stamp_ns": 1795318053432624023,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 162,
+      "stamp_ns": 1795318053465980957,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 163,
+      "stamp_ns": 1795318053499337646,
+      "total": 12,
+      "cluster_count_3_500": 1,
+      "points_in_small": 12,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [
+        {
+          "n": 12,
+          "center_m": [
+            -0.3529999852180481,
+            0.5640000104904175,
+            0.7239999771118164
+          ],
+          "extent_m": [
+            0.008999999612569809,
+            0.0020000000949949026,
+            0.008999999612569809
+          ],
+          "mesh_mm_min": 589.6,
+          "mesh_mm_med": 590.8,
+          "link": "j2n6s300_link_3"
+        }
+      ],
+      "small_near": []
+    },
+    {
+      "frame": 164,
+      "stamp_ns": 1795318053532694580,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 165,
+      "stamp_ns": 1795318053566051514,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 166,
+      "stamp_ns": 1795318053632765137,
+      "total": 2,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 167,
+      "stamp_ns": 1795318053666121826,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 168,
+      "stamp_ns": 1795318053699478760,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 169,
+      "stamp_ns": 1795318053732835449,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 170,
+      "stamp_ns": 1795318053766192139,
+      "total": 1,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 171,
+      "stamp_ns": 1795318053799549072,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 172,
+      "stamp_ns": 1795318053832905762,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 173,
+      "stamp_ns": 1795318053866262451,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 174,
+      "stamp_ns": 1795318053899619385,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 175,
+      "stamp_ns": 1795318053932976074,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 176,
+      "stamp_ns": 1795318053966332764,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 177,
+      "stamp_ns": 1795318053999689697,
+      "total": 12,
+      "cluster_count_3_500": 1,
+      "points_in_small": 12,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [
+        {
+          "n": 12,
+          "center_m": [
+            -0.3499999940395355,
+            0.5609999895095825,
+            0.7200000286102295
+          ],
+          "extent_m": [
+            0.012000000104308128,
+            0.003000000026077032,
+            0.006000000052154064
+          ],
+          "mesh_mm_min": 583.7,
+          "mesh_mm_med": 586.9,
+          "link": "j2n6s300_link_3"
+        }
+      ],
+      "small_near": []
+    },
+    {
+      "frame": 178,
+      "stamp_ns": 1795318054033047363,
+      "total": 6,
+      "cluster_count_3_500": 1,
+      "points_in_small": 6,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [
+        {
+          "n": 6,
+          "center_m": [
+            -0.3529999852180481,
+            0.5590000152587891,
+            0.7250000238418579
+          ],
+          "extent_m": [
+            0.006000000052154064,
+            0.003000000026077032,
+            0.004000000189989805
+          ],
+          "mesh_mm_min": 584.6,
+          "mesh_mm_med": 586.6,
+          "link": "j2n6s300_link_3"
+        }
+      ],
+      "small_near": []
+    },
+    {
+      "frame": 179,
+      "stamp_ns": 1795318054066405029,
+      "total": 7,
+      "cluster_count_3_500": 1,
+      "points_in_small": 7,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [
+        {
+          "n": 7,
+          "center_m": [
+            -0.3540000021457672,
+            0.5669999718666077,
+            0.7200000286102295
+          ],
+          "extent_m": [
+            0.008999999612569809,
+            0.004000000189989805,
+            0.00800000037997961
+          ],
+          "mesh_mm_min": 592.0,
+          "mesh_mm_med": 594.4,
+          "link": "j2n6s300_link_3"
+        }
+      ],
+      "small_near": []
+    },
+    {
+      "frame": 180,
+      "stamp_ns": 1795318054099762695,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 181,
+      "stamp_ns": 1795318054133120605,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 182,
+      "stamp_ns": 1795318054233193604,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 183,
+      "stamp_ns": 1795318054266551514,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 184,
+      "stamp_ns": 1795318054333266846,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 185,
+      "stamp_ns": 1795318054433340088,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 186,
+      "stamp_ns": 1795318054600128906,
+      "total": 13,
+      "cluster_count_3_500": 1,
+      "points_in_small": 13,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [
+        {
+          "n": 13,
+          "center_m": [
+            -0.35100001096725464,
+            0.5649999976158142,
+            0.718999981880188
+          ],
+          "extent_m": [
+            0.013000000268220901,
+            0.004999999888241291,
+            0.00800000037997961
+          ],
+          "mesh_mm_min": 585.7,
+          "mesh_mm_med": 590.8,
+          "link": "j2n6s300_link_3"
+        }
+      ],
+      "small_near": []
+    },
+    {
+      "frame": 187,
+      "stamp_ns": 1795318054633486816,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 188,
+      "stamp_ns": 1795318054666844482,
+      "total": 2,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 189,
+      "stamp_ns": 1795318054700202393,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 190,
+      "stamp_ns": 1795318054733560059,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 191,
+      "stamp_ns": 1795318054766917969,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 192,
+      "stamp_ns": 1795318054800275635,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 193,
+      "stamp_ns": 1795318054833633545,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 194,
+      "stamp_ns": 1795318054866991211,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 195,
+      "stamp_ns": 1795318054900349121,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 196,
+      "stamp_ns": 1795318054933706787,
+      "total": 11,
+      "cluster_count_3_500": 1,
+      "points_in_small": 11,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [
+        {
+          "n": 11,
+          "center_m": [
+            -0.35600000619888306,
+            0.5640000104904175,
+            0.7250000238418579
+          ],
+          "extent_m": [
+            0.009999999776482582,
+            0.004999999888241291,
+            0.006000000052154064
+          ],
+          "mesh_mm_min": 587.0,
+          "mesh_mm_med": 591.2,
+          "link": "j2n6s300_link_3"
+        }
+      ],
+      "small_near": []
+    },
+    {
+      "frame": 197,
+      "stamp_ns": 1795318054967064697,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 198,
+      "stamp_ns": 1795318055000422363,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 199,
+      "stamp_ns": 1795318055033780273,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 200,
+      "stamp_ns": 1795318055100496338,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 201,
+      "stamp_ns": 1795318055133854248,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 202,
+      "stamp_ns": 1795318055167212402,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 203,
+      "stamp_ns": 1795318055200570313,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 204,
+      "stamp_ns": 1795318055233928223,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 205,
+      "stamp_ns": 1795318055267286377,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 206,
+      "stamp_ns": 1795318055300644287,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 207,
+      "stamp_ns": 1795318055334002441,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 208,
+      "stamp_ns": 1795318055367360352,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 209,
+      "stamp_ns": 1795318055400718262,
+      "total": 17,
+      "cluster_count_3_500": 1,
+      "points_in_small": 17,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [
+        {
+          "n": 17,
+          "center_m": [
+            -0.35100001096725464,
+            0.5649999976158142,
+            0.718999981880188
+          ],
+          "extent_m": [
+            0.012000000104308128,
+            0.004999999888241291,
+            0.008999999612569809
+          ],
+          "mesh_mm_min": 586.5,
+          "mesh_mm_med": 590.8,
+          "link": "j2n6s300_link_3"
+        }
+      ],
+      "small_near": []
+    },
+    {
+      "frame": 210,
+      "stamp_ns": 1795318055434076416,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 211,
+      "stamp_ns": 1795318055567508545,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 212,
+      "stamp_ns": 1795318055634224609,
+      "total": 2,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 213,
+      "stamp_ns": 1795318055667582520,
+      "total": 7,
+      "cluster_count_3_500": 1,
+      "points_in_small": 6,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [
+        {
+          "n": 6,
+          "center_m": [
+            -0.35499998927116394,
+            0.5580000281333923,
+            0.7250000238418579
+          ],
+          "extent_m": [
+            0.007000000216066837,
+            0.006000000052154064,
+            0.006000000052154064
+          ],
+          "mesh_mm_min": 583.7,
+          "mesh_mm_med": 585.8,
+          "link": "j2n6s300_link_3"
+        }
+      ],
+      "small_near": []
+    },
+    {
+      "frame": 214,
+      "stamp_ns": 1795318055700940674,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 215,
+      "stamp_ns": 1795318055734298584,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 216,
+      "stamp_ns": 1795318055767656738,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 217,
+      "stamp_ns": 1795318055801014893,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 218,
+      "stamp_ns": 1795318055834372803,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 219,
+      "stamp_ns": 1795318055867730957,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 220,
+      "stamp_ns": 1795318055901088867,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 221,
+      "stamp_ns": 1795318055934447021,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 222,
+      "stamp_ns": 1795318055967805176,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 223,
+      "stamp_ns": 1795318056001163086,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 224,
+      "stamp_ns": 1795318056034520752,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 225,
+      "stamp_ns": 1795318056067878662,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 226,
+      "stamp_ns": 1795318056101236328,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 227,
+      "stamp_ns": 1795318056134593994,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 228,
+      "stamp_ns": 1795318056167951660,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 229,
+      "stamp_ns": 1795318056201309326,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 230,
+      "stamp_ns": 1795318056234667236,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 231,
+      "stamp_ns": 1795318056268024902,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 232,
+      "stamp_ns": 1795318056301382568,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 233,
+      "stamp_ns": 1795318056334740234,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 234,
+      "stamp_ns": 1795318056368097900,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 235,
+      "stamp_ns": 1795318056401455811,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 236,
+      "stamp_ns": 1795318056434813477,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 237,
+      "stamp_ns": 1795318056468171143,
+      "total": 6,
+      "cluster_count_3_500": 1,
+      "points_in_small": 6,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [
+        {
+          "n": 6,
+          "center_m": [
+            -0.35199999809265137,
+            0.5580000281333923,
+            0.722000002861023
+          ],
+          "extent_m": [
+            0.006000000052154064,
+            0.004000000189989805,
+            0.004999999888241291
+          ],
+          "mesh_mm_min": 582.9,
+          "mesh_mm_med": 584.9,
+          "link": "j2n6s300_link_3"
+        }
+      ],
+      "small_near": []
+    },
+    {
+      "frame": 238,
+      "stamp_ns": 1795318056501528809,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 239,
+      "stamp_ns": 1795318056534886475,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 240,
+      "stamp_ns": 1795318056568244141,
+      "total": 6,
+      "cluster_count_3_500": 1,
+      "points_in_small": 6,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [
+        {
+          "n": 6,
+          "center_m": [
+            -0.35600000619888306,
+            0.5550000071525574,
+            0.7250000238418579
+          ],
+          "extent_m": [
+            0.009999999776482582,
+            0.004999999888241291,
+            0.004999999888241291
+          ],
+          "mesh_mm_min": 580.2,
+          "mesh_mm_med": 583.2,
+          "link": "j2n6s300_link_3"
+        }
+      ],
+      "small_near": []
+    },
+    {
+      "frame": 241,
+      "stamp_ns": 1795318056634959717,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 242,
+      "stamp_ns": 1795318056668317383,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 243,
+      "stamp_ns": 1795318056735032715,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 244,
+      "stamp_ns": 1795318056801748047,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 245,
+      "stamp_ns": 1795318056835105713,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 246,
+      "stamp_ns": 1795318056868463379,
+      "total": 20,
+      "cluster_count_3_500": 1,
+      "points_in_small": 20,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [
+        {
+          "n": 20,
+          "center_m": [
+            -0.3540000021457672,
+            0.5609999895095825,
+            0.7260000109672546
+          ],
+          "extent_m": [
+            0.01600000075995922,
+            0.010999999940395355,
+            0.017000000923871994
+          ],
+          "mesh_mm_min": 583.8,
+          "mesh_mm_med": 589.0,
+          "link": "j2n6s300_link_3"
+        }
+      ],
+      "small_near": []
+    },
+    {
+      "frame": 247,
+      "stamp_ns": 1795318056901821045,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 248,
+      "stamp_ns": 1795318056935178955,
+      "total": 14,
+      "cluster_count_3_500": 1,
+      "points_in_small": 14,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [
+        {
+          "n": 14,
+          "center_m": [
+            -0.3529999852180481,
+            0.5609999895095825,
+            0.718999981880188
+          ],
+          "extent_m": [
+            0.012000000104308128,
+            0.003000000026077032,
+            0.009999999776482582
+          ],
+          "mesh_mm_min": 584.5,
+          "mesh_mm_med": 588.0,
+          "link": "j2n6s300_link_3"
+        }
+      ],
+      "small_near": []
+    },
+    {
+      "frame": 249,
+      "stamp_ns": 1795318056968536621,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 250,
+      "stamp_ns": 1795318057001894287,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 251,
+      "stamp_ns": 1795318057035251953,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 252,
+      "stamp_ns": 1795318057068609619,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    },
+    {
+      "frame": 253,
+      "stamp_ns": 1795318057101967285,
+      "total": 0,
+      "cluster_count_3_500": 0,
+      "points_in_small": 0,
+      "under_60mm": 0,
+      "under_100mm": 0,
+      "largest": [],
+      "small_near": []
+    }
+  ]
+}

@@ -1,0 +1,163 @@
+[
+  {
+    "name": "baseline",
+    "actual": {
+      "spatial_filter.enable": false,
+      "spatial_filter.filter_smooth_alpha": 0.5,
+      "spatial_filter.filter_smooth_delta": 20,
+      "spatial_filter.filter_magnitude": 2,
+      "spatial_filter.holes_fill": 0,
+      "temporal_filter.enable": false,
+      "depth_module.laser_power": 150.0,
+      "depth_module.enable_auto_exposure": true
+    },
+    "frames": 195,
+    "rate_hz": 29.98,
+    "roi_pixels": 27306,
+    "roi_valid_pct": 99.85,
+    "common_pct": 100.0,
+    "jitter_median_mm": 1.0,
+    "jitter_p90_mm": 3.0,
+    "valid_points_median": 28450.0,
+    "valid_points_std": 9935.7,
+    "median_depth_mm": 678.0
+  },
+  {
+    "name": "spatial_default",
+    "actual": {
+      "spatial_filter.enable": true,
+      "spatial_filter.filter_smooth_alpha": 0.5,
+      "spatial_filter.filter_smooth_delta": 20,
+      "spatial_filter.filter_magnitude": 2,
+      "spatial_filter.holes_fill": 0,
+      "temporal_filter.enable": false,
+      "depth_module.laser_power": 150.0,
+      "depth_module.enable_auto_exposure": true
+    },
+    "frames": 189,
+    "rate_hz": 29.98,
+    "roi_pixels": 27306,
+    "roi_valid_pct": 99.84,
+    "common_pct": 99.96,
+    "jitter_median_mm": 1.0,
+    "jitter_p90_mm": 3.0,
+    "valid_points_median": 28459.0,
+    "valid_points_std": 129.4,
+    "median_depth_mm": 678.0
+  },
+  {
+    "name": "spatial_light",
+    "actual": {
+      "spatial_filter.enable": true,
+      "spatial_filter.filter_smooth_alpha": 0.75,
+      "spatial_filter.filter_smooth_delta": 20,
+      "spatial_filter.filter_magnitude": 2,
+      "spatial_filter.holes_fill": 0,
+      "temporal_filter.enable": false,
+      "depth_module.laser_power": 150.0,
+      "depth_module.enable_auto_exposure": true
+    },
+    "frames": 175,
+    "rate_hz": 29.98,
+    "roi_pixels": 27306,
+    "roi_valid_pct": 99.84,
+    "common_pct": 99.93,
+    "jitter_median_mm": 1.0,
+    "jitter_p90_mm": 3.0,
+    "valid_points_median": 28496.0,
+    "valid_points_std": 129.4,
+    "median_depth_mm": 678.0
+  },
+  {
+    "name": "laser_90",
+    "actual": {
+      "spatial_filter.enable": false,
+      "spatial_filter.filter_smooth_alpha": 0.5,
+      "spatial_filter.filter_smooth_delta": 20,
+      "spatial_filter.filter_magnitude": 2,
+      "spatial_filter.holes_fill": 0,
+      "temporal_filter.enable": false,
+      "depth_module.laser_power": 90.0,
+      "depth_module.enable_auto_exposure": true
+    },
+    "frames": 186,
+    "rate_hz": 29.98,
+    "roi_pixels": 27306,
+    "roi_valid_pct": 99.77,
+    "common_pct": 99.82,
+    "jitter_median_mm": 1.0,
+    "jitter_p90_mm": 3.0,
+    "valid_points_median": 28672.0,
+    "valid_points_std": 138.5,
+    "median_depth_mm": 681.0
+  },
+  {
+    "name": "laser_240",
+    "actual": {
+      "spatial_filter.enable": false,
+      "spatial_filter.filter_smooth_alpha": 0.5,
+      "spatial_filter.filter_smooth_delta": 20,
+      "spatial_filter.filter_magnitude": 2,
+      "spatial_filter.holes_fill": 0,
+      "temporal_filter.enable": false,
+      "depth_module.laser_power": 240.0,
+      "depth_module.enable_auto_exposure": true
+    },
+    "frames": 190,
+    "rate_hz": 29.98,
+    "roi_pixels": 27306,
+    "roi_valid_pct": 99.7,
+    "common_pct": 99.62,
+    "jitter_median_mm": 1.0,
+    "jitter_p90_mm": 2.0,
+    "valid_points_median": 28348.0,
+    "valid_points_std": 10022.4,
+    "median_depth_mm": 676.0
+  },
+  {
+    "name": "laser_360",
+    "actual": {
+      "spatial_filter.enable": false,
+      "spatial_filter.filter_smooth_alpha": 0.5,
+      "spatial_filter.filter_smooth_delta": 20,
+      "spatial_filter.filter_magnitude": 2,
+      "spatial_filter.holes_fill": 0,
+      "temporal_filter.enable": false,
+      "depth_module.laser_power": 360.0,
+      "depth_module.enable_auto_exposure": true
+    },
+    "frames": 180,
+    "rate_hz": 29.98,
+    "roi_pixels": 27306,
+    "roi_valid_pct": 99.49,
+    "common_pct": 99.29,
+    "jitter_median_mm": 1.0,
+    "jitter_p90_mm": 2.0,
+    "valid_points_median": 28230.0,
+    "valid_points_std": 97.1,
+    "median_depth_mm": 676.0
+  },
+  {
+    "name": "baseline_repeat",
+    "actual": {
+      "spatial_filter.enable": false,
+      "spatial_filter.filter_smooth_alpha": 0.5,
+      "spatial_filter.filter_smooth_delta": 20,
+      "spatial_filter.filter_magnitude": 2,
+      "spatial_filter.holes_fill": 0,
+      "temporal_filter.enable": false,
+      "depth_module.laser_power": 150.0,
+      "depth_module.enable_auto_exposure": true
+    },
+    "frames": 181,
+    "rate_hz": 29.98,
+    "roi_pixels": 27306,
+    "roi_valid_pct": 99.74,
+    "common_pct": 99.7,
+    "jitter_median_mm": 1.0,
+    "jitter_p90_mm": 3.0,
+    "valid_points_median": 28525.0,
+    "valid_points_std": 125.5,
+    "median_depth_mm": 678.0
+  }
+]

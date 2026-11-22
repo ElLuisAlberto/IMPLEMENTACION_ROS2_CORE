@@ -1,0 +1,34 @@
+/camera/d435i
+  Subscribers:
+    /parameter_events: rcl_interfaces/msg/ParameterEvent
+  Publishers:
+    /camera/d435i/aligned_depth_to_color/camera_info: sensor_msgs/msg/CameraInfo
+    /camera/d435i/aligned_depth_to_color/image_raw: sensor_msgs/msg/Image
+    /camera/d435i/color/camera_info: sensor_msgs/msg/CameraInfo
+    /camera/d435i/color/image_raw: sensor_msgs/msg/Image
+    /camera/d435i/color/metadata: realsense2_camera_msgs/msg/Metadata
+    /camera/d435i/depth/camera_info: sensor_msgs/msg/CameraInfo
+    /camera/d435i/depth/color/points: sensor_msgs/msg/PointCloud2
+    /camera/d435i/depth/image_rect_raw: sensor_msgs/msg/Image
+    /camera/d435i/depth/metadata: realsense2_camera_msgs/msg/Metadata
+    /camera/d435i/extrinsics/depth_to_color: realsense2_camera_msgs/msg/Extrinsics
+    /parameter_events: rcl_interfaces/msg/ParameterEvent
+    /rosout: rcl_interfaces/msg/Log
+    /tf_static: tf2_msgs/msg/TFMessage
+  Service Servers:
+    /camera/d435i/calib_config_read: realsense2_camera_msgs/srv/CalibConfigRead
+    /camera/d435i/calib_config_write: realsense2_camera_msgs/srv/CalibConfigWrite
+    /camera/d435i/describe_parameters: rcl_interfaces/srv/DescribeParameters
+    /camera/d435i/device_info: realsense2_camera_msgs/srv/DeviceInfo
+    /camera/d435i/get_parameter_types: rcl_interfaces/srv/GetParameterTypes
+    /camera/d435i/get_parameters: rcl_interfaces/srv/GetParameters
+    /camera/d435i/hw_reset: std_srvs/srv/Empty
+    /camera/d435i/list_parameters: rcl_interfaces/srv/ListParameters
+    /camera/d435i/set_parameters: rcl_interfaces/srv/SetParameters
+    /camera/d435i/set_parameters_atomically: rcl_interfaces/srv/SetParametersAtomically
+  Service Clients:
+
+  Action Servers:
+    /camera/d435i/triggered_calibration: realsense2_camera_msgs/action/TriggeredCalibration
+  Action Clients:
+
