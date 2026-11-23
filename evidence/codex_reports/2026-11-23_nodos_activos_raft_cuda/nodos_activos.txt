@@ -1,0 +1,73 @@
+NODOS ACTIVOS ACTUALMENTE
+Fecha: 23 de noviembre de 2026
+
+1. /camera/d435i
+   Programa: realsense2_camera_node
+   Origen: /opt/ros/humble/lib/realsense2_camera/realsense2_camera_node
+   Lanzado por: thesis_perception d435i_standalone.launch.py
+   Funcion: comunica con la D435i y publica imagen RGB, profundidad, color alineado
+   y datos relacionados con la camara.
+   Por que esta activo: es necesario para que RAFT reciba los pares RGB/profundidad.
+
+2. /pointcloud_preprocessor
+   Programa: pointcloud_preprocessor_node
+   Origen instalado: install/thesis_perception/lib/thesis_perception/pointcloud_preprocessor_node
+   Codigo fuente: thesis_perception/src/pointcloud_preprocessor_node.cpp
+   Configuracion: thesis_perception/config/perception.yaml
+   Funcion: filtra y publica la nube de puntos del entorno.
+   Por que esta activo: mantiene disponible /thesis/perception/points_filtered y
+   RViz puede mostrar la nube filtrada.
+
+3. /perception_health
+   Programa: perception_health_node
+   Origen instalado: install/thesis_perception/lib/thesis_perception/perception_health_node
+   Codigo fuente: thesis_perception/src/perception_health_node.cpp
+   Configuracion: thesis_perception/config/perception.yaml
+   Funcion: publica el estado general de salud de la pipeline de percepcion.
+   Por que esta activo: permite observar si la cadena de percepcion esta operativa.
+
+4. /point_flow_raft_preview_experimental
+   Programa: Python de RAFT experimental acelerado con CUDA
+   Origen instalado: install/thesis_perception/lib/thesis_perception/point_flow_raft_preview_experimental.py
+   Codigo fuente: thesis_perception/scripts/point_flow_raft_preview_experimental.py
+   Pesos: build/raft_weights/raft_small_C_T_V2-01064c6d.pth
+   Entorno Python: build/raft_env/bin/python
+   Publicaciones principales:
+   - /thesis/perception/point_flow_raft_preview_experimental
+   - /thesis/perception/raft_swept_surface_experimental
+   Funcion: ejecuta RAFT small C_T_V2 en CUDA, estima movimiento local, publica
+   puntos verdes/naranjas y publica el barrido experimental en voxeles.
+   Por que esta activo: es la prueba actual de inferencia y postprocesado CUDA.
+
+5. /rviz
+   Programa: rviz2
+   Configuracion: install/thesis_perception/share/thesis_perception/rviz/point_flow_preview.rviz
+   Codigo/configuracion fuente: thesis_perception/rviz/point_flow_preview.rviz
+   Funcion: visualiza la imagen RGB, los puntos de prediccion y el barrido
+   experimental.
+   Por que esta activo: es la interfaz limpia solicitada para observar el movimiento
+   frente a la D435i y las mediciones.
+
+6. Transform listener
+   Nodo: /transform_listener_impl_5c4343e15ad8
+   Y/o: /transform_listener_impl_625c6ce2e180
+   Funcion: escucha transformaciones TF usadas internamente por RViz.
+   Por que esta activo: RViz necesita el frame de la camara y las transformaciones.
+
+NODOS NO ACTIVOS EN ESTA CONFIGURACION
+
+- /point_flow_raft_preview
+  No esta activo ahora; es la implementacion RAFT legacy eager.
+  Su codigo esta en thesis_perception/scripts/point_flow_raft_preview.py.
+
+- /raft_sweep
+  No esta activo ahora; era el barrido C++ anterior.
+  Su codigo esta en thesis_perception/src/raft_sweep_node.cpp.
+
+RESUMEN
+
+La pipeline activa es:
+D435i -> imagen/profundidad -> predictor RAFT experimental CUDA
+-> nube experimental y barrido cyan -> RViz.
+
+No hay nodos de control ni movimiento del JACO2 activos en esta prueba.

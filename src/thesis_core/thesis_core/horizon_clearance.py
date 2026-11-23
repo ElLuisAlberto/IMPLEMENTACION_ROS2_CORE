@@ -122,12 +122,16 @@ def _minimum_prevalidated_clearance(
     obstacle_radius: float,
     sample_index: int,
     sample_time: float,
+    included_segment_names: Optional[frozenset] = None,
 ) -> SegmentClearance:
     """Evaluate one already validated sample without repeated allocations."""
     best = None
     for segment_index, ((start, end), name, radius) in enumerate(zip(
         segments, segment_names, capsule_radii
     )):
+        if (included_segment_names is not None
+                and name not in included_segment_names):
+            continue
         axis_x = end[0] - start[0]
         axis_y = end[1] - start[1]
         axis_z = end[2] - start[2]
@@ -181,9 +185,9 @@ def evaluate_capsule_horizon(
     obstacle_velocity: Sequence[float],
     obstacle_radius: float,
     protective_margin: float = DEFAULT_PROTECTIVE_MARGIN_M,
-    *, table=None,
+    *, table=None, included_segment_names: Optional[Sequence[str]] = None,
 ) -> HorizonClearance:
-    """Evaluate every capsule/sample pair and both safety thresholds."""
+    """Evaluate selected capsule/sample pairs and both safety thresholds."""
     raw_samples = tuple(tuple(sample) for sample in capsule_samples)
     samples = tuple(
         tuple((
@@ -209,6 +213,15 @@ def evaluate_capsule_horizon(
         raise ValueError(
             'segments, names and radii must have equal size'
         )
+    if included_segment_names is None:
+        included = None
+        clearance_count = len(names)
+    else:
+        requested = frozenset(str(value) for value in included_segment_names)
+        if not requested or requested.difference(names):
+            raise ValueError('included segment names must select known capsules')
+        included = requested
+        clearance_count = sum(name in included for name in names)
     margin = float(protective_margin)
     if not math.isfinite(margin) or margin < 0.0:
         raise ValueError('protective margin must be finite and non-negative')
@@ -232,6 +245,7 @@ def evaluate_capsule_horizon(
             obstacle,
             sample_index,
             sample_time,
+            included,
         )
         if table is not None:
             box = table.closest(segments, names, radii, sample_index, sample_time)
@@ -251,7 +265,8 @@ def evaluate_capsule_horizon(
         minimum=minimum,
         sample_count=len(samples),
         evaluated_combinations=len(samples) * (
-            len(radii) + (sum(n not in table.excluded for n in names) if table else 0)
+            clearance_count
+            + (sum(n not in table.excluded for n in names) if table else 0)
         ),
         protective_margin=margin,
         minimum_protective_clearance=minimum.clearance - margin,
@@ -284,6 +299,7 @@ def evaluate_joint_horizon(
     capsule_function: Callable = capsule_segments,
     joint_count: int = 6,
     table=None,
+    included_segment_names: Optional[Sequence[str]] = None,
 ) -> HorizonClearance:
     """
     Convert joint samples into capsule axes and evaluate the horizon.
@@ -322,4 +338,5 @@ def evaluate_joint_horizon(
         obstacle_radius,
         protective_margin,
         table=table,
+        included_segment_names=included_segment_names,
     )

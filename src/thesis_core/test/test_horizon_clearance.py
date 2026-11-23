@@ -139,3 +139,79 @@ def test_joint_horizon_accepts_profile_geometry():
     assert result.sample_count == 2
     assert result.evaluated_combinations == 4
     assert result.minimum.segment_name in {'base', 'arm'}
+
+
+def test_historical_jaco_selection_matches_current_clearance_and_keeps_indices():
+    from thesis_core.jaco_kinematics import (
+        CAPSULE_RADII,
+        CLEARANCE_SEGMENT_NAMES,
+        SEGMENT_NAMES,
+    )
+
+    segments = tuple(
+        ((0.0, y, 0.0), (1.0, y, 0.0))
+        for y in (0.0, 0.0, 0.30, 0.20, 0.10, 0.40)
+    )
+    center = (0.5, 0.0, 0.0)
+    current = minimum_configuration_clearance(
+        segments,
+        SEGMENT_NAMES,
+        CAPSULE_RADII,
+        center,
+        0.12,
+        included_segment_names=CLEARANCE_SEGMENT_NAMES,
+    )
+    horizon = evaluate_capsule_horizon(
+        (segments, segments),
+        (0.0, 1.0),
+        CAPSULE_RADII,
+        SEGMENT_NAMES,
+        center,
+        (0.0, 0.0, 0.0),
+        0.12,
+        included_segment_names=CLEARANCE_SEGMENT_NAMES,
+    )
+
+    assert current.segment_name == 'wrist_1_to_wrist_2'
+    assert current.segment_index == 4
+    assert current.capsule_radius == CAPSULE_RADII[4]
+    assert horizon.current.segment_name == current.segment_name
+    assert horizon.current.segment_index == current.segment_index
+    assert horizon.current.clearance == pytest.approx(current.clearance)
+    assert horizon.evaluated_combinations == 8
+
+
+def test_excluded_capsules_do_not_limit_future_horizon():
+    from thesis_core.jaco_kinematics import (
+        CAPSULE_RADII,
+        CLEARANCE_SEGMENT_NAMES,
+        SEGMENT_NAMES,
+    )
+
+    current = tuple(
+        ((0.0, y, 0.0), (1.0, y, 0.0))
+        for y in (0.0, 0.0, 0.8, 0.8, 0.8, 0.8)
+    )
+    future = (
+        current[0],
+        current[1],
+        current[2],
+        ((0.0, 0.30, 0.0), (1.0, 0.30, 0.0)),
+        current[4],
+        current[5],
+    )
+    result = evaluate_capsule_horizon(
+        (current, future),
+        (0.0, 1.0),
+        CAPSULE_RADII,
+        SEGMENT_NAMES,
+        (0.5, 0.0, 0.0),
+        (0.0, 0.0, 0.0),
+        0.12,
+        included_segment_names=CLEARANCE_SEGMENT_NAMES,
+    )
+
+    assert result.current.segment_index >= 2
+    assert result.minimum.sample_index == 1
+    assert result.minimum.segment_name == 'forearm_to_wrist_1'
+    assert result.minimum.segment_index == 3

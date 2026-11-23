@@ -2,7 +2,7 @@
 
 from dataclasses import dataclass
 import math
-from typing import Iterable, Sequence, Tuple
+from typing import Iterable, Optional, Sequence, Tuple
 
 
 Point3 = Tuple[float, float, float]
@@ -210,13 +210,22 @@ def minimum_configuration_clearance(
     obstacle_radius: float,
     sample_index: int = 0,
     sample_time: float = 0.0,
+    *,
+    included_segment_names: Optional[Sequence[str]] = None,
 ) -> SegmentClearance:
-    """Evaluate every capsule and return the configuration minimum."""
+    """Evaluate selected capsules and preserve each winner's original index."""
     axes = tuple(segments)
     names = tuple(str(value) for value in segment_names)
     radii = tuple(float(value) for value in capsule_radii)
     if not axes or len(axes) != len(names) or len(axes) != len(radii):
         raise ValueError('segments, names and radii must have equal size')
+    if included_segment_names is None:
+        included = None
+    else:
+        requested = frozenset(str(value) for value in included_segment_names)
+        if not requested or requested.difference(names):
+            raise ValueError('included segment names must select known capsules')
+        included = requested
     results = tuple(
         segment_sphere_clearance(
             start,
@@ -232,5 +241,6 @@ def minimum_configuration_clearance(
         for index, ((start, end), name, radius) in enumerate(
             zip(axes, names, radii)
         )
+        if included is None or name in included
     )
     return min(results, key=lambda result: result.clearance)

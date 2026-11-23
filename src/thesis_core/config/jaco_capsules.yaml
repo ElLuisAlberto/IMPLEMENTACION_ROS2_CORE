@@ -4,9 +4,12 @@ capsule_visualizer:
     publish_rate_hz: 20.0
     marker_topic: /thesis/robot_capsules
 
-    # Each row describes one capsule between two TF frame origins.
+    # Each row describes one capsule between two TF frame origins. All six
+    # remain in the kinematic and visualization envelope.
     # Radii are initial conservative approximations and can be calibrated
     # later against measurements of the physical JACO2.
+    # Historical preventive clearance selects upper_arm_to_forearm through
+    # wrist_2_to_tool by name; the two base capsules remain visualized.
     segment_names:
       - base_to_shoulder
       - shoulder_to_upper_arm

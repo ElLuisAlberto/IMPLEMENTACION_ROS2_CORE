@@ -16,6 +16,11 @@ SEGMENT_NAMES = (
     'wrist_2_to_tool',
 )
 
+# Keep the full six-capsule model for kinematics and visualization. This
+# historical JACO2 subset is used only by preventive clearance calculations.
+CLEARANCE_SEGMENT_NAMES = SEGMENT_NAMES[2:]
+CLEARANCE_EXCLUDED_SEGMENT_NAMES = SEGMENT_NAMES[:2]
+
 CAPSULE_RADII = (0.105, 0.105, 0.085, 0.075, 0.085, 0.090)
 
 JOINT_ORIGINS = (

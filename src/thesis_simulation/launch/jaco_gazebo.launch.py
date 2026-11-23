@@ -355,7 +355,10 @@ def generate_launch_description():
                 'table_with_legs': True,
                 'table_center': list(TABLE_CENTER),
                 'table_size': list(JACO2_SIM_TABLE_SIZE),
-                'table_excluded_segments': ['base_to_shoulder'],
+                'table_excluded_segments': [
+                    'base_to_shoulder',
+                    'shoulder_to_upper_arm',
+                ],
             }
         ]
     )

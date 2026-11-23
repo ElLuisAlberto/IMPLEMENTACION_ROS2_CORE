@@ -3,6 +3,7 @@ from dataclasses import dataclass, replace
 import math
 
 from thesis_core.obstacle_contract import rotate_vector
+from thesis_core.jaco_kinematics import CLEARANCE_EXCLUDED_SEGMENT_NAMES
 
 from thesis_core.clearance_geometry import finite_point, segment_box_clearance
 
@@ -105,13 +106,18 @@ def configured_table(node, profile=None):
     enabled = node.declare_parameter('table_enabled', False).value
     center = node.declare_parameter('table_center', list(TABLE_CENTER)).value
     size = node.declare_parameter('table_size', list(TABLE_SIZE)).value
-    excluded = node.declare_parameter('table_excluded_segments', ['base_to_shoulder']).value
+    excluded = node.declare_parameter(
+        'table_excluded_segments', list(CLEARANCE_EXCLUDED_SEGMENT_NAMES)
+    ).value
     orientation = node.declare_parameter('table_orientation', [0., 0., 0., 1.]).value
     with_legs = node.declare_parameter('table_with_legs', False).value
     if not enabled:
         return None
-    if profile is None and set(excluded) != {'base_to_shoulder'}:
-        raise ValueError('Only the fixed JACO2 pedestal can be excluded from table checks')
+    if profile is None and set(excluded) != set(CLEARANCE_EXCLUDED_SEGMENT_NAMES):
+        raise ValueError(
+            'Historical JACO2 table checks must exclude the two configured '
+            'base capsules'
+        )
     if profile is not None:
         mount = fixed_mount_links(profile.urdf_root)
         excluded = [c.name for c in profile.collision_capsules if c.link in mount]

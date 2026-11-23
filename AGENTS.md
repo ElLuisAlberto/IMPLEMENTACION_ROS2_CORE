@@ -18,6 +18,99 @@
 
 ## Observación de ROS 2
 
+- Para iniciar la D435i y RViz, usa el procedimiento de `thesis_perception/README.md`: el launch aplica los parámetros de cámara y solicita la RTX para RViz. La superposición guardada es experimental y debe habilitarse explícitamente; nunca es una calibración ni inicia el control físico.
 - Para consultar nodos o tópicos con el CLI `ros2`, usa `--no-daemon --spin-time 2` para evitar el daemon de `ros2cli`.
 - Ejecuta cada cliente de observación por separado y espera a que termine antes de iniciar el siguiente.
 - `tf2_echo` no acepta esas opciones; si hay que detenerlo, detén solo ese cliente, nunca el proceso de lanzamiento.
+
+## Configuración de percepción que el usuario quiere recuperar
+
+Cuando el usuario pida volver a abrir «la configuración de RAFT que funcionaba»
+o «lo que estaba abierto», usa esta referencia de la sesión del 23 de noviembre
+de 2026. Comprueba primero qué procesos ya están activos para no duplicarlos;
+no la arranques automáticamente al iniciar un chat. Es una visualización de
+percepción experimental y no inicia control ni movimiento del JACO2.
+
+La configuración activa y reproducible más reciente es D435i → comparación
+RGB-D en Python/CPU → RAFT experimental CUDA en GPU → `raft_lines_node` C++
+en CPU → RViz con PRIME NVIDIA. Conserva 12 iteraciones,
+alcance radial máximo de 1,2 m, filtro de mediana y confirmación temporal en dos
+imágenes. Usa el filtro adaptativo experimental: 15 puntos de soporte para
+grupos grandes y al menos 5 con velocidad coherente para grupos pequeños.
+La confirmación temporal usa la búsqueda 3×3 con comprobaciones de profundidad
+y velocidad (`temporal_search_3x3:=true`); su eficacia en vivo aún no se ha
+validado de forma concluyente.
+El barrido es de líneas cian finas y transparentes, no cubos. Es una prueba;
+no se ha validado su precisión con obstáculos pequeños ni como protección.
+En el estado activo usado en esta sesión, `async_pairing:=true`.
+El predictor y el marcador se remapean a los tópicos de la vista para mantener
+el mismo RViz.
+
+Asignación actual:
+
+| Proceso | Ejecución | Script o ejecutable | Tópicos principales |
+| --- | --- | --- | --- |
+| D435i | CPU / Intel RealSense | `realsense2_camera_node` | `/camera/d435i/color/image_raw`, `/camera/d435i/aligned_depth_to_color/image_raw` |
+| Comparación RGB-D | CPU / Python-OpenCV | `distance_comparison_views.py` | `/thesis/comparacion/distancia`, `/thesis/comparacion/suavizado` |
+| RAFT experimental | GPU NVIDIA / PyTorch CUDA | `point_flow_raft_preview_experimental.py` | `/thesis/perception/predicted_points` |
+| Barrido C++ | CPU | `raft_lines_node` | `/thesis/perception/swept_volume` |
+| RViz | GPU NVIDIA mediante PRIME | `rviz2` | suscripciones visuales guardadas |
+
+Desde la raíz del proyecto, con la D435i conectada y las dependencias y los
+artefactos locales ya disponibles, inicia cada comando en una terminal o
+proceso separado. En cada terminal carga primero:
+
+```bash
+source /opt/ros/humble/setup.bash
+source install/setup.bash
+```
+
+1. Cámara sin preprocesador, nodo de salud, predictores adicionales ni RViz:
+
+```bash
+ros2 launch thesis_perception d435i_standalone.launch.py \
+  start_rviz:=false start_processing:=false start_extractor:=false \
+  start_cloud_prediction:=false start_distance_comparison:=true
+```
+
+2. Generador de líneas C++:
+
+```bash
+ros2 run thesis_perception raft_lines_node --ros-args \
+  -r /thesis/perception/raft_swept_surface_experimental:=/thesis/perception/swept_volume
+```
+
+3. Predictor RAFT experimental:
+
+```bash
+THESIS_RAFT_WEIGHTS="$PWD/build/raft_weights/raft_small_C_T_V2-01064c6d.pth" \
+  build/raft_env/bin/python \
+  install/thesis_perception/lib/thesis_perception/point_flow_raft_preview_experimental.py \
+  --ros-args -p profile_timing:=true -p sweep_mode:=cpp -p async_pairing:=true \
+  -p max_valid_range_m:=1.2 -p temporal_motion_confirm:=true -p adaptive_small_motion:=true \
+  -p temporal_search_3x3:=true \
+  -r /thesis/perception/point_flow_raft_preview_experimental:=/thesis/perception/predicted_points
+```
+
+4. RViz con la vista que estaba abierta y la RTX solicitada:
+
+```bash
+__NV_PRIME_RENDER_OFFLOAD=1 __GLX_VENDOR_LIBRARY_NAME=nvidia \
+  rviz2 -d install/thesis_perception/share/thesis_perception/rviz/raft_adaptive_preview.rviz
+```
+
+Verifica con `ros2 node list --no-daemon --spin-time 2`: deben estar la cámara,
+`/comparacion_distancia_suavizado`, `/point_flow_raft_preview_experimental`,
+`/raft_lines_experimental` y `/rviz`.
+Los transform listeners de RViz pueden tener nombres variables. En esta vista,
+`/pointcloud_preprocessor`, `/perception_health`, `/cloud_prediction`, el RAFT
+legacy y `/raft_sweep` no deben estar activos.
+Los códigos anteriores se conservan bajo `thesis_perception/scripts/alternativas/`
+y `thesis_perception/src/alternativas/`; algunos informes históricos pueden
+mencionar sus rutas anteriores. `scripts/point_flow_preview.py` permanece en su
+ubicación porque el predictor actual lo importa.
+No inicies instancias duplicadas ni envíes datos de pruebas a los mismos
+tópicos de la sesión activa. Para detenerla, cierra cada uno de sus cinco
+procesos de forma ordenada; no cierres procesos ajenos. Los pesos y el entorno
+`build/raft_env` son artefactos locales: comprueba que existan antes de iniciar;
+si faltan, no instales ni descargues nada sin autorización.

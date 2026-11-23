@@ -13,6 +13,8 @@
 // limitations under the License.
 
 #include <pcl/filters/crop_box.h>
+#include <pcl/filters/statistical_outlier_removal.h>
+#include <pcl/filters/radius_outlier_removal.h>
 #include <pcl/filters/voxel_grid.h>
 #include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
@@ -52,6 +54,11 @@ public:
     transform_timeout_s_ = declare_parameter<double>("transform_timeout_s", 0.10);
     enable_crop_ = declare_parameter<bool>("enable_crop", false);
     enable_voxel_ = declare_parameter<bool>("enable_voxel", true);
+    outlier_method_ = declare_parameter<std::string>("outlier_method", "none");
+    outlier_mean_k_ = declare_parameter<int>("outlier_mean_k", 12);
+    outlier_stddev_ = declare_parameter<double>("outlier_stddev", 2.0);
+    outlier_radius_m_ = declare_parameter<double>("outlier_radius_m", 0.03);
+    outlier_min_neighbors_ = declare_parameter<int>("outlier_min_neighbors", 2);
     voxel_leaf_size_ = declare_parameter<double>("voxel_leaf_size", 0.02);
     min_valid_range_m_ = declare_parameter<double>("min_valid_range_m", 0.10);
     max_valid_range_m_ = declare_parameter<double>("max_valid_range_m", 10.0);
@@ -69,6 +76,12 @@ public:
     if (min_valid_range_m_ < 0.0 || min_valid_range_m_ >= max_valid_range_m_) {
       throw std::runtime_error("el intervalo de distancia valida es incorrecto");
     }
+    if ((outlier_method_ != "none" && outlier_method_ != "statistical" &&
+      outlier_method_ != "radius") || outlier_mean_k_ < 2 || outlier_stddev_ <= 0 ||
+      outlier_radius_m_ <= 0 || outlier_min_neighbors_ < 1)
+    {
+      throw std::runtime_error("invalid outlier filter parameters");
+    }
     if (!(min_x_ < max_x_ && min_y_ < max_y_ && min_z_ < max_z_)) {
       throw std::runtime_error("los limites de recorte son invalidos");
     }
@@ -77,6 +90,10 @@ public:
     // stale PointCloud2 samples when a frame temporarily takes too long.
     auto qos = rclcpp::SensorDataQoS().keep_last(1);
     publisher_ = create_publisher<sensor_msgs::msg::PointCloud2>(output_topic_, qos);
+    before_outlier_publisher_ = create_publisher<sensor_msgs::msg::PointCloud2>(
+      declare_parameter<std::string>(
+        "before_outlier_topic", "/thesis/perception/points_before_outlier"),
+      qos);
     subscription_ = create_subscription<sensor_msgs::msg::PointCloud2>(
       input_topic_, qos,
       std::bind(&PointCloudPreprocessor::cloud_callback, this, std::placeholders::_1));
@@ -156,6 +173,31 @@ private:
       voxel.filter(*filtered);
     }
 
+    if (before_outlier_publisher_->get_subscription_count() > 0) {
+      sensor_msgs::msg::PointCloud2 before;
+      pcl::toROSMsg(*filtered, before);
+      before.header.frame_id = target_frame_.empty() ? transformed.header.frame_id : target_frame_;
+      before.header.stamp = restamp_output_ ? this->now() : rclcpp::Time(transformed.header.stamp);
+      before_outlier_publisher_->publish(before);
+    }
+    if (outlier_method_ != "none" && !filtered->empty()) {
+      auto cleaned = pcl::PointCloud<pcl::PointXYZRGB>::Ptr(
+        new pcl::PointCloud<pcl::PointXYZRGB>());
+      if (outlier_method_ == "statistical") {
+        pcl::StatisticalOutlierRemoval<pcl::PointXYZRGB> outlier;
+        outlier.setInputCloud(filtered);
+        outlier.setMeanK(outlier_mean_k_);
+        outlier.setStddevMulThresh(outlier_stddev_);
+        outlier.filter(*cleaned);
+      } else {
+        pcl::RadiusOutlierRemoval<pcl::PointXYZRGB> outlier;
+        outlier.setInputCloud(filtered);
+        outlier.setRadiusSearch(outlier_radius_m_);
+        outlier.setMinNeighborsInRadius(outlier_min_neighbors_);
+        outlier.filter(*cleaned);
+      }
+      filtered = cleaned;
+    }
     sensor_msgs::msg::PointCloud2 output;
     pcl::toROSMsg(*filtered, output);
     output.header.frame_id = target_frame_.empty() ? transformed.header.frame_id : target_frame_;
@@ -175,6 +217,11 @@ private:
   double transform_timeout_s_;
   bool enable_crop_;
   bool enable_voxel_;
+  std::string outlier_method_;
+  int outlier_mean_k_;
+  double outlier_stddev_;
+  double outlier_radius_m_;
+  int outlier_min_neighbors_;
   double voxel_leaf_size_;
   double min_valid_range_m_;
   double max_valid_range_m_;
@@ -189,6 +236,7 @@ private:
   tf2_ros::TransformListener tf_listener_;
   rclcpp::Subscription<sensor_msgs::msg::PointCloud2>::SharedPtr subscription_;
   rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr publisher_;
+  rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr before_outlier_publisher_;
 };
 
 int main(int argc, char ** argv)

@@ -57,6 +57,33 @@ def expanded_joints(robot_id):
     }
 
 
+def test_jaco_visuals_use_muted_body_and_contrasting_joint_colors():
+    xacro = shutil.which('xacro')
+    if xacro is None:
+        pytest.skip('xacro is required for JACO visual material checks')
+    model = PACKAGE_ROOT / 'urdf' / 'jaco_gazebo.ros2_control.xacro'
+    robot = ElementTree.fromstring(
+        subprocess.check_output([xacro, str(model)], text=True)
+    )
+    links = {
+        link.attrib['name']: link
+        for link in robot.findall('link')
+    }
+
+    def color(link_name, visual_index):
+        rgba = links[link_name].findall('visual')[visual_index].find(
+            'material/color'
+        )
+        return tuple(map(float, rgba.attrib['rgba'].split()))
+
+    body = color('j2n6s300_link_2', 0)
+    joint = color('j2n6s300_link_2', 1)
+    assert body == pytest.approx((0.66, 0.67, 0.68, 1.0))
+    assert joint == pytest.approx((0.28, 0.29, 0.30, 1.0))
+    assert max(body[:3]) - min(body[:3]) < 0.03
+    assert max(joint[:3]) < min(body[:3]) - 0.25
+
+
 def urdf_transform(joints, child_frame, positions):
     """Walk URDF parent links to world and apply its declared Z-axis joints."""
     chain = []

@@ -81,13 +81,13 @@ def test_standalone_preserves_source_frame_clock_and_depth_range():
     assert preprocessor["target_frame"] == ""
     assert preprocessor["restamp_output"] is False
     assert preprocessor["min_valid_range_m"] == 0.10
-    assert preprocessor["max_valid_range_m"] == 1.5
+    assert preprocessor["max_valid_range_m"] == 1.2
 
 
-def test_processing_launches_default_to_the_calibrated_depth_range():
-    """Keep the 1.50 m sensor cutoff without terminal overrides."""
+def test_processing_launches_default_to_the_selected_depth_range():
+    """Keep the 1.20 m sensor cutoff without terminal overrides."""
     expected = (
-        'DeclareLaunchArgument("max_valid_range_m", default_value="1.5")'
+        'DeclareLaunchArgument("max_valid_range_m", default_value="1.2")'
     )
     for launch_name in (
         "perception_processing.launch.py",

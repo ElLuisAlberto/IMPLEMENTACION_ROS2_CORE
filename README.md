@@ -365,6 +365,11 @@ RTX, consulta [el arranque de percepción](thesis_perception/README.md#standalon
 La superposición nube-robot documentada allí es experimental y no inicia ni
 controla el brazo físico.
 
+Para reabrir la cámara y comparar la predicción de movimiento de obstáculos
+con RAFT o con el método anterior, consulta el [arranque paso a paso de la
+previsualización](thesis_perception/README.md#arranque-de-la-c%C3%A1mara-y-predicci%C3%B3n-experimental).
+Es una visualización de percepción; no inicia la evasión ni el control físico.
+
 El [registro de avances de percepción y pruebas](docs/codex_reports/2026-11-22_registro_avances_percepcion_y_pruebas.md)
 reúne la auditoría, los resultados y los rosbags de la sesión. El [filtro
 rápido experimental](tools/perception/experimental_arm_segmentation/README.md)

@@ -22,7 +22,11 @@ from thesis_core.geometry_profile import (
     CONFIGURED_STATES,
     legacy_jaco_geometry_profile,
 )
-from thesis_core.jaco_kinematics import CAPSULE_RADII, SEGMENT_NAMES
+from thesis_core.jaco_kinematics import (
+    CAPSULE_RADII,
+    CLEARANCE_SEGMENT_NAMES,
+    SEGMENT_NAMES,
+)
 from thesis_core.work_table import configured_table, table_marker
 from thesis_core.obstacle_contract import validate_obstacle
 from thesis_core.ros_runtime import spin_node
@@ -595,6 +599,7 @@ class ProximityMonitorNode(Node):
                 self.radii,
                 (obstacle.x, obstacle.y, obstacle.z),
                 obstacle_radius,
+                included_segment_names=CLEARANCE_SEGMENT_NAMES,
             )
         except ValueError as exc:
             self.get_logger().error(f'Invalid proximity geometry: {exc}')

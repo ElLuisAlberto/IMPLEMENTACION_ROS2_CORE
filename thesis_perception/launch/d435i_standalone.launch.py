@@ -25,6 +25,7 @@ from launch.conditions import IfCondition, UnlessCondition
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 from launch_ros.actions import Node, SetParameter
+from launch_ros.parameter_descriptions import ParameterValue
 from launch_ros.substitutions import FindPackageShare
 
 
@@ -97,8 +98,8 @@ def generate_launch_description():
                     "temporal_filter.enable": LaunchConfiguration(
                         "enable_temporal_filter"
                     ),
-                    "depth_module.depth_profile": "848,480,30",
-                    "rgb_camera.color_profile": "1280,720,30",
+                    "depth_module.depth_profile": LaunchConfiguration("depth_profile"),
+                    "rgb_camera.color_profile": LaunchConfiguration("color_profile"),
                 }.items(),
             ),
         ],
@@ -106,12 +107,18 @@ def generate_launch_description():
 
     processing = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(processing_launch),
+        condition=IfCondition(LaunchConfiguration("start_processing")),
         launch_arguments={
             "use_sim_time": LaunchConfiguration("use_sim_time"),
             "target_frame": LaunchConfiguration("target_frame"),
             "restamp_output": LaunchConfiguration("restamp_output"),
             "enable_crop": LaunchConfiguration("enable_crop"),
             "enable_voxel": LaunchConfiguration("enable_voxel"),
+            "outlier_method": LaunchConfiguration("outlier_method"),
+            "outlier_mean_k": LaunchConfiguration("outlier_mean_k"),
+            "outlier_stddev": LaunchConfiguration("outlier_stddev"),
+            "outlier_radius_m": LaunchConfiguration("outlier_radius_m"),
+            "outlier_min_neighbors": LaunchConfiguration("outlier_min_neighbors"),
             "voxel_leaf_size": LaunchConfiguration("voxel_leaf_size"),
             "min_valid_range_m": LaunchConfiguration(
                 "min_valid_range_m"
@@ -142,6 +149,35 @@ def generate_launch_description():
             "extrinsic_pitch": LaunchConfiguration("extrinsic_pitch"),
             "extrinsic_yaw": LaunchConfiguration("extrinsic_yaw"),
         }.items(),
+    )
+
+    prediction = Node(
+        package="thesis_perception", executable="cloud_prediction_node",
+        name="cloud_prediction", output="screen",
+        condition=IfCondition(LaunchConfiguration("start_cloud_prediction")),
+        parameters=[{
+            "use_sim_time": ParameterValue(LaunchConfiguration("use_sim_time"), value_type=bool),
+            "max_valid_range_m": ParameterValue(
+                LaunchConfiguration("max_valid_range_m"), value_type=float),
+            "sweep_enabled": ParameterValue(
+                LaunchConfiguration("sweep_enabled"), value_type=bool),
+            "sweep_voxel_m": ParameterValue(
+                LaunchConfiguration("sweep_voxel_m"), value_type=float),
+            "sweep_max_cells": ParameterValue(
+                LaunchConfiguration("sweep_max_cells"), value_type=int),
+            "sweep_max_steps": ParameterValue(
+                LaunchConfiguration("sweep_max_steps"), value_type=int),
+        }],
+    )
+
+    distance_comparison = Node(
+        package="thesis_perception",
+        executable="distance_comparison_views.py",
+        name="comparacion_distancia_suavizado",
+        output="screen",
+        condition=IfCondition(
+            LaunchConfiguration("start_distance_comparison")
+        ),
     )
 
     overlay = Node(
@@ -180,7 +216,18 @@ def generate_launch_description():
     )
 
     declarations = [
+        DeclareLaunchArgument("depth_profile", default_value="640,480,60"),
+        DeclareLaunchArgument("color_profile", default_value="640,480,60"),
+        DeclareLaunchArgument("start_cloud_prediction", default_value="false"),
+        DeclareLaunchArgument(
+            "start_distance_comparison", default_value="false"
+        ),
+        DeclareLaunchArgument("sweep_enabled", default_value="true"),
+        DeclareLaunchArgument("sweep_voxel_m", default_value="0.02"),
+        DeclareLaunchArgument("sweep_max_cells", default_value="40000"),
+        DeclareLaunchArgument("sweep_max_steps", default_value="64"),
         DeclareLaunchArgument("start_camera", default_value="true"),
+        DeclareLaunchArgument("start_processing", default_value="true"),
         DeclareLaunchArgument("start_rviz", default_value="false"),
         DeclareLaunchArgument("rviz_use_nvidia", default_value="true"),
         DeclareLaunchArgument("show_robot_overlay", default_value="false"),
@@ -220,10 +267,15 @@ def generate_launch_description():
         ),
         DeclareLaunchArgument("restamp_output", default_value="false"),
         DeclareLaunchArgument("enable_crop", default_value="false"),
-        DeclareLaunchArgument("enable_voxel", default_value="false"),
+        DeclareLaunchArgument("enable_voxel", default_value="true"),
+        DeclareLaunchArgument("outlier_method", default_value="none"),
+        DeclareLaunchArgument("outlier_mean_k", default_value="12"),
+        DeclareLaunchArgument("outlier_stddev", default_value="2.0"),
+        DeclareLaunchArgument("outlier_radius_m", default_value="0.03"),
+        DeclareLaunchArgument("outlier_min_neighbors", default_value="2"),
         DeclareLaunchArgument("voxel_leaf_size", default_value="0.01"),
         DeclareLaunchArgument("min_valid_range_m", default_value="0.10"),
-        DeclareLaunchArgument("max_valid_range_m", default_value="1.5"),
+        DeclareLaunchArgument("max_valid_range_m", default_value="1.2"),
         DeclareLaunchArgument("min_x", default_value="-1.5"),
         DeclareLaunchArgument("max_x", default_value="1.5"),
         DeclareLaunchArgument("min_y", default_value="-1.5"),
@@ -251,4 +303,7 @@ def generate_launch_description():
         DeclareLaunchArgument("extrinsic_yaw", default_value="0.0"),
     ]
 
-    return LaunchDescription(declarations + [camera, processing, overlay, rviz])
+    return LaunchDescription(
+        declarations
+        + [camera, processing, prediction, distance_comparison, overlay, rviz]
+    )

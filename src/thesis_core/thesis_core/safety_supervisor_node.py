@@ -38,6 +38,7 @@ from thesis_core.horizon_clearance import (
 )
 from thesis_core.jaco_kinematics import (
     CAPSULE_RADII,
+    CLEARANCE_SEGMENT_NAMES,
     SEGMENT_NAMES,
     capsule_segments,
     end_effector_transform,
@@ -313,10 +314,12 @@ class SafetySupervisorNode(Node):
                 self.capsule_function,
                 self.tip_position_function,
             ) = profile_geometry(self.robot_profile)
+            self.clearance_segment_names = None
         else:
             # Preserve the historical JACO2 numerical model exactly.
             self.segment_names = SEGMENT_NAMES
             self.capsule_radii = CAPSULE_RADII
+            self.clearance_segment_names = CLEARANCE_SEGMENT_NAMES
             mount = ((1, 0, 0, 0), (0, 1, 0, 0), (0, 0, 1, height), (0, 0, 0, 1)) if height else None
             self.capsule_function = capsule_segments
             if height:
@@ -1145,6 +1148,9 @@ class SafetySupervisorNode(Node):
             capsule_function=self.capsule_function,
             table=getattr(self, 'table', None),
             joint_count=len(self.joint_names),
+            included_segment_names=getattr(
+                self, 'clearance_segment_names', None
+            ),
         )
         self.last_horizon_clearance = result
         collision_time = (
@@ -1175,6 +1181,9 @@ class SafetySupervisorNode(Node):
             capsule_function=self.capsule_function,
             table=getattr(self, 'table', None),
             joint_count=len(self.joint_names),
+            included_segment_names=getattr(
+                self, 'clearance_segment_names', None
+            ),
         )
         return result.current.legacy_tuple()
 
@@ -2179,6 +2188,9 @@ class SafetySupervisorNode(Node):
                 capsule_function=self.capsule_function,
                 table=getattr(self, 'table', None),
                 joint_count=len(self.joint_names),
+                included_segment_names=getattr(
+                    self, 'clearance_segment_names', None
+                ),
             )
         except (TypeError, ValueError, ZeroDivisionError) as exc:
             self.publish_decision(

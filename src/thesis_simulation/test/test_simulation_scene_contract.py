@@ -142,6 +142,81 @@ def test_world_mounts_jaco_on_a_160_by_100_cm_table():
     assert tabletop.findtext('geometry/box/size') == '1.60 1.00 0.04'
 
 
+def test_workstation_academic_lab_decor_is_visual_only():
+    world = ET.parse(ROOT / 'worlds' / 'jaco2_workstation.sdf').getroot()
+    room = world.find(".//model[@name='academic_lab_decor']")
+    assert room is not None
+    assert room.find('static').text == 'true'
+    assert room.findall('.//collision') == []
+    visuals = {visual.get('name') for visual in room.findall('.//visual')}
+    assert {
+        'back_wall',
+        'left_wall',
+        'right_wall',
+        'whiteboard_panel',
+        'lab_bench_top',
+        'lab_cabinet_left',
+        'window_landscape_sky',
+        'window_landscape_sun',
+        'window_landscape_hill_left',
+        'window_landscape_field',
+        'window_tree_trunk_left',
+        'window_tree_crown_middle',
+        'window_tree_trunk_right',
+    } <= visuals
+    assert not any('ceiling' in name for name in visuals)
+    assert not any('sofa' in name for name in visuals)
+    window_sky = next(
+        visual for visual in room.findall('.//visual')
+        if visual.get('name') == 'window_landscape_sky'
+    )
+    sky_color = [
+        float(value)
+        for value in window_sky.findtext('material/diffuse').split()
+    ]
+    assert sky_color[0] > 0.5 and sky_color[1] > sky_color[0]
+    trees = {name for name in visuals if name.startswith('window_tree_')}
+    assert len(trees) >= 9
+    for cabinet_name in ('lab_cabinet_left', 'lab_cabinet_right', 'lab_bench_cabinet'):
+        cabinet = next(
+            visual for visual in room.findall('.//visual')
+            if visual.get('name') == cabinet_name
+        )
+        wood_color = [
+            float(value)
+            for value in cabinet.findtext('material/diffuse').split()
+        ]
+        assert wood_color[0] > wood_color[2]
+    ground_link = world.find(".//model[@name='ground_plane']/link[@name='ground_link']")
+    tile_grout = [
+        visual for visual in ground_link.findall('visual')
+        if visual.get('name', '').startswith('tile_grout_')
+    ]
+    assert len(tile_grout) == 20
+    assert len(ground_link.findall('collision')) == 1
+    scene = world.find('.//world/scene')
+    background = [float(value) for value in scene.findtext('background').split()]
+    floor = world.find(
+        ".//model[@name='ground_plane']//visual[@name='ground_visual']"
+    )
+    floor_color = [
+        float(value)
+        for value in floor.findtext('material/diffuse').split()
+    ]
+    back_wall = next(
+        visual for visual in room.findall('.//visual')
+        if visual.get('name') == 'back_wall'
+    )
+    wall_color = [
+        float(value)
+        for value in back_wall.findtext('material/diffuse').split()
+    ]
+    assert background[2] > background[0]
+    assert floor_color[0] > floor_color[2] > 0.6
+    assert max(floor_color[:3]) - min(floor_color[:3]) < 0.06
+    assert wall_color[2] > wall_color[1] > wall_color[0]
+
+
 def test_jaco_launch_enables_the_matching_preventive_table_geometry():
     module = load_launch('jaco_gazebo.launch.py')
     monitor = next(
@@ -157,3 +232,7 @@ def test_jaco_launch_enables_the_matching_preventive_table_geometry():
     assert parameters['table_enabled'] is True
     assert list(parameters['table_center']) == [0.0, 0.0, 0.73]
     assert list(parameters['table_size']) == [1.60, 1.00, 0.04]
+    assert list(parameters['table_excluded_segments']) == [
+        'base_to_shoulder',
+        'shoulder_to_upper_arm',
+    ]

@@ -227,8 +227,8 @@ Visualization Manager:
       Name: SafetyCapsules
       Namespaces:
         current_capsules: true
-        prediction: true
-        proximity: true
+        prediction: false
+        proximity: false
       Value: true
     - Class: rviz_default_plugins/MarkerArray
       Enabled: true
@@ -242,7 +242,7 @@ Visualization Manager:
       Namespaces:
         current_capsules: false
         horizon_endpoint_traces: true
-        horizon_labels: true
+        horizon_labels: false
         horizon_time_poses: true
         predicted_volume: true
       Value: true

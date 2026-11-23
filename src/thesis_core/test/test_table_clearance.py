@@ -126,6 +126,44 @@ def test_current_table_witness_follows_nearest_capsule():
         assert markers[0].points[1].z == pytest.approx(.75)
 
 
+def test_historical_jaco_table_uses_only_the_four_distal_capsules():
+    from types import SimpleNamespace
+    from thesis_core.jaco_kinematics import CLEARANCE_EXCLUDED_SEGMENT_NAMES
+    from thesis_core.work_table import configured_table
+
+    parameters = {'table_enabled': True}
+
+    class Node:
+        def declare_parameter(self, name, default):
+            return SimpleNamespace(value=parameters.get(name, default))
+
+    table = configured_table(Node())
+    assert table.excluded == frozenset(CLEARANCE_EXCLUDED_SEGMENT_NAMES)
+
+    segments = tuple(
+        ((0.0, 0.0, z), (0.1, 0.0, z))
+        for z in (.80, .80, .99, .95, .87, .91)
+    )
+    names = (
+        'base_to_shoulder',
+        'shoulder_to_upper_arm',
+        'upper_arm_to_forearm',
+        'forearm_to_wrist_1',
+        'wrist_1_to_wrist_2',
+        'wrist_2_to_tool',
+    )
+    radii = (.105, .105, .085, .075, .085, .09)
+    result = table.closest(segments, names, radii)
+
+    assert result.segment_name == 'wrist_1_to_wrist_2'
+    assert result.segment_index == 4
+    assert result.clearance == pytest.approx(.035)
+
+    parameters['table_excluded_segments'] = ['base_to_shoulder']
+    with pytest.raises(ValueError, match='two configured base capsules'):
+        configured_table(Node())
+
+
 def test_standalone_distance_lines_end_on_leg_and_sphere_surfaces():
     from math import dist
     from std_msgs.msg import Header
@@ -147,16 +185,10 @@ def test_standalone_distance_lines_end_on_leg_and_sphere_surfaces():
         a, b = [(p.x, p.y, p.z) for p in line.points]
         assert b == pytest.approx(expected_end)
         assert dist(a, b) == pytest.approx(hit.clearance)
-        assert label.text == (f'{hit.clearance:.3f} m' if name == 'Mesa'
-                              else f'{name} {hit.clearance:.3f} m')
+        assert label.text == f'{hit.clearance:.3f} m'
         if name == 'Mesa':
-            assert len(markers) == 3
-            leader = markers[1]
-            assert leader.points[0].x == pytest.approx(expected_end[0])
-            assert leader.points[0].y == pytest.approx(expected_end[1])
-            assert leader.points[0].z == pytest.approx(expected_end[2])
-            assert label.pose.position.x > expected_end[0]
-            assert label.pose.position.y > expected_end[1]
+            assert len(markers) == 2
+            assert len(line.points) == 2
         else:
             assert len(markers) == 2
 
@@ -180,12 +212,10 @@ def test_nominal_wrist_witness_uses_future_table_surface():
     assert horizon.current.segment_name == 'shoulder'
     assert sphere.box_point is None
     assert wrist.segment_name == 'wrist' and wrist.clearance == pytest.approx(-.04)
-    line, dimension, label = clearance_markers(
+    line, label = clearance_markers(
         Header(frame_id='world'), 'JOG_nominal', wrist, (1., .44, .06), None,
         nominal=True,
     )
     assert line.points[0].z == pytest.approx(.71)
     assert line.points[1].z == pytest.approx(.75)
-    assert dimension.points[2].z - dimension.points[3].z == pytest.approx(.04)
-    assert 'wrist' in label.text and 'Solape=0.040m' in label.text
-    assert 't=+1.00s' in label.text
+    assert label.text == '-0.040 m'

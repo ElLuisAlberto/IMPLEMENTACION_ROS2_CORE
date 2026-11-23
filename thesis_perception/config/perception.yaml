@@ -9,14 +9,18 @@ pointcloud_preprocessor:
     restamp_output: false
     transform_timeout_s: 0.10
     enable_crop: false
+    outlier_method: none
+    outlier_mean_k: 12
+    outlier_stddev: 2.0
+    outlier_radius_m: 0.03
+    outlier_min_neighbors: 2
     enable_voxel: true
     voxel_leaf_size: 0.02
     # Sensor-level sanity interval applied before voxelization. It is
     # independent from the workspace crop calibrated later.
     min_valid_range_m: 0.10
-    # Retornos más lejanos pertenecen al fondo del salón y no se entregan
-    # al extractor de obstáculos.
-    max_valid_range_m: 1.5
+    # Límite radial experimental de observación.
+    max_valid_range_m: 1.2
     min_x: -1.5
     max_x: 1.5
     min_y: -1.5
