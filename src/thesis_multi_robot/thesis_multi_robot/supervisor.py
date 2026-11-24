@@ -162,8 +162,7 @@ def main(args=None):
     )
     from trajectory_msgs.msg import JointTrajectoryPoint
     from .kinematics import RobotKinematics
-    from thesis_core.clearance_geometry import segment_box_clearance
-    from thesis_core.work_table import TABLE_SIZE, fixed_mount_links
+    from thesis_core.work_table import SIM_TABLE_SIZE as TABLE_SIZE, fixed_mount_links, WorkTable
     from .geometry import capsule_sets_clearance, sphere_clearance, world_capsules
 
     def nanoseconds(stamp):
@@ -312,8 +311,9 @@ def main(args=None):
                         a, b, r = c['start'], c['end'], c['radius']
                         if min(a[2], b[2]) - r - table[2] - TABLE_SIZE[2]/2 >= clearance:
                             continue
-                        clearance = min(clearance, segment_box_clearance(
-                            a, b, r, table, TABLE_SIZE).clearance)
+                        clearance = min(clearance, WorkTable(
+                            tuple(table), TABLE_SIZE, frozenset(), with_legs=True
+                        ).closest([(a, b)], ['segment'], [r]).clearance)
                 for peer_name, peer in self.profiles.items():
                     if peer_name == self.name:
                         continue

@@ -18,8 +18,9 @@ def test_collision_box_covers_exported_bounds():
     assert all(c + s / 2 >= x for c, s, x in zip(center, size, upper))
     assert root.find("joint[@name='provisional_gripper_mount']/parent").get('link') == 'flange'
     mesh = root.find("link[@name='provisional_gripper']/visual/geometry/mesh")
-    assert 'sistema_gripper_instrumentado.stl' in mesh.get('filename')
-    assert mesh.get('scale') == '0.001 0.001 0.001'
+    assert 'sistema_gripper_instrumentado_colores.dae' in mesh.get('filename')
+    assert mesh.get('scale') == '1 1 1'
+    assert root.find("link[@name='provisional_gripper']/visual/material") is None
 
 
 def test_jaco2_does_not_accept_provisional_tool(tmp_path):

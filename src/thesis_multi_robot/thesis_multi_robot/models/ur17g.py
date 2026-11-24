@@ -22,7 +22,10 @@ JOINT_NAMES = (
 )
 BASE_LINK = 'base_link'
 TIP_LINK = 'tool0'
-INITIAL_POSITIONS = dict(zip(JOINT_NAMES, (0.0, -1.57, 0.0, -1.57, 0.0, 0.0)))
+INITIAL_POSITIONS = dict(zip(
+    JOINT_NAMES,
+    (0.0, -1.15, 1.10, -1.52, 0.0, 0.0),
+))
 SOURCE_PACKAGES = ('ur_description',)
 
 

@@ -84,7 +84,7 @@ def test_capsule_extraction_resolves_only_an_internal_copy(
     original = geometry.collision_capsules
     observed = []
 
-    def inspect_internal_root(root):
+    def inspect_internal_root(root, **kwargs):
         filenames = [
             mesh.attrib['filename']
             for mesh in root.findall('.//collision/geometry/mesh')
@@ -92,7 +92,7 @@ def test_capsule_extraction_resolves_only_an_internal_copy(
         assert filenames
         assert all(Path(filename).is_absolute() for filename in filenames)
         observed.extend(filenames)
-        return original(root)
+        return original(root, **kwargs)
 
     monkeypatch.setattr(geometry, 'collision_capsules', inspect_internal_root)
     profile = build_robot('ur17g', 'uri_probe', tmp_path)
@@ -150,9 +150,31 @@ def test_source_geometry_limits_and_joint_types_are_preserved(cell, name):
     if name == 'p3020':
         assert joints['p3020_joint_4'].attrib['type'] == 'fixed'
         assert len(root.findall('.//collision')) >= 22
-    assert len(model['profile']['capsules']) == len(root.findall('link/collision'))
+    if name == 'p3020':
+        arm = [c for c in model['profile']['capsules']
+               if c['link'] != 'p3020_provisional_gripper']
+        assert len(arm) == 10
+        assert len({c['link'] for c in arm}) == 6
+        for link in {c['link'] for c in arm}:
+            assert sum(c['start'] != c['end'] for c in arm if c['link'] == link) == 1
+    if name == 'ur17g':
+        for link in ('ur17g_upper_arm_link', 'ur17g_forearm_link'):
+            segments = [c for c in model['profile']['capsules'] if c['link'] == link]
+            assert len(segments) == 3
+            assert sum(c['start'] != c['end'] for c in segments) == 1
+    if name == 'cs625':
+        for link in ('cs625_upperarm_link', 'cs625_forearm_link'):
+            segments = [c for c in model['profile']['capsules'] if c['link'] == link]
+            assert len(segments) == 3
+            assert sum(c['start'] != c['end'] for c in segments) == 1
     assert model['profile']['capsules']
     assert all(capsule['radius'] > 0 for capsule in model['profile']['capsules'])
+
+
+@pytest.mark.parametrize('name', ('ur17g', 'cs625'))
+def test_base_is_on_table(cell, name):
+    from thesis_core.work_table import MOUNT_HEIGHT
+    assert cell[name]['profile']['base_xyz'][2] == pytest.approx(MOUNT_HEIGHT)
 
 
 def test_cell_frame_and_controller_names_are_isolated(cell):

@@ -9,7 +9,8 @@ from thesis_core.clearance_geometry import finite_point, segment_box_clearance
 
 
 TABLE_SIZE = (1.20, 0.80, 0.04)
-JACO2_SIM_TABLE_SIZE = (1.60, 1.00, 0.04)
+SIM_TABLE_SIZE = (2.40, 1.60, 0.04)
+JACO2_SIM_TABLE_SIZE = SIM_TABLE_SIZE
 MOUNT_HEIGHT = 0.75
 TABLE_CENTER = (0.0, 0.0, MOUNT_HEIGHT - TABLE_SIZE[2] / 2)
 SPHERE_HEIGHT = MOUNT_HEIGHT + 0.40 + 0.12
@@ -120,7 +121,19 @@ def configured_table(node, profile=None):
         )
     if profile is not None:
         mount = fixed_mount_links(profile.urdf_root)
-        excluded = [c.name for c in profile.collision_capsules if c.link in mount]
+        excluded = []
+        for capsule in profile.collision_capsules:
+            if capsule.link is not None and capsule.link in mount:
+                excluded.append(capsule.name)
+            elif (
+                capsule.start_frame is not None
+                and capsule.end_frame is not None
+                and (
+                    capsule.start_frame in mount
+                    or capsule.end_frame in mount
+                )
+            ):
+                excluded.append(capsule.name)
     return WorkTable(tuple(center), tuple(size), frozenset(excluded), tuple(orientation), with_legs)
 
 

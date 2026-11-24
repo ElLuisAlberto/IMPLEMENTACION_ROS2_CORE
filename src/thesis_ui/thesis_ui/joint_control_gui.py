@@ -675,8 +675,14 @@ class JointGuiNode(Node):
             resolved = self.resolve_topic_name(topic)
             return self.count_publishers(resolved) > 0
 
+        joint_states_topic = (
+            '/ur17g/joint_states'
+            if getattr(self.robot_profile, 'name', '') == 'ur17g'
+            else '/joint_states'
+        )
+
         status = {
-            '/joint_states': publisher_available('/joint_states'),
+            '/joint_states': publisher_available(joint_states_topic),
             'Supervisor': (
                 self.candidate_publisher.get_subscription_count() > 0
             ),
@@ -1962,7 +1968,12 @@ class JointControlWindow(QMainWindow):
 
         if state_ready:
             self.connection_label.setText(
-                'Estado ROS: /joint_states recibido correctamente.'
+                'Estado ROS: '
+                + (
+                    '/ur17g/joint_states recibido correctamente.'
+                    if getattr(self.ros_node.robot_profile, 'name', '') == 'ur17g'
+                    else '/joint_states recibido correctamente.'
+                )
             )
             self.connection_label.setStyleSheet('color: #166534;')
         else:

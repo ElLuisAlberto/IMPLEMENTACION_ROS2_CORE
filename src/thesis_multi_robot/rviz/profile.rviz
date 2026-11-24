@@ -76,6 +76,19 @@ Visualization Manager:
         current_capsules: true
       Value: true
     - Class: rviz_default_plugins/MarkerArray
+      Enabled: false
+      Topic:
+        Depth: 10
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: thesis/joint_link_skeleton
+      Name: SimplifiedJointLinks
+      Namespaces:
+        joint_spheres: true
+        link_cylinders: true
+      Value: true
+    - Class: rviz_default_plugins/MarkerArray
       Enabled: true
       Topic:
         Depth: 10
@@ -102,6 +115,7 @@ Visualization Manager:
       Name: PerceivedObstacle
       Namespaces:
         input_obstacle: true
+        work_table: true
       Value: true
   Enabled: true
   Global Options:

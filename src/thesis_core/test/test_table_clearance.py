@@ -172,12 +172,12 @@ def test_standalone_distance_lines_end_on_leg_and_sphere_surfaces():
     from thesis_core.work_table import JACO2_SIM_TABLE_SIZE, TABLE_CENTER, WorkTable
 
     table = WorkTable(TABLE_CENTER, JACO2_SIM_TABLE_SIZE, frozenset(), with_legs=True)
-    tool = (.62, .42, .35)
+    tool = (1.02, .72, .35)
     leg = table.closest([(tool, tool)], ['tool'], [.02])
-    sphere = segment_sphere_clearance(tool, tool, .02, (.42, .42, .35), .06)
+    sphere = segment_sphere_clearance(tool, tool, .02, (.82, .72, .35), .06)
 
-    for name, hit, expected_end in [('Mesa', leg, (.69, .42, .35)),
-                                    ('Esfera', sphere, (.48, .42, .35))]:
+    for name, hit, expected_end in [('Mesa', leg, (1.09, .72, .35)),
+                                    ('Esfera', sphere, (.88, .72, .35))]:
         markers = clearance_markers(
             Header(), name, hit, (1., 1., 1.), None,
         )

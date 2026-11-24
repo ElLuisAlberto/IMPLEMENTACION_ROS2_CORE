@@ -288,6 +288,66 @@ class RobotProfile:
             for capsule in self.collision_capsules
         )
 
+    def joint_chain_points(
+        self,
+        positions: Sequence[float],
+    ) -> tuple[tuple[float, float, float], ...]:
+        """Return base then commanded-joint centers for a simple visual chain.
+
+        This is presentation geometry only. Collision and safety calculations
+        continue to use :meth:`capsule_segments` and every collision capsule.
+        """
+        poses = self.forward(positions)
+        links = (self.base_link, *self.kinematics.actuated_child_links())
+        return tuple(
+            tuple(float(value) for value in poses[link][:3, 3])
+            for link in links
+        )
+
+    def simplified_link_segments(
+        self,
+        positions: Sequence[float],
+    ) -> tuple[CapsuleSegment, ...]:
+        """Return one collision-derived visual cylinder axis per arm link.
+
+        A commanded joint center does not necessarily lie along the body of
+        its child link: fixed offsets in the manufacturer URDF can be large.
+        For the simplified display, resolve all local collision capsules of
+        each commanded-link body and use their farthest endpoints.  Safety
+        evaluation still uses every individual collision capsule.
+        """
+        poses = self.forward(positions)
+        links = (self.base_link, *self.kinematics.actuated_child_links())
+        result = []
+        for link in links:
+            capsules = tuple(
+                capsule.world_segment(poses)
+                for capsule in self.collision_capsules
+                if capsule.link == link
+            )
+            if not capsules:
+                continue
+            endpoints = tuple(
+                point
+                for capsule in capsules
+                for point in (capsule.start, capsule.end)
+            )
+            start, end = max(
+                (
+                    (start, end)
+                    for index, start in enumerate(endpoints)
+                    for end in endpoints[index + 1:]
+                ),
+                key=lambda pair: math.dist(*pair),
+            )
+            result.append(CapsuleSegment(
+                link,
+                start,
+                end,
+                max(capsule.radius for capsule in capsules),
+            ))
+        return tuple(result)
+
 
 def _resolve_file(
     value: Any,

@@ -272,6 +272,10 @@ class RobotKinematics:
             )
         return poses
 
+    def actuated_child_links(self) -> tuple[str, ...]:
+        """Return the child link at each commanded joint, in command order."""
+        return tuple(self._joints[name].child for name in self.joint_names)
+
     def inverse(
         self,
         target: np.ndarray,

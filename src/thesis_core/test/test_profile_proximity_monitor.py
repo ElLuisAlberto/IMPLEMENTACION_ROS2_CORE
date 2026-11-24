@@ -84,6 +84,7 @@ def test_profile_capsule_colors_match_historical_visualizer(state, expected):
 
 def test_profile_markers_cover_full_capsules_and_highlight_nearest():
     """Both hemisphere endpoints are visible without changing the geometry."""
+    from thesis_core.work_table import SIM_TABLE_SIZE, TABLE_CENTER, WorkTable
     class Publisher:
         def publish(self, value):
             self.value = value
@@ -99,20 +100,66 @@ def test_profile_markers_cover_full_capsules_and_highlight_nearest():
         _color=ProfileProximityMonitor._color,
         profile=SimpleNamespace(world_frame='world', capsule_segments=lambda _: capsules),
         positions=(0.0,), capsule_publisher=capsule_publisher,
+        _publish_simplified_markers=lambda _: None,
         obstacle_publisher=obstacle_publisher,
         obstacle_marker_publisher=obstacle_publisher,
         obstacle=SimpleNamespace(center=Point()),
+        table=WorkTable(TABLE_CENTER, SIM_TABLE_SIZE, frozenset(), with_legs=True),
     )
     ProfileProximityMonitor._publish_markers(stub, 'STOP', 0.12, 'tool')
     markers = capsule_publisher.value.markers
-    assert len(markers) == 6
-    assert [marker.id for marker in markers] == list(range(6))
+    assert len(markers) == 4
+    assert [marker.id for marker in markers] == [0, 1, 2, 3]
     assert [marker.type for marker in markers] == [
         Marker.CYLINDER, Marker.SPHERE, Marker.SPHERE,
-        Marker.CYLINDER, Marker.SPHERE, Marker.SPHERE,
+        Marker.SPHERE,
     ]
     assert markers[1].pose.position.z == pytest.approx(0.0)
     assert markers[2].pose.position.z == pytest.approx(0.5)
-    assert markers[4].scale.x == pytest.approx(0.1)
+    assert markers[3].scale.x == pytest.approx(0.1)
     assert markers[0].color.g == pytest.approx(0.80)
     assert markers[3].color.r == pytest.approx(1.0)
+    table = [marker for marker in obstacle_publisher.value.markers if marker.ns == 'work_table']
+    assert [marker.id for marker in table] == [0, 1, 2, 3, 4]
+    assert table[0].scale.x == pytest.approx(2.4)
+    assert table[0].scale.y == pytest.approx(1.6)
+
+
+def test_simplified_markers_follow_joint_sequence_once():
+    """The visual skeleton has one sphere per joint and one link cylinder."""
+    class Publisher:
+        def publish(self, value):
+            self.value = value
+
+    publisher = Publisher()
+    points = (
+        (0.0, 0.0, 0.0),
+        (0.0, 0.0, 0.4),
+        (0.2, 0.0, 0.7),
+    )
+    stub = SimpleNamespace(
+        profile=SimpleNamespace(
+            world_frame='world', joint_chain_points=lambda _: points,
+            simplified_link_segments=lambda _: (
+                CapsuleSegment('first', points[0], points[1], 0.05),
+                CapsuleSegment('second', points[1], points[2], 0.05),
+            ),
+        ),
+        positions=(0.0, 0.0),
+        simplified_marker_publisher=publisher,
+    )
+
+    ProfileProximityMonitor._publish_simplified_markers(stub, Time())
+
+    markers = publisher.value.markers
+    assert len(markers) == 4
+    assert [marker.type for marker in markers] == [
+        Marker.SPHERE, Marker.SPHERE, Marker.CYLINDER, Marker.CYLINDER,
+    ]
+    assert [marker.ns for marker in markers] == [
+        'joint_spheres', 'joint_spheres', 'link_cylinders', 'link_cylinders',
+    ]
+    assert markers[0].pose.position.z == pytest.approx(0.4)
+    assert markers[1].pose.position.x == pytest.approx(0.2)
+    assert markers[2].scale.z == pytest.approx(0.4)
+    assert markers[3].scale.z == pytest.approx((0.2 ** 2 + 0.3 ** 2) ** 0.5)

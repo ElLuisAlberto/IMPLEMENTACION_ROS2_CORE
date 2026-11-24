@@ -9,7 +9,7 @@ de esfuerzo articular para observación, pero aún no hay política de seguridad
 basada en esfuerzo ni validación de sus valores. Las descripciones históricas
 de esta guía que mencionan solo tres perfiles preceden a esta actualización.
 
-Este paquete ejecuta los tres brazos activos en un único mundo Gazebo Fortress,
+Este paquete ejecuta cuatro brazos en un único mundo Gazebo Fortress,
 con controladores, joints y TF propios. Se construyen las descripciones
 oficiales; la capa de simulación y la supervisión por perfil son de la tesis.
 
@@ -61,14 +61,14 @@ pero nunca con las variables de entorno de la célula multi-robot.
 
 ## Ejecución
 
-Los tres brazos activos, sin interfaz gráfica:
+Los cuatro brazos, sin interfaz gráfica:
 
 ```bash
 ros2 launch thesis_multi_robot cell.launch.py
 ```
 
 Para abrir Gazebo, añadir `headless:=false`. Para un brazo aislado, usar
-`robot:=ur17g`, `robot:=p3020` o `robot:=jaco2`.
+`robot:=ur17g`, `robot:=p3020`, `robot:=cs625` o `robot:=jaco2`.
 
 ## Ruta individual con la interfaz histórica completa
 
@@ -81,7 +81,7 @@ cápsulas y los endpoints se cargan desde el perfil del brazo.
 
 El caso `robot:=jaco2` no carga el perfil genérico: deriva directamente a
 `thesis_simulation/thesis_system.launch.py`. Así conserva los nombres globales,
-la cinemática y las seis cápsulas históricas. Los otros dos casos se encapsulan
+la cinemática y las seis cápsulas históricas. Los otros tres casos se encapsulan
 en su namespace y mantienen el mismo contrato de mensajes con remappings. Si
 se omite `robot:=...`, el wrapper selecciona JACO2; el launch interno rechaza
 `jaco2 + historical_stack` para que esta ruta no pueda evitarse por accidente.
@@ -102,6 +102,7 @@ Ejecutar un brazo por vez:
 ros2 launch thesis_multi_robot historical_robot.launch.py robot:=jaco2
 ros2 launch thesis_multi_robot historical_robot.launch.py robot:=ur17g
 ros2 launch thesis_multi_robot historical_robot.launch.py robot:=p3020
+ros2 launch thesis_multi_robot historical_robot.launch.py robot:=cs625
 ```
 
 La GUI y RViz arrancan por defecto. Para CI o diagnóstico sin ventanas:
@@ -117,8 +118,8 @@ libertad; una rotación explícita imposible se rechaza y no llega al controlado
 
 ## Interfaz nominal de la célula multi-robot
 
-`start_gui:=true` abre la misma interfaz para JACO2, UR17g y P3020.
-La tabla articular se adapta automáticamente a 6/6/5 ejes. La ventana
+`start_gui:=true` abre la misma interfaz para JACO2, UR17g, P3020 y CS625.
+La tabla articular se adapta automáticamente a 6/6/5/6 ejes. La ventana
 permite copiar el estado actual, enviar un objetivo articular, aplicar un
 incremento pequeño y resolver un objetivo cartesiano puntual mediante la
 cinemática del URDF. Para P3020 se recomienda activar **Solo posición**, pues
@@ -276,6 +277,29 @@ ha validado el montaje ni el recorrido. Esta vista no inicia Gazebo, control
 de movimiento ni supervisión; los deslizadores solo cambian la vista en RViz.
 No usar esta geometría como evidencia de seguridad física.
 
+En la supervisión experimental del UR17g, la envolvente de proximidad de la
+herramienta se calcula a partir de la malla estática mediante varias cápsulas
+con 5 mm de margen. La caja de colisión de Gazebo permanece independiente.
+La envolvente no incluye el movimiento de los dedos ni valida el montaje.
+Los dos eslabones largos usan un cilindro continuo y esferas en sus extremos;
+esta geometría también alimenta la supervisión y el horizonte predictivo.
+La base se apoya directamente sobre la mesa; la cápsula del hombro se ajusta
+a su malla y sigue incluida en la comprobación de proximidad con el tablero.
+
+El CS625 también se apoya directamente sobre la mesa y usa un cilindro por
+eslabón largo, con esferas en los extremos y una envolvente del gripper
+calculada sobre su CAD estático. La geometría se comparte entre RViz y la
+supervisión experimental; el montaje y el movimiento de los dedos no están
+validados.
+
+El P3020 usa un cuerpo cilíndrico por eslabón y esferas adicionales en los
+extremos de los eslabones largos, ajustados a las mallas de colisión con 5 mm
+de margen. La misma
+geometría se usa para la proximidad, la predicción y las cápsulas en RViz;
+el gripper provisional conserva varias cápsulas sobre su CAD estático. El
+soporte simulado del P3020 mide 5 cm para mantener despejada la mesa con
+esta envolvente. No se ha validado como modelo de seguridad físico.
+
 Para previsualizar el mismo conjunto completo en Gazebo Fortress, sin ningún
 controlador ni supervisor y con el robot estático:
 
@@ -283,9 +307,10 @@ controlador ni supervisor y con el robot estático:
 ros2 launch thesis_multi_robot provisional_system_gazebo.launch.py robot:=ur17g
 ```
 
-Se puede sustituir `ur17g` por `p3020` o `cs625`. La vista usa la malla STL
-completa a escala milímetros a metros, incluyendo electrónica y cámara; el
-STL es monocromo. La cámara no es un sensor simulado y la apertura está fija.
+Se puede sustituir `ur17g` por `p3020` o `cs625`. La vista usa el CAD completo
+en COLLADA con los colores de materiales del ensamblaje, incluyendo electrónica
+y cámara. El STL original sigue usándose para la envolvente geométrica. La
+cámara no es un sensor simulado y la apertura está fija.
 La pose de montaje es una estimación visual, no un adaptador validado.
 
 El CS625 también está disponible en la célula supervisada mediante

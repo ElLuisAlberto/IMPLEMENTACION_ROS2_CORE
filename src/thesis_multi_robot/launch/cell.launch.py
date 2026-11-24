@@ -11,7 +11,7 @@ from ament_index_python.packages import (
     get_package_prefix,
     get_package_share_directory,
 )
-from thesis_core.work_table import SPHERE_HEIGHT, MOUNT_HEIGHT
+from thesis_core.work_table import SPHERE_HEIGHT, MOUNT_HEIGHT, SIM_TABLE_SIZE
 from launch import LaunchDescription
 from launch.actions import (
     DeclareLaunchArgument,
@@ -59,6 +59,7 @@ def historical_remappings(name):
         '/thesis/proximity_status',
         '/thesis/horizon_volume',
         '/thesis/robot_capsules',
+        '/thesis/joint_link_skeleton',
         '/thesis/obstacle_visualization',
         '/thesis/obstacle_input',
         '/thesis/obstacle_in_model_frame',
@@ -157,10 +158,18 @@ def launch_cell(context):
     if headless:
         cmd.append('-s')
     # Generate the active stations from the same SDF used by standalone JACO2.
-    scene = ET.parse(os.path.join(share, 'worlds/cell.sdf'))
-    world = scene.getroot().find('world')
     assets = Path(get_package_share_directory('thesis_simulation'))
-    template = ET.parse(assets / 'worlds/jaco_empty.sdf').find(
+    # Individual arms share the same laboratory as the standalone JACO2.
+    scene = ET.parse(
+        assets / 'worlds/jaco2_workstation.sdf'
+        if selected != 'all' else os.path.join(share, 'worlds/cell.sdf')
+    )
+    world = scene.getroot().find('world')
+    world.set('name', 'thesis_cell')
+    existing_table = world.find("model[@name='jaco_work_table']")
+    if existing_table is not None:
+        world.remove(existing_table)
+    template = ET.parse(assets / 'worlds/jaco2_workstation.sdf').find(
         ".//model[@name='jaco_work_table']")
     for name, profile in manifest['robots'].items():
         table = copy.deepcopy(template)
@@ -168,11 +177,12 @@ def launch_cell(context):
         x, y, base_z = profile['base_xyz']
         riser = base_z - MOUNT_HEIGHT
         link = table.find('link')
-        for kind in ('visual', 'collision'):
-            block = ET.SubElement(link, kind, name='mount_adapter_' + kind)
-            ET.SubElement(block, 'pose').text = f'0 0 {MOUNT_HEIGHT + riser/2} 0 0 0'
-            box = ET.SubElement(ET.SubElement(block, 'geometry'), 'box')
-            ET.SubElement(box, 'size').text = f'0.18 0.18 {riser}'
+        if riser > 1e-9:
+            for kind in ('visual', 'collision'):
+                block = ET.SubElement(link, kind, name='mount_adapter_' + kind)
+                ET.SubElement(block, 'pose').text = f'0 0 {MOUNT_HEIGHT + riser/2} 0 0 0'
+                box = ET.SubElement(ET.SubElement(block, 'geometry'), 'box')
+                ET.SubElement(box, 'size').text = f'0.18 0.18 {riser}'
         ET.SubElement(table, 'pose').text = f'{x} {y} 0 0 0 0'
         world.append(table)
     demo_obstacle = LaunchConfiguration('demo_obstacle').perform(context).lower() == 'true'
@@ -334,7 +344,8 @@ def launch_cell(context):
                 executable='profile_proximity_monitor',
                 namespace=name,
                 name='profile_proximity_monitor',
-                parameters=[{**common_parameters, 'table_enabled': True}],
+                parameters=[{**common_parameters, 'table_enabled': True,
+                             'table_size': list(SIM_TABLE_SIZE), 'table_with_legs': True}],
                 output='screen',
             ),
             Node(
@@ -345,6 +356,8 @@ def launch_cell(context):
                 parameters=[{
                     **common_parameters,
                     'table_enabled': True,
+                    'table_size': list(SIM_TABLE_SIZE),
+                    'table_with_legs': True,
                     'require_proximity_status': True,
                 }],
                 remappings=remappings,

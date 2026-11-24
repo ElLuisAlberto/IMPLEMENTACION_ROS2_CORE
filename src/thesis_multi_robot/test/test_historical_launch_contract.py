@@ -2,6 +2,7 @@
 
 import importlib.util
 from pathlib import Path
+import xml.etree.ElementTree as ET
 
 from launch import LaunchContext
 from launch.utilities import perform_substitutions
@@ -101,3 +102,21 @@ def test_generated_runtime_is_removed_when_profile_build_fails(
     with pytest.raises(RuntimeError, match='synthetic profile build failure'):
         module.launch_cell(context)
     assert not runtime.exists()
+
+
+@pytest.mark.parametrize('robot', ('ur17g', 'p3020', 'cs625'))
+def test_individual_scene_uses_shared_lab_and_four_leg_table(tmp_path, robot):
+    module = _load_launch('cell.launch.py', f'cell_scene_{robot}')
+    context = LaunchContext()
+    context.launch_configurations.update({
+        'robot': robot, 'headless': 'true', 'supervision': 'false',
+        'historical_stack': 'true', 'runtime_dir': str(tmp_path),
+        'start_gui': 'false', 'start_rviz': 'false', 'demo_obstacle': 'false',
+    })
+    module.launch_cell(context)
+    world = ET.parse(tmp_path / 'cell_world.sdf').getroot().find('world')
+    assert world.find("model[@name='academic_lab_decor']") is not None
+    table = world.find(f"model[@name='{robot}_work_table']")
+    assert table.findtext(".//collision[@name='tabletop_collision']/geometry/box/size") == '2.40 1.60 0.04'
+    assert len([c for c in table.findall('.//collision') if c.get('name').startswith('leg_')]) == 4
+    assert len([v for v in table.findall('.//visual') if v.get('name').startswith('leg_')]) == 4

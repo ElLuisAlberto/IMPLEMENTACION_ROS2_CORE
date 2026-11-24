@@ -3,6 +3,8 @@ build/
 install/
 log/
 /Testing/
+/build_migracion/
+/install_migracion/
 
 # Python
 __pycache__/

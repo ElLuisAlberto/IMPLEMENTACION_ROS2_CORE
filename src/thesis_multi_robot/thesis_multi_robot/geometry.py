@@ -48,7 +48,7 @@ def _point(transform: np.ndarray, value) -> list[float]:
     return (transform[:3, :3] @ np.asarray(value) + transform[:3, 3]).tolist()
 
 
-def _mesh_vertices(mesh: ET.Element) -> np.ndarray:
+def _mesh_data(mesh: ET.Element) -> tuple[np.ndarray, np.ndarray]:
     filename = mesh.get('filename', '')
     if filename.startswith('file://'):
         uri = urlparse(filename)
@@ -68,7 +68,11 @@ def _mesh_vertices(mesh: ET.Element) -> np.ndarray:
     if (vertices.ndim != 2 or vertices.shape[1] != 3 or not len(vertices)
             or not np.isfinite(vertices).all()):
         raise ValueError(f'Collision mesh has no finite vertices: {filename}')
-    return vertices
+    return vertices, np.asarray(loaded.faces, dtype=int)
+
+
+def _mesh_vertices(mesh: ET.Element) -> np.ndarray:
+    return _mesh_data(mesh)[0]
 
 
 def _bound_vertices(vertices: np.ndarray) -> tuple[np.ndarray, np.ndarray, float]:
@@ -82,7 +86,46 @@ def _bound_vertices(vertices: np.ndarray) -> tuple[np.ndarray, np.ndarray, float
     return start, end, radius
 
 
-def collision_capsules(root: ET.Element) -> list[dict]:
+def _split_mesh_bounds(mesh: ET.Element, count: int):
+    """Bound whole triangles in axial groups, retaining conservative coverage."""
+    vertices, faces = _mesh_data(mesh)
+    axis = int(np.argmax(np.ptp(vertices, axis=0)))
+    triangles = vertices[faces]
+    centers = triangles[:, :, axis].mean(axis=1)
+    edges = np.linspace(vertices[:, axis].min(), vertices[:, axis].max(), count + 1)
+    groups = np.clip(np.searchsorted(edges, centers, side='right') - 1, 0, count - 1)
+    return [_bound_vertices(triangles[groups == index].reshape(-1, 3))
+            for index in range(count) if np.any(groups == index)]
+
+
+def gripper_mesh_capsules(link_name: str, mesh: ET.Element) -> list[dict]:
+    """Bound CAD triangles in small spatial groups in the gripper link frame.
+
+    Each triangle belongs wholly to one convex capsule. The grouping preserves
+    disconnected parts and gaps better than one capsule around the CAD box.
+    The static mesh does not represent finger motion.
+    """
+    vertices, faces = _mesh_data(mesh)
+    triangles = vertices[faces]
+    centers = triangles.mean(axis=1)
+    low, span = vertices.min(axis=0), np.ptp(vertices, axis=0)
+    if np.any(span <= 0):
+        raise ValueError('Gripper CAD must have nonzero extent in every axis')
+    # Longer axial groups create continuous capsule bodies rather than a
+    # succession of mostly spherical end caps, while keeping the two sides
+    # separate where the static CAD has gaps.
+    bins = np.array((2, 3, 2))
+    cells = np.minimum(((centers - low) / span * bins).astype(int), bins - 1)
+    result = []
+    for cell in np.unique(cells, axis=0):
+        group = triangles[np.all(cells == cell, axis=1)].reshape(-1, 3)
+        start, end, radius = _bound_vertices(group)
+        result.append({'link': link_name, 'start': start.tolist(), 'end': end.tolist(),
+                       'radius': radius + GEOMETRY_MARGIN_M})
+    return result
+
+
+def collision_capsules(root: ET.Element, split_links: frozenset[str] = frozenset()) -> list[dict]:
     """Enclose every link collision, expressed in that link's own frame.
 
     Package mesh URIs must be resolved by the builder before calling this
@@ -97,7 +140,8 @@ def collision_capsules(root: ET.Element) -> list[dict]:
                 raise ValueError(f'Invalid collision geometry on {link.get("name")}')
             shape = geometry[0]
             if shape.tag == 'mesh':
-                start, end, radius = _bound_vertices(_mesh_vertices(shape))
+                bounds = (_split_mesh_bounds(shape, 3) if link.get('name') in split_links
+                          else [_bound_vertices(_mesh_vertices(shape))])
             elif shape.tag == 'box':
                 size = _numbers(shape.get('size', ''), 3)
                 if np.any(size <= 0.0):
@@ -108,26 +152,93 @@ def collision_capsules(root: ET.Element) -> list[dict]:
                     for z in (-size[2] / 2, size[2] / 2)
                 ])
                 start, end, radius = _bound_vertices(vertices)
+                bounds = [(start, end, radius)]
             elif shape.tag == 'cylinder':
                 radius = float(shape.get('radius', 'nan'))
                 length = float(shape.get('length', 'nan'))
                 if not math.isfinite(length) or length <= 0.0:
                     raise ValueError('Collision cylinder length must be positive')
                 start, end = np.array([0., 0., -length / 2]), np.array([0., 0., length / 2])
+                bounds = [(start, end, radius)]
             elif shape.tag == 'sphere':
                 radius = float(shape.get('radius', 'nan'))
                 start = end = np.zeros(3)
+                bounds = [(start, end, radius)]
             else:
                 raise ValueError(f'Unsupported collision geometry: {shape.tag}')
-            if not math.isfinite(radius) or radius < 0.0:
-                raise ValueError('Collision radius must be finite and non-negative')
             origin = _origin_transform(collision.find('origin'))
-            result.append({
-                'link': link.get('name'),
-                'start': _point(origin, start),
-                'end': _point(origin, end),
-                'radius': radius + GEOMETRY_MARGIN_M,
-            })
+            for start, end, radius in bounds:
+                if not math.isfinite(radius) or radius < 0.0:
+                    raise ValueError('Collision radius must be finite and non-negative')
+                result.append({
+                    'link': link.get('name'),
+                    'start': _point(origin, start),
+                    'end': _point(origin, end),
+                    'radius': radius + GEOMETRY_MARGIN_M,
+                })
+    return result
+
+
+def link_mesh_capsules(root: ET.Element, sections: dict[str, int],
+                       compact_ends: bool = False) -> list[dict]:
+    """Enclose link collision meshes in axial groups of complete triangles.
+
+    Triangles are transformed into the link frame before grouping. Each
+    triangle belongs to one convex capsule, preserving coverage at boundaries.
+    """
+    result = []
+    for link in root.findall('link'):
+        name = link.get('name')
+        if name not in sections:
+            continue
+        parts = []
+        for collision in link.findall('collision'):
+            geometry = collision.find('geometry')
+            if geometry is None or len(geometry) != 1 or geometry[0].tag != 'mesh':
+                raise ValueError(f'Expected collision meshes on {name}')
+            vertices, faces = _mesh_data(geometry[0])
+            transform = _origin_transform(collision.find('origin'))
+            vertices = vertices @ transform[:3, :3].T + transform[:3, 3]
+            parts.append(vertices[faces])
+        if not parts:
+            raise ValueError(f'No collision meshes on {name}')
+        triangles = np.concatenate(parts)
+        vertices = triangles.reshape(-1, 3)
+        axis = int(np.argmax(np.ptp(vertices, axis=0)))
+        count = sections[name]
+        if count < 1:
+            raise ValueError(f'Invalid number of sections for {name}')
+        if count == 3:
+            low, high = vertices[:, axis].min(), vertices[:, axis].max()
+            edges = low + (high - low) * np.array((0., .2, .8, 1.))
+        else:
+            edges = np.linspace(vertices[:, axis].min(), vertices[:, axis].max(), count + 1)
+        centers = triangles[:, :, axis].mean(axis=1)
+        groups = np.clip(np.searchsorted(edges, centers, side='right') - 1, 0, count - 1)
+        for index in range(count):
+            group = triangles[groups == index]
+            if not len(group):
+                continue
+            points = group.reshape(-1, 3)
+            if count == 3 and index in (0, 2):
+                start = end = (points.min(axis=0) + points.max(axis=0)) * 0.5
+                radius = float(np.linalg.norm(points - start, axis=1).max())
+            else:
+                start, end, radius = _bound_vertices(points)
+                if compact_ends:
+                    axis = int(np.argmax(np.abs(end - start)))
+                    other = [i for i in range(3) if i != axis]
+                    radial = np.linalg.norm(points[:, other] - start[other], axis=1)
+                    reach = np.sqrt(np.maximum(0., (radius + GEOMETRY_MARGIN_M) ** 2 - radial ** 2))
+                    low = float(np.min(points[:, axis] + reach))
+                    high = float(np.max(points[:, axis] - reach))
+                    if low > high:
+                        low = high = (low + high) / 2.
+                    start[axis], end[axis] = low, high
+            result.append({'link': name, 'start': start.tolist(), 'end': end.tolist(),
+                           'radius': radius + GEOMETRY_MARGIN_M})
+    if {item['link'] for item in result} != set(sections):
+        raise ValueError('Some selected collision links are missing')
     return result
 
 

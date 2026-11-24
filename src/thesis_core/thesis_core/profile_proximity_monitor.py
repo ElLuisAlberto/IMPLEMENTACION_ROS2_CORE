@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import math
 import time
+from dataclasses import replace
 
 import rclpy
 from builtin_interfaces.msg import Duration as DurationMessage
@@ -83,6 +84,7 @@ class ProfileProximityMonitor(Node):
             ('obstacle_topic', 'thesis/obstacle'),
             ('status_topic', 'thesis/proximity_status'),
             ('capsule_marker_topic', 'thesis/robot_capsules'),
+            ('simplified_marker_topic', 'thesis/joint_link_skeleton'),
             ('obstacle_marker_topic', 'thesis/obstacle_visualization'),
             ('evaluation_rate_hz', 20.0),
             ('max_state_age_sec', 0.5),
@@ -111,6 +113,11 @@ class ProfileProximityMonitor(Node):
         self.capsule_publisher = self.create_publisher(
             MarkerArray,
             str(self.get_parameter('capsule_marker_topic').value),
+            10,
+        )
+        self.simplified_marker_publisher = self.create_publisher(
+            MarkerArray,
+            str(self.get_parameter('simplified_marker_topic').value),
             10,
         )
         self.obstacle_marker_publisher = self.create_publisher(
@@ -213,6 +220,8 @@ class ProfileProximityMonitor(Node):
     def evaluate(self):
         """Publish current clearance or a fail-closed stale-data status."""
         if self.obstacle is None:
+            if self.positions is not None:
+                self._publish_markers('ALLOW', 0.12, '')
             return
         if not self._fresh(
             self.obstacle.header.stamp, 'max_obstacle_age_sec'
@@ -287,14 +296,19 @@ class ProfileProximityMonitor(Node):
     def _publish_markers(self, state, obstacle_radius, limiting_segment):
         """Render current profile capsules and the inflated obstacle."""
         stamp = self.get_clock().now().to_msg()
+        self._publish_simplified_markers(stamp)
         array = MarkerArray()
-        for index, capsule in enumerate(
-            self.profile.capsule_segments(self.positions)
-        ):
+        capsules = self.profile.capsule_segments(self.positions)
+
+        for index, capsule in enumerate(capsules):
             # Match the legacy JACO2 display: only the nearest capsule
             # changes color. The others remain translucent green, making the
             # current geometry distinguishable from the orange horizon.
-            color = self._color(state if capsule.name == limiting_segment else 'ALLOW')
+            color = self._color(
+                state
+                if capsule.name == limiting_segment
+                else 'ALLOW'
+            )
             marker = Marker()
             marker.header.frame_id = self.profile.world_frame
             marker.header.stamp = stamp
@@ -309,6 +323,14 @@ class ProfileProximityMonitor(Node):
                 end - start
                 for start, end in zip(capsule.start, capsule.end)
             )
+            if math.dist(capsule.start, capsule.end) < 1e-9:
+                marker.type = Marker.SPHERE
+                marker.pose.orientation.w = 1.0
+                marker.scale.x = marker.scale.y = marker.scale.z = 2.0 * capsule.radius
+                (marker.color.r, marker.color.g, marker.color.b, marker.color.a) = color
+                marker.lifetime = DurationMessage(sec=0, nanosec=200_000_000)
+                array.markers.append(marker)
+                continue
             marker.pose.orientation = quaternion_from_z_axis(*delta)
             marker.scale.x = marker.scale.y = 2.0 * capsule.radius
             marker.scale.z = max(math.dist(capsule.start, capsule.end), 1e-6)
@@ -337,28 +359,94 @@ class ProfileProximityMonitor(Node):
                 array.markers.append(sphere)
         self.capsule_publisher.publish(array)
 
-        obstacle = Marker()
-        obstacle.header.frame_id = self.profile.world_frame
-        obstacle.header.stamp = stamp
-        obstacle.ns = 'input_obstacle'
-        obstacle.id = 0
-        obstacle.type = Marker.SPHERE
-        obstacle.action = Marker.ADD
-        obstacle.pose.position = self.obstacle.center
-        obstacle.pose.orientation.w = 1.0
-        obstacle.scale.x = obstacle.scale.y = obstacle.scale.z = (
-            2.0 * obstacle_radius
-        )
-        obstacle.color.r = 0.72
-        obstacle.color.g = 0.12
-        obstacle.color.b = 0.92
-        obstacle.color.a = 0.78
-        obstacle.lifetime = DurationMessage(sec=0, nanosec=300_000_000)
-        obstacle_array = MarkerArray()
-        obstacle_array.markers.append(obstacle)
-        if getattr(self, 'table', None):
-            obstacle_array.markers.append(table_marker(self.table, obstacle.header))
-        self.obstacle_marker_publisher.publish(obstacle_array)
+        if self.obstacle is not None:
+            obstacle = Marker()
+            obstacle.header.frame_id = self.profile.world_frame
+            obstacle.header.stamp = stamp
+            obstacle.ns = 'input_obstacle'
+            obstacle.id = 0
+            obstacle.type = Marker.SPHERE
+            obstacle.action = Marker.ADD
+            obstacle.pose.position = self.obstacle.center
+            obstacle.pose.orientation.w = 1.0
+            obstacle.scale.x = obstacle.scale.y = obstacle.scale.z = (
+                2.0 * obstacle_radius
+            )
+            obstacle.color.r = 0.72
+            obstacle.color.g = 0.12
+            obstacle.color.b = 0.92
+            obstacle.color.a = 0.78
+            obstacle.lifetime = DurationMessage(sec=0, nanosec=300_000_000)
+            obstacle_array = MarkerArray()
+            obstacle_array.markers.append(obstacle)
+            if getattr(self, 'table', None):
+                obstacle_array.markers.append(table_marker(self.table, obstacle.header))
+                if self.table.with_legs:
+                    for index, (center, size) in enumerate(
+                        self.table.leg_boxes(self.table.center), 1
+                    ):
+                        leg = table_marker(
+                            replace(self.table, center=center, size=size), obstacle.header
+                        )
+                        leg.id = index
+                        obstacle_array.markers.append(leg)
+            self.obstacle_marker_publisher.publish(obstacle_array)
+
+    def _publish_simplified_markers(self, stamp):
+        """Render one sphere per joint and one cylinder per kinematic link.
+
+        The marker topic is intentionally separate from the full collision
+        capsule topic so this minimal view cannot be mistaken for the safety
+        geometry used by the supervisor.
+        """
+        points = self.profile.joint_chain_points(self.positions)
+        color = (0.08, 0.78, 0.92, 0.88)
+        joint_radius = 0.075
+        link_radius = 0.050
+        markers = MarkerArray()
+
+        for index, point in enumerate(points[1:]):
+            joint = Marker()
+            joint.header.frame_id = self.profile.world_frame
+            joint.header.stamp = stamp
+            joint.ns = 'joint_spheres'
+            joint.id = index
+            joint.type = Marker.SPHERE
+            joint.action = Marker.ADD
+            joint.pose.position = Point(x=point[0], y=point[1], z=point[2])
+            joint.pose.orientation.w = 1.0
+            joint.scale.x = joint.scale.y = joint.scale.z = 2.0 * joint_radius
+            joint.color.r, joint.color.g, joint.color.b, joint.color.a = color
+            joint.lifetime = DurationMessage(sec=0, nanosec=200_000_000)
+            markers.markers.append(joint)
+
+        for index, segment in enumerate(
+            self.profile.simplified_link_segments(self.positions)
+        ):
+            start, end = segment.start, segment.end
+            cylinder = Marker()
+            cylinder.header.frame_id = self.profile.world_frame
+            cylinder.header.stamp = stamp
+            cylinder.ns = 'link_cylinders'
+            cylinder.id = index
+            cylinder.type = Marker.CYLINDER
+            cylinder.action = Marker.ADD
+            cylinder.pose.position.x = (start[0] + end[0]) / 2.0
+            cylinder.pose.position.y = (start[1] + end[1]) / 2.0
+            cylinder.pose.position.z = (start[2] + end[2]) / 2.0
+            cylinder.pose.orientation = quaternion_from_z_axis(
+                *(end[axis] - start[axis] for axis in range(3))
+            )
+            cylinder.scale.x = cylinder.scale.y = 2.0 * max(
+                link_radius, segment.radius
+            )
+            cylinder.scale.z = max(math.dist(start, end), 1e-6)
+            (cylinder.color.r, cylinder.color.g,
+             cylinder.color.b, cylinder.color.a) = color
+            cylinder.lifetime = DurationMessage(sec=0, nanosec=200_000_000)
+            markers.markers.append(cylinder)
+
+        self.simplified_marker_publisher.publish(markers)
 
 
 def main(args=None):

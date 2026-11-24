@@ -134,12 +134,15 @@ def test_gazebo_spawn_uses_configured_radius_and_world_coordinates():
     assert arguments[arguments.index('-z') + 1] == '0.8'
 
 
-def test_world_mounts_jaco_on_a_160_by_100_cm_table():
+def test_world_mounts_jaco_on_a_240_by_160_cm_table():
     world = ET.parse(ROOT / 'worlds' / 'jaco2_workstation.sdf').getroot()
     tabletop = world.find(".//model[@name='jaco_work_table']//collision[@name='tabletop_collision']")
     assert tabletop is not None
     assert [float(value) for value in tabletop.findtext('pose').split()[:3]] == [0.0, 0.0, 0.73]
-    assert tabletop.findtext('geometry/box/size') == '1.60 1.00 0.04'
+    assert tabletop.findtext('geometry/box/size') == '2.40 1.60 0.04'
+    table = world.find(".//model[@name='jaco_work_table']")
+    assert len([c for c in table.findall('.//collision') if c.get('name').startswith('leg_')]) == 4
+    assert len([v for v in table.findall('.//visual') if v.get('name').startswith('leg_')]) == 4
 
 
 def test_workstation_academic_lab_decor_is_visual_only():
@@ -231,7 +234,7 @@ def test_jaco_launch_enables_the_matching_preventive_table_geometry():
     parameters, = evaluate_parameters(context, monitor._Node__parameters[-1:])
     assert parameters['table_enabled'] is True
     assert list(parameters['table_center']) == [0.0, 0.0, 0.73]
-    assert list(parameters['table_size']) == [1.60, 1.00, 0.04]
+    assert list(parameters['table_size']) == [2.40, 1.60, 0.04]
     assert list(parameters['table_excluded_segments']) == [
         'base_to_shoulder',
         'shoulder_to_upper_arm',

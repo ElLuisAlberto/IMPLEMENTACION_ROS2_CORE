@@ -4,12 +4,12 @@
   <xacro:arg name="mesh_scale" default="0.001"/>
   <xacro:property name="mesh_scale" value="$(arg mesh_scale)"/>
   <xacro:property name="mesh_uri" value="package://sistema_gripper_instrumentado_description/models/sistema_gripper_instrumentado/meshes/sistema_gripper_instrumentado.stl"/>
+  <xacro:property name="visual_uri" value="package://sistema_gripper_instrumentado_description/models/sistema_gripper_instrumentado/meshes/sistema_gripper_instrumentado_colores.dae"/>
   <link name="sistema_gripper_base">
     <visual>
       <geometry>
-        <mesh filename="${mesh_uri}" scale="${mesh_scale} ${mesh_scale} ${mesh_scale}"/>
+        <mesh filename="${visual_uri}" scale="1 1 1"/>
       </geometry>
-      <material name="stl_fallback_gray"><color rgba="0.70 0.70 0.70 1.0"/></material>
     </visual>
     <collision>
       <geometry>

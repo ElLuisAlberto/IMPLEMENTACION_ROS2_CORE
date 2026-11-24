@@ -23,6 +23,72 @@
 - Ejecuta cada cliente de observación por separado y espera a que termine antes de iniciar el siguiente.
 - `tf2_echo` no acepta esas opciones; si hay que detenerlo, detén solo ese cliente, nunca el proceso de lanzamiento.
 
+## Abrir la simulación actual de un brazo
+
+Cuando el usuario pida abrir Gazebo, RViz y la interfaz del brazo simulado,
+usa este procedimiento y la documentación vigente del proyecto. No inicies
+ninguna simulación automáticamente al comenzar un chat. Si no queda claro qué
+brazo desea, pregunta; `jaco2`, `ur17g`, `p3020` y `cs625` son perfiles
+distintos. Esta sección no autoriza iniciar el brazo físico.
+
+- Comprueba primero los procesos y nodos activos en el escritorio real, no
+  solo dentro de un sandbox que pueda ocultarlos. Evita duplicar lanzamientos,
+  relojes, controladores y tópicos. Si el usuario pide cambiar de brazo, cierra
+  ordenadamente solo la sesión simulada pertinente; conserva los procesos
+  ajenos. Antes de reutilizar un dominio, comprueba que la sesión anterior
+  y sus procesos hijos hayan terminado.
+- Usa la raíz `/home/luis/Escritorio/TESIS_JACO2/IMPLEMENTACION_ROS2_CORE`,
+  `/opt/ros/humble/setup.bash` y el `install/setup.bash` de esta raíz. Evita
+  `install_migracion`, lanzamientos provisionales o históricos distintos y
+  ejecutables sueltos cuando se solicite la simulación completa.
+- Si los cambios relevantes en `src/` aún no están compilados en `install/`,
+  compila únicamente los paquetes afectados con `colcon build --packages-select`
+  y carga de nuevo `install/setup.bash`. Conserva los cambios existentes y no
+  instales paquetes ni uses `sudo`.
+- Para una sesión individual usa el dominio y partición documentados, siempre
+  que estén libres; si no, elige otros aislados y mantén los mismos valores en
+  el launch y los clientes de observación. Ejecuta uno de estos comandos:
+
+```bash
+cd /home/luis/Escritorio/TESIS_JACO2/IMPLEMENTACION_ROS2_CORE
+source /opt/ros/humble/setup.bash
+source install/setup.bash
+export ROS_DOMAIN_ID=88
+export IGN_PARTITION=thesis_historical_robot
+ros2 launch thesis_multi_robot historical_robot.launch.py robot:=jaco2
+# O, en vez del anterior, selecciona exactamente uno de estos perfiles:
+# ros2 launch thesis_multi_robot historical_robot.launch.py robot:=ur17g
+# ros2 launch thesis_multi_robot historical_robot.launch.py robot:=p3020
+# ros2 launch thesis_multi_robot historical_robot.launch.py robot:=cs625
+```
+
+El launch abre Gazebo, RViz y la GUI de `thesis_ui`. `jaco2` deriva a
+`thesis_simulation/thesis_system.launch.py`; los otros tres usan la ruta
+individual de `thesis_multi_robot/cell.launch.py` con su namespace. El mundo
+común de los lanzamientos individuales es
+`src/thesis_simulation/worlds/jaco2_workstation.sdf`: laboratorio académico y
+mesa simulada de 2,40 × 1,60 m con cuatro patas. RViz muestra la envolvente,
+el horizonte, la mesa y el obstáculo virtual; la envolvente usada por el
+supervisor es experimental y no acredita seguridad física.
+Los perfiles `ur17g`, `p3020` y `cs625` incorporan automáticamente el CAD
+instrumentado estático a colores, mediante
+`sistema_gripper_instrumentado_colores.dae`; el STL original se conserva para
+la envolvente. El `jaco2` conserva su propia pinza Kinova y no lleva este CAD.
+
+Si una ventana falla por contaminación de bibliotecas de Snap, diagnostica el
+entorno e inicia el mismo launch con un entorno gráfico limpio conservando los
+valores reales de `DISPLAY`, `XAUTHORITY`, `XDG_RUNTIME_DIR` y, si corresponde,
+`DBUS_SESSION_BUS_ADDRESS`. No supongas que sus valores son iguales a los de
+una sesión anterior ni modifiques el sistema. No abras nodos o RViz adicionales
+si el launch ya los inicia.
+
+Tras iniciar, comprueba los nodos y el estado de preparación del brazo con
+clientes separados y las opciones de observación indicadas arriba. Para JACO2
+el estado está en `/thesis/system_readiness`; para los demás está en
+`/<perfil>/thesis/system_readiness`. Comprueba también que RViz y la envolvente
+estén publicándose. Comunica si hay `WARNING`, `STOP`, nodos duplicados o una
+ventana que no se pudo abrir; no declares lista una sesión sin comprobarla.
+
 ## Configuración de percepción que el usuario quiere recuperar
 
 Cuando el usuario pida volver a abrir «la configuración de RAFT que funcionaba»

@@ -14,14 +14,17 @@ from thesis_core.work_table import MOUNT_HEIGHT, TABLE_CENTER
 
 PROFILES = ('jaco2', 'ur17g', 'p3020', 'cs625')
 # Mount adapters provide clearance for conservative shoulder envelopes.
-RISER_HEIGHT = {'jaco2': 0.06, 'ur17g': 0.20, 'p3020': 0.03, 'cs625': 0.20}
+RISER_HEIGHT = {'jaco2': 0.06, 'ur17g': 0.0, 'p3020': 0.05, 'cs625': 0.0}
 CELL_POSES = {name: (x, y, MOUNT_HEIGHT + RISER_HEIGHT[name])
               for name, x, y in [('jaco2', -4., 0.), ('ur17g', 0., 0.),
                                  ('p3020', 0., 4.), ('cs625', 4., 0.)]}
 
 GRIPPER_VISUAL = ('package://sistema_gripper_instrumentado_description/'
                   'models/sistema_gripper_instrumentado/meshes/'
-                  'sistema_gripper_instrumentado.stl')
+                  'sistema_gripper_instrumentado_colores.dae')
+GRIPPER_COLLISION_MESH = ('package://sistema_gripper_instrumentado_description/'
+                          'models/sistema_gripper_instrumentado/meshes/'
+                          'sistema_gripper_instrumentado.stl')
 
 
 def _add_provisional_gripper(root, parent):
@@ -35,9 +38,7 @@ def _add_provisional_gripper(root, parent):
     link = ET.SubElement(root, 'link', name='provisional_gripper')
     visual = ET.SubElement(link, 'visual')
     ET.SubElement(ET.SubElement(visual, 'geometry'), 'mesh',
-                  filename=GRIPPER_VISUAL, scale='0.001 0.001 0.001')
-    material = ET.SubElement(visual, 'material', name='system_cad_neutral_gray')
-    ET.SubElement(material, 'color', rgba='0.68 0.72 0.75 1')
+                  filename=GRIPPER_VISUAL, scale='1 1 1')
     collision = ET.SubElement(link, 'collision')
     ET.SubElement(collision, 'origin', xyz='0.0027644 0.0361992 0', rpy='0 0 0')
     ET.SubElement(ET.SubElement(collision, 'geometry'), 'box',
@@ -182,7 +183,7 @@ def build_robot(
     ET.SubElement(plugin, 'controller_manager_name').text = 'controller_manager'
     # Fixed fingers and ancillary joints remain part of geometry, not arm commands.
     # Geometry is derived from every collision element, including P3020's 22 parts.
-    from .geometry import collision_capsules
+    from .geometry import collision_capsules, gripper_mesh_capsules, link_mesh_capsules
     from .kinematics import RobotKinematics
     RobotKinematics(root, joint_names).forward(initial)
     # RViz and Gazebo need portable package:// (or explicit file://) URIs in
@@ -192,7 +193,37 @@ def build_robot(
     collision_root = copy.deepcopy(root)
     for mesh in collision_root.findall('.//collision/geometry/mesh'):
         mesh.set('filename', resource_path(mesh.get('filename')))
-    capsules = collision_capsules(collision_root)
+    split_links = (
+        frozenset(prefix + link for link in (
+            ('upper_arm_link', 'forearm_link')
+            if profile == 'ur17g'
+            else ('link_1', 'link_2', 'link_3', 'link_5', 'link_6')
+        ))
+        if profile in ('ur17g', 'p3020')
+        else frozenset()
+    )
+    capsules = collision_capsules(collision_root, split_links=split_links)
+    if profile in ('ur17g', 'cs625'):
+        upper = 'upper_arm_link' if profile == 'ur17g' else 'upperarm_link'
+        arm_links = {prefix + link: 3 for link in (upper, 'forearm_link')}
+        shoulder = prefix + 'shoulder_link'
+        capsules = [c for c in capsules if c['link'] not in arm_links and c['link'] != shoulder]
+        capsules.extend(link_mesh_capsules(collision_root, arm_links))
+        capsules.extend(link_mesh_capsules(collision_root, {shoulder: 1}, compact_ends=True))
+    if profile == 'p3020':
+        arm_links = {prefix + link: count for link, count in (
+            ('base_link', 1), ('link_1', 1), ('link_2', 3),
+            ('link_3', 3), ('link_5', 1), ('link_6', 1),
+        )}
+        capsules = [c for c in capsules if c['link'] not in arm_links]
+        capsules.extend(link_mesh_capsules(collision_root, arm_links))
+    if profile in ('ur17g', 'p3020', 'cs625') and provisional_gripper:
+        tool_name = prefix + 'provisional_gripper'
+        tool = root.find(f"link[@name='{tool_name}']")
+        visual_mesh = ET.Element('mesh', filename=resource_path(GRIPPER_COLLISION_MESH),
+                                 scale='0.001 0.001 0.001')
+        capsules = [capsule for capsule in capsules if capsule['link'] != tool_name]
+        capsules.extend(gripper_mesh_capsules(tool_name, visual_mesh))
     if not capsules:
         raise ValueError(f'{profile} has no collision geometry')
     urdf = ET.tostring(root, encoding='unicode')

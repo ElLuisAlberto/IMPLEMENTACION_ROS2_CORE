@@ -14,3 +14,7 @@
 	path = third_party/robots/doosan/doosan_robot2
 	url = https://github.com/DoosanRobotics/doosan-robot2.git
 	branch = humble
+[submodule "third_party/robots/elite/ros2_description"]
+	path = third_party/robots/elite/ros2_description
+	url = https://github.com/EliteRobots/Elite_Robots_CS_ROS2_Description.git
+	branch = humble

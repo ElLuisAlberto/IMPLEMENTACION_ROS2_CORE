@@ -49,6 +49,7 @@ class SystemReadinessNode(Node):
         self.declare_parameter('obstacle_source_mode', 'topic')
         self.declare_parameter('use_demo_obstacle', True)
         self.declare_parameter('require_gui', True)
+        self.declare_parameter('static_preview', False)
         self.declare_parameter('readiness_timeout_sec', 0.75)
         self.declare_parameter('readiness_rate_hz', 1.0)
         self.declare_parameter('controller_request_timeout_sec', 2.0)
@@ -107,6 +108,9 @@ class SystemReadinessNode(Node):
             self.get_parameter('use_demo_obstacle').value
         )
         self.require_gui = bool(self.get_parameter('require_gui').value)
+        self.static_preview = bool(
+            self.get_parameter('static_preview').value
+        )
         self.timeout_sec = float(
             self.get_parameter('readiness_timeout_sec').value
         )
@@ -292,12 +296,14 @@ class SystemReadinessNode(Node):
 
     def _node_graph_status(self):
         common = {
-            'robot_state_publisher', 'joint_state_broadcaster',
+            'robot_state_publisher',
             'safety_supervisor_node', 'simulation_command_adapter',
             'cartesian_command_adapter', 'cartesian_jog_adapter',
             'cartesian_trajectory_adapter', 'horizon_preview',
             'system_readiness',
         }
+        if not self.static_preview:
+            common.add('joint_state_broadcaster')
         if getattr(self, 'profile_mode', False):
             expected = common | {
                 'cell_clock', 'profile_proximity_monitor',
@@ -373,21 +379,23 @@ class SystemReadinessNode(Node):
 
     def evaluate(self):
         """Publish READY or a concise list of unavailable components."""
-        self._update_controller_state()
+        if not self.static_preview:
+            self._update_controller_state()
         missing = self._node_graph_status()
         missing.extend(self._freshness_status(time.monotonic()))
         missing.extend(self._connection_status())
-        if not self.controller_active:
-            missing.append(self.controller_error)
-        if not self.action_client.server_is_ready():
-            action_name = getattr(
-                self,
-                'controller_action_name',
-                '/arm_controller/follow_joint_trajectory',
-            )
-            missing.append(
-                f'acción {action_name} no disponible'
-            )
+        if not self.static_preview:
+            if not self.controller_active:
+                missing.append(self.controller_error)
+            if not self.action_client.server_is_ready():
+                action_name = getattr(
+                    self,
+                    'controller_action_name',
+                    '/arm_controller/follow_joint_trajectory',
+                )
+                missing.append(
+                    f'acción {action_name} no disponible'
+                )
 
         ready = not missing
         status = 'READY' if ready else 'WAITING: ' + '; '.join(missing)

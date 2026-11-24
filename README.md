@@ -1,4 +1,4 @@
-# TESIS_2_IMPLEMENTATION
+# Supervisión predictiva de manipuladores con ROS 2
 
 Plataforma experimental en ROS 2 para supervisar comandos de movimiento de un
 manipulador Kinova Jaco2 antes de enviarlos a un backend de ejecución.
@@ -6,7 +6,80 @@ manipulador Kinova Jaco2 antes de enviarlos a un backend de ejecución.
 La propuesta separa la intención del usuario, la cinemática, la predicción de
 corto horizonte, la evaluación geométrica, la decisión de seguridad y el
 adaptador de ejecución. Esto permite estudiar la misma política en simulación
-y, de forma controlada, frente al brazo físico.
+y, de forma controlada, frente al brazo físico. El objetivo de la tesis es
+estudiar cómo anticipar conflictos entre el movimiento de un manipulador y
+su entorno, combinando modelos cinemáticos, geometría y percepción RGB-D.
+Es una plataforma de investigación, no un sistema de seguridad certificado.
+
+## El proyecto de un vistazo
+
+La interfaz propone un movimiento; el supervisor comprueba el estado del robot,
+proyecta su movimiento y compara la envolvente con los obstáculos antes de
+autorizarlo. Gazebo permite ensayar la cadena y RViz muestra las cápsulas, el
+horizonte y las distancias. Una ruta separada comunica el JACO2 con la API de
+Kinova; la cámara y RAFT se investigan en paralelo, todavía sin gobernar el
+movimiento físico.
+
+| Componente | Qué aporta | Estado |
+| --- | --- | --- |
+| JACO2 físico | Lectura, supervisión y salida articular mediante Kinova | Ensayos J1 pequeños documentados; no valida trayectorias generales |
+| Cuatro modelos simulados | JACO2, UR17g-1300, P3020 y CS625 con perfiles y GUI | Integración experimental en Gazebo y RViz |
+| Predicción y proximidad | Cápsulas, distancias, horizonte y decisiones preventivas | Implementados para escenarios virtuales; no certificados |
+| Gripper instrumentado | CAD estático coloreado y envolvente para los tres brazos comerciales | Montaje estimado; dedos, cámara e inercia no están validados |
+| Cámara D435i y RAFT | Captura RGB-D y vista experimental de movimiento | Percepción independiente; aún no alimenta la decisión preventiva |
+
+### Qué hay detrás de los algoritmos
+
+1. **Cinemática y marcos de referencia.** El URDF describe los eslabones, sus
+   juntas y límites. La cinemática directa transforma una configuración
+   articular en poses de eslabones; la inversa busca articulaciones para un
+   objetivo cartesiano. La coherencia entre el modelo y TF se comprueba antes
+   de admitir las rutas que la requieren. El P3020 tiene cinco ejes: una
+   posición puede alcanzarse sin satisfacer una orientación arbitraria.
+2. **Envolvente geométrica.** Un segmento y un radio forman una cápsula que
+   aproxima una parte del brazo. Se calcula la separación entre las cápsulas,
+   la esfera virtual y las cajas de la mesa y sus patas. Para los perfiles
+   comerciales, las cápsulas se construyen a partir de las mallas de colisión;
+   el gripper usa una aproximación de su CAD estático. La cobertura no valida
+   el montaje físico ni el movimiento de los dedos.
+3. **Predicción de corto horizonte.** Una intención articular o cartesiana se
+   transforma en configuraciones futuras muestreadas. La cinemática coloca las
+   cápsulas en cada muestra y se evalúa su separación, con márgenes para la
+   incertidumbre. La secuencia y las trazas se muestran en RViz; el muestreo
+   discreto es una aproximación y no una prueba continua de seguridad.
+4. **Decisión preventiva.** La proximidad actual distingue `ALLOW`, `WARNING`
+   y `STOP`. Por separado, la política predictiva puede reducir la velocidad
+   de JOG cuando la trayectoria invade la reserva protectora. La admisión y
+   la supervisión durante la ejecución verifican estado, sellos temporales y
+   disponibilidad; datos inválidos o vencidos no se consideran espacio libre.
+5. **Percepción RGB-D y RAFT.** La D435i entrega imágenes y profundidad
+   alineada. El prototipo RAFT estima flujo óptico entre imágenes, lo combina
+   con profundidad para estimar desplazamientos tridimensionales y filtra
+   movimiento mediante mediana, soporte espacial y confirmación temporal.
+   Las líneas de RViz representan una previsualización experimental: faltan
+   calibración extrínseca y validación antes de usarla en el supervisor.
+
+El recorrido completo y sus limitaciones están en [Arquitectura](#arquitectura),
+[Percepción RGB-D](#percepción-rgb-d) y [Limitaciones y siguiente etapa](#limitaciones-y-siguiente-etapa).
+
+### Recuperar y compilar la simulación
+
+En un equipo con ROS 2 Humble, Gazebo Fortress y las dependencias descritas en
+[la guía multirrobot](src/thesis_multi_robot/README.md):
+
+```bash
+git clone --recurse-submodules https://github.com/ElLuisAlberto/IMPLEMENTACION_ROS2_CORE.git
+cd IMPLEMENTACION_ROS2_CORE
+bash tools/simulation/build_multi_robot.sh
+source /opt/ros/humble/setup.bash
+source install/setup.bash
+```
+
+Si el repositorio ya estaba clonado, recupera los modelos oficiales fijados con
+`git submodule update --init --recursive`. Las dependencias y licencias de los
+modelos se detallan en [third_party/robots](third_party/robots/README.md). Los
+pesos RAFT, el entorno CUDA local y los rosbags crudos requieren una preparación
+o respaldo separado; no vienen incluidos en el repositorio.
 
 ## Guía rápida
 
@@ -28,8 +101,11 @@ ejecutarlas en este workspace.
 
 ## Estado de la tesis
 
-Estado al 22/10/2026: **simulación y movimiento articular físico J1 validados;
-percepción RGB-D en observación, todavía fuera de la decisión preventiva**.
+Estado resumido al 24/11/2026: **cuatro perfiles en simulación experimental y
+ensayos articulares físicos J1 documentados; percepción RGB-D y RAFT aún fuera
+de la decisión preventiva**. Los resultados físicos citados a continuación
+corresponden a las pruebas documentadas del 22/10/2026 y no se extienden a los
+otros brazos ni al gripper provisional.
 
 - El JACO2 funciona mediante la ruta candidato → supervisor preventivo →
   adaptador Kinova. El backend USB, feedback a 20 Hz, watchdog, TF y retorno a
@@ -52,21 +128,28 @@ percepción RGB-D en observación, todavía fuera de la decisión preventiva**.
   medida respecto de `world`.
 - La ruta cartesiana física y la integración RGB-D → obstáculos siguen
   pendientes. Por ello no se declara terminado el Avance 3.
+- En simulación se incorporaron los perfiles UR17g, P3020 y CS625; las vistas
+  individuales comparten laboratorio, mesa de cuatro patas de 2,40 × 1,60 m,
+  GUI y visualización de envolventes. El CAD instrumentado estático se monta
+  en esos tres perfiles; JACO2 conserva su propia pinza.
+- Se preparó una previsualización experimental con RAFT en CUDA y marcadores de
+  barrido. Sus filtros y la confirmación temporal siguen pendientes de una
+  validación concluyente en vivo para obstáculos pequeños.
 
 La evidencia técnica está organizada en
 [`docs/codex_reports/`](docs/codex_reports/) y
 [`evidence/codex_reports/`](evidence/codex_reports/).
 
-La ampliación experimental en simulación con **UR17g-1300 y P3020**
+La ampliación experimental en simulación con **UR17g-1300, P3020 y CS625**
 junto al JACO2 está documentada en
 [`src/thesis_multi_robot/README.md`](src/thesis_multi_robot/README.md).
 Usa perfiles URDF y namespaces propios en Gazebo Fortress. Además de la célula
 nominal, existe una ruta individual de paridad que reutiliza literalmente la
 GUI histórica, el supervisor preventivo y la proyección futura de RViz para
-UR17g y P3020. El perfil `jaco2` del mismo comando deriva al launch
+UR17g, P3020 y CS625. El perfil `jaco2` del mismo comando deriva al launch
 histórico intacto para no cambiar su comportamiento ni su geometría.
 
-### Misma interfaz histórica para los tres brazos simulados
+### Misma interfaz histórica para los cuatro brazos simulados
 
 Preparar cada terminal desde la raíz real de este repositorio:
 
@@ -84,6 +167,7 @@ Ejecutar **solo una** de estas órdenes por vez:
 ros2 launch thesis_multi_robot historical_robot.launch.py robot:=jaco2
 ros2 launch thesis_multi_robot historical_robot.launch.py robot:=ur17g
 ros2 launch thesis_multi_robot historical_robot.launch.py robot:=p3020
+ros2 launch thesis_multi_robot historical_robot.launch.py robot:=cs625
 ```
 
 Cada orden abre Gazebo, la misma GUI de `thesis_ui` y RViz. Para una prueba
@@ -95,19 +179,20 @@ explícita no alcanzable se rechaza de forma segura.
 ### Mesa y esfera de la estación
 
 Los cuatro lanzamientos individuales (`robot:=jaco2`, `ur17g`, `p3020` y
-`cs625`) usan un tablero horizontal de 1.20 × 0.80 × 0.04 m, con superficie
+`cs625`) usan un tablero horizontal de 2.40 × 1.60 × 0.04 m, con superficie
 a 0.75 m. La esfera de Gazebo tiene 0.12 m de radio y centro en
 `world` (0.60, 0, 1.27) m: quedan 40 cm libres. RViz muestra el tablero en
 el display de obstáculos. En los perfiles con incertidumbre, el marcador
-esférico incluye también el margen de la medición.
+esférico incluye también el margen de la medición. Los cuatro lanzamientos
+individuales usan el mismo laboratorio en Gazebo y una mesa de cuatro patas.
 
 La supervisión contrasta las cápsulas con la esfera y el tablero en cada
 postura muestreada. El tablero incluye sus cantos y cara inferior. Las patas
 y los soportes son geometría de Gazebo. La célula conjunta tiene una mesa por
-base y una esfera compartida en coordenadas de mundo. Los soportes de montaje
-de la célula separan las envolventes conservadoras del hombro y el tablero.
+base y una esfera compartida en coordenadas de mundo. El UR17g y el CS625 se
+montan directamente sobre el tablero; los demás perfiles conservan soportes.
 
-Para representar la misma estación **virtual** en el JACO2 físico en modo
+Para representar una estación **virtual** en el JACO2 físico en modo
 observación, usar `virtual_workstation:=true` en
 `jaco_physical_system.launch.py`. En ese marco la base está a z=0:
 el tablero termina en z=0 y la esfera tiene centro en z=0.52 m.

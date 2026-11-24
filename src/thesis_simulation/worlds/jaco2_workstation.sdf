@@ -29,7 +29,7 @@
           <pose>0 0 0.73 0 0 0</pose>
           <geometry>
             <box>
-              <size>1.60 1.00 0.04</size>
+              <size>2.40 1.60 0.04</size>
             </box>
           </geometry>
         </collision>
@@ -37,7 +37,7 @@
           <pose>0 0 0.73 0 0 0</pose>
           <geometry>
             <box>
-              <size>1.60 1.00 0.04</size>
+              <size>2.40 1.60 0.04</size>
             </box>
           </geometry>
           <material>
@@ -45,7 +45,7 @@
           </material>
         </visual>
         <visual name="leg_1_visual">
-          <pose>-0.72 -0.42 0.355 0 0 0</pose>
+          <pose>-1.12 -0.72 0.355 0 0 0</pose>
           <geometry>
             <box>
               <size>0.06 0.06 0.71</size>
@@ -56,7 +56,7 @@
           </material>
         </visual>
         <collision name="leg_1_collision">
-          <pose>-0.72 -0.42 0.355 0 0 0</pose>
+          <pose>-1.12 -0.72 0.355 0 0 0</pose>
           <geometry>
             <box>
               <size>0.06 0.06 0.71</size>
@@ -64,7 +64,7 @@
           </geometry>
         </collision>
         <visual name="leg_2_visual">
-          <pose>-0.72 0.42 0.355 0 0 0</pose>
+          <pose>-1.12 0.72 0.355 0 0 0</pose>
           <geometry>
             <box>
               <size>0.06 0.06 0.71</size>
@@ -75,7 +75,7 @@
           </material>
         </visual>
         <collision name="leg_2_collision">
-          <pose>-0.72 0.42 0.355 0 0 0</pose>
+          <pose>-1.12 0.72 0.355 0 0 0</pose>
           <geometry>
             <box>
               <size>0.06 0.06 0.71</size>
@@ -83,7 +83,7 @@
           </geometry>
         </collision>
         <visual name="leg_3_visual">
-          <pose>0.72 -0.42 0.355 0 0 0</pose>
+          <pose>1.12 -0.72 0.355 0 0 0</pose>
           <geometry>
             <box>
               <size>0.06 0.06 0.71</size>
@@ -94,7 +94,7 @@
           </material>
         </visual>
         <collision name="leg_3_collision">
-          <pose>0.72 -0.42 0.355 0 0 0</pose>
+          <pose>1.12 -0.72 0.355 0 0 0</pose>
           <geometry>
             <box>
               <size>0.06 0.06 0.71</size>
@@ -102,7 +102,7 @@
           </geometry>
         </collision>
         <visual name="leg_4_visual">
-          <pose>0.72 0.42 0.355 0 0 0</pose>
+          <pose>1.12 0.72 0.355 0 0 0</pose>
           <geometry>
             <box>
               <size>0.06 0.06 0.71</size>
@@ -113,7 +113,7 @@
           </material>
         </visual>
         <collision name="leg_4_collision">
-          <pose>0.72 0.42 0.355 0 0 0</pose>
+          <pose>1.12 0.72 0.355 0 0 0</pose>
           <geometry>
             <box>
               <size>0.06 0.06 0.71</size>

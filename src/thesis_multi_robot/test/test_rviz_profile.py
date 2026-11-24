@@ -33,6 +33,9 @@ def test_current_capsules_are_not_rendered_twice():
     """Keep current geometry in one display while retaining all predictions."""
     displays = _displays()
     assert displays['SafetyCapsules']['Namespaces']['current_capsules'] is True
+    assert displays['SafetyCapsules']['Enabled'] is True
+    assert displays['SimplifiedJointLinks']['Enabled'] is False
+    assert displays['HorizonVolume']['Enabled'] is True
     horizon = displays['HorizonVolume']['Namespaces']
     assert horizon['current_capsules'] is False
     assert horizon['predicted_volume'] is True
